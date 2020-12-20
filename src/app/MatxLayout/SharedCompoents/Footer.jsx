@@ -21,16 +21,6 @@ const Footer = ({ theme, settings }) => {
       <div className="footer flex flex-middle">
         <div className="flex flex-middle container px-sm-30 w-100">
           Footer Content Here
-          {/* <a href="https://ui-lib.com/downloads/matx-react-material-design-admin-template/" className="mr-8">
-            <Button variant="contained" color="error">
-              Download Matx
-            </Button>
-          </a>
-          <a href="https://ui-lib.com/downloads/matx-pro-react-material-design-admin-template/">
-            <Button variant="contained" color="secondary">
-              Get MatX Pro
-            </Button>
-          </a> */}
           <span className="m-auto"></span>
           <p className="m-0">
             Design and Developed by GNTV 

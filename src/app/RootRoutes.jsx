@@ -5,17 +5,16 @@ import dashboardRoutes from "./views/dashboard/DashboardRoutes";
 import utilitiesRoutes from "./views/utilities/UtilitiesRoutes";
 import sessionRoutes from "./views/sessions/SessionRoutes";
 
-import materialRoutes from "./views/material-kit/MaterialRoutes";
-import dragAndDropRoute from "./views/Drag&Drop/DragAndDropRoute";
 
 import formsRoutes from "./views/forms/FormsRoutes";
-import mapRoutes from "./views/map/MapRoutes";
+
+import masterRoutes from "./views/master/masterRoutes";
 
 const redirectRoute = [
   {
     path: "/",
     exact: true,
-    component: () => <Redirect to="/dashboard/analytics" />
+    component: () => <Redirect to="/dashboard" />
   }
 ];
 
@@ -27,14 +26,12 @@ const errorRoute = [
 
 const routes = [
   ...sessionRoutes,
+  ...masterRoutes,
   ...dashboardRoutes,
-  ...materialRoutes,
   ...utilitiesRoutes,
-  ...dragAndDropRoute,
   ...formsRoutes,
-  ...mapRoutes,
   ...redirectRoute,
-  ...errorRoute
+  ...errorRoute,
 ];
 
 export default routes;

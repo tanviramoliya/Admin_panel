@@ -1,7 +1,7 @@
 export const navigations = [
   {
     name: "Dashboard",
-    path: "/dashboard/analytics",
+    path: "/dashboard",
     icon: "dashboard"
   },
   {
@@ -51,17 +51,17 @@ export const navigations = [
     children: [
       {
         name: "Country",
-        path: "/charts/victory-charts",
+        path: "/master/country",
         iconText: "1"
       },
       {
         name: "State",
-        path: "/charts/react-vis",
+        path: "/master/state",
         iconText: "2"
       },
       {
         name: "City",
-        path: "/charts/recharts",
+        path: "/master/city",
         iconText: "3"
       },
       {

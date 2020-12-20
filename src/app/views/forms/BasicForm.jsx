@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Breadcrumb } from "matx";
-import SimpleForm from "../material-kit/forms/SimpleForm";
+import SimpleForm from "./SimpleFrom";
 
 class BasicForm extends Component {
   render() {
