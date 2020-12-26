@@ -1,4 +1,4 @@
-import { MatxLoadable } from "matx";
+import  {MatxLoadable}  from "../../../components/matx/index";
 import { authRoles } from "../../auth/authRoles";
 
 const Dashboard = MatxLoadable({

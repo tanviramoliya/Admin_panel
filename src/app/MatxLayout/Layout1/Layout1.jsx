@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
-import { setLayoutSettings } from "app/redux/actions/LayoutActions";
+import { setLayoutSettings } from "redux/actions/LayoutActions";
 import { withStyles } from "@material-ui/core";
 import Scrollbar from "react-perfect-scrollbar";
 import { isMdScreen, classList } from "utils";

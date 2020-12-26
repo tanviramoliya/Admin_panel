@@ -1,5 +1,5 @@
 import React from "react";
-import { Breadcrumb, SimpleCard } from "matx";
+import { Breadcrumb, SimpleCard } from "../../../components/matx/index";
 import Highlight from "react-highlight";
 
 const Spacing = () => {

@@ -9,10 +9,10 @@ import {
   MuiThemeProvider
 } from "@material-ui/core";
 import { connect } from "react-redux";
-import { setLayoutSettings } from "app/redux/actions/LayoutActions";
-import { logoutUser } from "app/redux/actions/UserActions";
+import { setLayoutSettings } from "redux/actions/LayoutActions";
+import { logoutUser } from "redux/actions/UserActions";
 import { PropTypes } from "prop-types";
-import { MatxMenu, MatxSearchBox } from "matx";
+import { MatxMenu, MatxSearchBox } from "../../../components/matx/index";
 import { isMdScreen } from "utils";
 import NotificationBar from "../SharedCompoents/NotificationBar";
 import { Link } from "react-router-dom";

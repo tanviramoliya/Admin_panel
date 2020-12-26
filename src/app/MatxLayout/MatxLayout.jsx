@@ -8,7 +8,7 @@ import AppContext from "app/appContext";
 import {
   setLayoutSettings,
   setDefaultSettings
-} from "app/redux/actions/LayoutActions";
+} from "redux/actions/LayoutActions";
 import { isEqual, merge } from "lodash";
 import { isMdScreen, getQueryParam } from "utils";
 

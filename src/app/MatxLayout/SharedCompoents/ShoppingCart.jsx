@@ -13,7 +13,7 @@ import {
   getCartList,
   deleteProductFromCart,
   updateCartAmount
-} from "app/redux/actions/EcommerceActions";
+} from "redux/actions/EcommerceActions";
 
 let cartListLoaded = false;
 

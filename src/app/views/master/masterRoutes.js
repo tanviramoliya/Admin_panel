@@ -1,4 +1,4 @@
-import { MatxLoadable } from "matx";
+import  {MatxLoadable}  from "../../../components/matx/index";
 
 const country = MatxLoadable({
     loader: () => import("./country/country")

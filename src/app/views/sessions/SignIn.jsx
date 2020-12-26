@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { withRouter } from "react-router-dom";
 
-import { loginWithEmailAndPassword } from "../../redux/actions/LoginActions";
+import { loginWithEmailAndPassword } from "../../../redux/actions/LoginActions";
 
 const styles = theme => ({
   wrapper: {

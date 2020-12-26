@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { withRouter } from "react-router-dom";
 
-import { resetPassword } from "../../redux/actions/LoginActions";
+import { resetPassword } from "../../../redux/actions/LoginActions";
 
 class ForgotPassword extends Component {
   state = {

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Breadcrumb } from "matx";
+import {Breadcrumb}  from "../../../components/matx/index";
 import SimpleForm from "./SimpleFrom";
 
 class BasicForm extends Component {

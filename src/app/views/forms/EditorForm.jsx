@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { RichTextEditor, Breadcrumb } from "matx";
+import { RichTextEditor, Breadcrumb } from "../../../components/matx/index";
 
 class EditorForm extends Component {
   state = {

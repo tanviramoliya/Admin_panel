@@ -5,8 +5,8 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import { navigations } from "../../navigations";
-import { MatxVerticalNav } from "matx";
-import { setLayoutSettings } from "app/redux/actions/LayoutActions";
+import MatxVerticalNav  from "../../../components/matx/MatxVerticalNav/MatxVerticalNav";
+import { setLayoutSettings } from "redux/actions/LayoutActions";
 
 class Sidenav extends Component {
   state = {};

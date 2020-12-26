@@ -14,10 +14,10 @@ import { connect } from "react-redux";
 import {
   setLayoutSettings,
   setDefaultSettings
-} from "app/redux/actions/LayoutActions";
-import { logoutUser } from "app/redux/actions/UserActions";
+} from "redux/actions/LayoutActions";
+import { logoutUser } from "redux/actions/UserActions";
 import { withRouter } from "react-router-dom";
-import { MatxMenu } from "matx";
+import { MatxMenu } from "../../../components/matx/index";
 import Sidenav from "../SharedCompoents/Sidenav";
 import Brand from "../SharedCompoents/Brand";
 import SidenavTheme from "../MatxTheme/SidenavTheme";

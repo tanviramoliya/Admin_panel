@@ -1,4 +1,4 @@
-import {MatxLoadable} from "matx";
+import {MatxLoadable} from "../../components/matx/index";
 
 const Layout1 = MatxLoadable({
   loader: () => import("./Layout1/Layout1")

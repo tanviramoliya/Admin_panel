@@ -1,4 +1,4 @@
-import {MatxLoadable} from "matx";
+import {MatxLoadable} from "../../../components/matx/index";
 
 const Color = MatxLoadable({
   loader: () => import("./Color")

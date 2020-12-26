@@ -1,11 +1,10 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
-import { setUserData } from "../redux/actions/UserActions";
+import { setUserData } from "../../redux/actions/UserActions";
 import jwtAuthService from "../services/jwtAuthService";
 import localStorageService from "../services/localStorageService";
-import firebaseAuthService from "../services/firebase/firebaseAuthService";
-import history from "history.js";
+import history from "../../history";
 
 class Auth extends Component {
   state = {};
@@ -21,7 +20,6 @@ class Auth extends Component {
     // Check current token is valid on page load/reload
     this.checkJwtAuth();
 
-    // this.checkFirebaseAuth();
   }
 
   checkJwtAuth = () => {
@@ -42,18 +40,6 @@ class Auth extends Component {
       history.push({
         pathname: "/session/signin"
       });
-    });
-  };
-
-  checkFirebaseAuth = () => {
-    firebaseAuthService.checkAuthStatus(user => {
-      if (user) {
-        console.log(user.uid);
-        console.log(user.email);
-        console.log(user.emailVerified);
-      } else {
-        console.log("not logged in");
-      }
     });
   };
 
