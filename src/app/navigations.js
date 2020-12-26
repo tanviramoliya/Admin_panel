@@ -66,17 +66,17 @@ export const navigations = [
       },
       {
         name: "NEWS Type",
-        path: "/charts/echarts",
+        path: "/master/newsType",
         iconText: "4"
       },
       {
         name: "Category",
-        path: "/charts/echarts",
+        path: "/master/category",
         iconText: "4"
       },
       {
         name: "SubCategory",
-        path: "/charts/echarts",
+        path: "/master/subcategory",
         iconText: "4"
       }
     ]

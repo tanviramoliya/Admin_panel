@@ -52,8 +52,8 @@ class state extends Component{
       <Table style={{ whiteSpace: "pre" }}>
         <TableHead>
           <TableRow>
+            <TableCell className="px-0">ID</TableCell>
             <TableCell className="px-0">State Name</TableCell>
-            <TableCell className="px-0">Active/Not Active</TableCell>
             <TableCell className="px-0">Action</TableCell>
           </TableRow>
         </TableHead>
@@ -64,17 +64,10 @@ class state extends Component{
             ((state, index) => (
               <TableRow key={index}>
                 <TableCell className="px-0 capitalize" align="left">
-                  {state.title}
+                  {index}
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left">
-                {state.isActive ?
-               ( <small className="border-radius-4 bg-primary text-white px-8 py-2 ">
-                Active
-              </small>) :
-              (<small className="border-radius-4 bg-error text-white px-8 py-2 ">
-                Not Active
-                </small>)
-                  }
+                  {state.title}
                 </TableCell>
                 <TableCell className="px-0">
                   <IconButton>

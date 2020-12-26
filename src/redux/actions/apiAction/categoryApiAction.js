@@ -1,12 +1,12 @@
 import {
-    getCountryList,
+    getCategoryList,
   } from "../index";
   const axios = require("axios");
   
-  export const countryListApi = () => {
+  export const categoryListApi = () => {
     return async (dispatch, store) => {
-        await axios.get("http://localhost:9090/country/getAllCountry").then((res) => {
-                dispatch(getCountryList(res.data.data));
+        await axios.get("https://gorest.co.in/public-api/posts").then((res) => {
+                dispatch(getCategoryList(res.data));
               })
               .catch((err) => {
                   console.log(err);

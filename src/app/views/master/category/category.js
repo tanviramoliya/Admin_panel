@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Breadcrumb, SimpleCard } from "../../../../components/matx/index";
 
-import { countryListApi } from "../../../../redux/actions/index";
+import { categoryListApi } from "../../../../redux/actions/index";
 import { connect } from "react-redux";
 import {
   IconButton,
@@ -15,19 +15,18 @@ import {
 } from "@material-ui/core";
 
 
-class country extends Component{
+class category extends Component{
   state = {
-    countryList: [],
+    categoryList: [],
     rowsPerPage : 5,
     page : 0
   };
   componentDidMount = async () => {
-    await this.getCountryListFunc();
+    await this.categoryList();
   };
-  getCountryListFunc = async () => {
-    console.log('IN FUnction..')
-    await this.props.countryListApi();
-    this.setState({ countryList : this.props.countryList})
+  categoryList = async () => {
+    await this.props.categoryListApi();
+    this.setState({ categoryList : this.props.categoryList})
   };
      handleChangePage = (event, newPage) => {
       this.setState({ page : newPage})
@@ -36,40 +35,50 @@ class country extends Component{
        this.setState({ rowsPerPage : event.target.value})
     };
   render(){
-    const { page , rowsPerPage , countryList} = this.state;
-    console.log("C LIST:",countryList)
+    const { page , rowsPerPage , categoryList} = this.state;
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
           <Breadcrumb
             routeSegments={[
-              { name: "Master", path: "/country" },
-              { name: "Country" },
+              { name: "Master", path: "/master/country" },
+              { name: "Category" },
             ]}
           />
         </div>
         <div className="py-12" />
-        <SimpleCard title="Country Information">
+        <SimpleCard title="Category Information">
         <div className="w-100 overflow-auto">
       <Table style={{ whiteSpace: "pre" }}>
         <TableHead>
           <TableRow>
           <TableCell className="px-0">ID</TableCell>
-            <TableCell className="px-0">Country Name</TableCell>
+            <TableCell className="px-0">Category</TableCell>
+            <TableCell className="px-0">Active/Not Active</TableCell>
             <TableCell className="px-0">Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {countryList
-            // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          {categoryList
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map
-            ((country, index) => (
+            ((category, index) => (
               <TableRow key={index}>
                 <TableCell className="px-0 capitalize" align="left">
                   {index}
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left">
-                  {country.countryName}
+                  {category.title}
+                </TableCell>
+                <TableCell className="px-0 capitalize" align="left">
+                {category.isActive ?
+               ( <small className="border-radius-4 bg-primary text-white px-8 py-2 ">
+                Active
+              </small>) :
+              (<small className="border-radius-4 bg-error text-white px-8 py-2 ">
+                Not Active
+                </small>)
+                  }
                 </TableCell>
                 <TableCell className="px-0">
                   <IconButton>
@@ -88,7 +97,7 @@ class country extends Component{
         className="px-16"
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={countryList.length}
+        count={categoryList.length}
         rowsPerPage={rowsPerPage}
         page={page}
         backIconButtonProps={{
@@ -108,11 +117,10 @@ class country extends Component{
 }
 
 const mapStateToProps = (state) => {
-  const { countryList } = state.country;
-  console.log(" C lISt in props",countryList);
+  const { categoryList } = state.category;
   return {
-    countryList
+    categoryList
   };
 };
 
-export default connect(mapStateToProps, { countryListApi })(country);
+export default connect(mapStateToProps, { categoryListApi })(category);

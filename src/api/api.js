@@ -51,7 +51,7 @@ export const api = async (endpoint, data, type) => {
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
-          'x-auth': token,
+          // 'x-auth': token,
         },
         url: mainUrl + endpoint,
       })
