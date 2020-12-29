@@ -13,7 +13,7 @@ const ConfirmationDialog = ({
       maxWidth="xs"
       fullWidth={true}
       open={open}
-      onClose={onConfirmDialogClose}
+      // onClose={onConfirmDialogClose}
     >
       <div className="pt-24 px-20 pb-8">
         <h4 className="capitalize">{title}</h4>
