@@ -1,8 +1,8 @@
-import { store } from '../redux/store/store';
-import { history } from '../history';
-import { setLoginFlag, setLoginUser } from '../redux/action/auth/loginAction';
-import { getToken } from './getToken';
-import { mainUrl, authUrl, status } from '../utility/config';
+// import { store } from '../redux/store/store';
+import  history  from '../history';
+// import { setLoginFlag, setLoginUser } from '../redux/action/auth/loginAction';
+// import { getToken } from './getToken';
+import { mainUrl, status } from '../utility/config';
 
 const axios = require('axios');
 
@@ -13,10 +13,10 @@ const handleError = (err) => {
     err.response.status === forbidden ||
     err.response.status === unAvailable
   ) {
-    localStorage.removeItem('adam-wa-mishmish');
-    store.dispatch(setLoginFlag(false));
-    store.dispatch(setLoginUser({}));
-    history.push('/login');
+    // localStorage.removeItem('adam-wa-mishmish');
+    // store.dispatch(setLoginFlag(false));
+    // store.dispatch(setLoginUser({}));
+    // history.push('/login');
   } else {
     return err.response;
   }
@@ -25,7 +25,7 @@ const handleError = (err) => {
 export const api = async (endpoint, data, type) => {
   let res;
   if (type !== 'postWithoutToken') {
-    var token = await getToken();
+    // var token = await getToken();
   }
 
   switch (type) {
@@ -35,7 +35,7 @@ export const api = async (endpoint, data, type) => {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'x-auth': token,
+          // 'x-auth': token,
         },
         url: mainUrl + endpoint,
       })
@@ -69,7 +69,7 @@ export const api = async (endpoint, data, type) => {
         headers: {
           'Content-Type': 'application/json',
           // "Content-Type": "application/x-www-form-urlencoded",
-          'x-auth': token,
+          // 'x-auth': token,
         },
         url: mainUrl + endpoint,
       })
@@ -88,7 +88,7 @@ export const api = async (endpoint, data, type) => {
         headers: {
           // "Content-Type": "application/json",
           'Content-Type': 'application/x-www-form-urlencoded',
-          'x-auth': token,
+          // 'x-auth': token,
         },
         url: mainUrl + endpoint,
       })
@@ -105,7 +105,7 @@ export const api = async (endpoint, data, type) => {
         method: 'delete',
         headers: {
           'Content-Type': 'application/json',
-          'x-auth': token,
+          // 'x-auth': token,
         },
         url: mainUrl + endpoint,
       })
@@ -123,7 +123,8 @@ export const api = async (endpoint, data, type) => {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        url: authUrl + endpoint,
+        // url: authUrl + endpoint,
+        url: endpoint
       })
         .then(function (response) {
           res = response;
@@ -139,9 +140,10 @@ export const api = async (endpoint, data, type) => {
         headers: {
           'Content-Type': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
-          'x-auth': token,
+          // 'x-auth': token,
         },
-        url: authUrl + endpoint,
+        // url: authUrl + endpoint,
+        url : endpoint
       })
         .then(function (response) {
           res = response;
@@ -157,7 +159,7 @@ export const api = async (endpoint, data, type) => {
         data: data,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'x-auth': token,
+          // 'x-auth': token,
         },
         url: mainUrl + endpoint,
       })

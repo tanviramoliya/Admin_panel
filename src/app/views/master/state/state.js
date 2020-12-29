@@ -74,7 +74,7 @@ class state extends Component{
                     <Icon color="primary">edit</Icon>
                   </IconButton>
                   <IconButton>                   
-                    <Icon color="error">delete</Icon>
+                    <Icon color="error" onClick={() => console.log('Delete Clicked', state.id)}>delete</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>

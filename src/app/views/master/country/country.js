@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Breadcrumb, SimpleCard } from "../../../../components/matx/index";
 
-import { countryListApi } from "../../../../redux/actions/index";
+import { countryListApi, deleteCountryApi } from "../../../../redux/actions/index";
 import { connect } from "react-redux";
 import {
   IconButton,
@@ -13,13 +13,16 @@ import {
   Icon,
   TablePagination
 } from "@material-ui/core";
+import ConfirmationDialog from "components/matx/ConfirmationDialog";
 
 
 class country extends Component{
   state = {
     countryList: [],
     rowsPerPage : 5,
-    page : 0
+    page : 0,
+    deleteModal : false,
+    deleteCountryId : null
   };
   componentDidMount = async () => {
     await this.getCountryListFunc();
@@ -35,6 +38,9 @@ class country extends Component{
      handleChangeRowsPerPage = event => {
        this.setState({ rowsPerPage : event.target.value})
     };
+    deleteCountryClicked = () => {
+      this.setState({ deleteModal : !this.state.deleteModal , deleteCountryId : null})
+    }
   render(){
     const { page , rowsPerPage , countryList} = this.state;
     console.log("C LIST:",countryList)
@@ -76,7 +82,7 @@ class country extends Component{
                     <Icon color="primary">edit</Icon>
                   </IconButton>
                   <IconButton>                   
-                    <Icon color="error">delete</Icon>
+                    <Icon color="error" onClick={() => this.setState({deleteModal : true})}>delete</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -102,6 +108,14 @@ class country extends Component{
       />
     </div>
         </SimpleCard>
+        <div>
+          <ConfirmationDialog
+            onConfirmDialogClose={this.deleteCountryClicked}
+            open={this.state.deleteModal}
+            title = "Delete Confirmation"
+            text = {"R you sure want to delete this country?"}
+          />
+        </div>
       </div>
     );
   }
