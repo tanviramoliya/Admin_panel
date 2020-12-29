@@ -16,7 +16,6 @@ import { MatxMenu, MatxSearchBox } from "../../../components/matx/index";
 import { isMdScreen } from "utils";
 import NotificationBar from "../SharedCompoents/NotificationBar";
 import { Link } from "react-router-dom";
-import ShoppingCart from "../SharedCompoents/ShoppingCart";
 
 const styles = theme => ({
   root: {
@@ -91,12 +90,9 @@ class Layout1Topbar extends Component {
                 </div>
               </div>
               <div className="flex flex-middle">
-                {/* <MatxSearchBox />
+                {/* { <MatxSearchBox />
 
-                <NotificationBar />
-
-                <ShoppingCart></ShoppingCart> */}
-
+                <NotificationBar /> */}
                 <MatxMenu
                   menuButton={
                     <img
