@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Breadcrumb, SimpleCard } from "../../../../components/matx/index";
 
-import { stateListApi } from "../../../../redux/actions/index";
+import { stateListApi, deleteStateApi } from "../../../../redux/actions/index";
 import { connect } from "react-redux";
 import {
   IconButton,
@@ -13,13 +13,16 @@ import {
   Icon,
   TablePagination
 } from "@material-ui/core";
-
+import ConfirmationDialog from "components/matx/ConfirmationDialog";
+import { status } from '../../../../utility/config';
 
 class state extends Component{
   state = {
     stateList: [],
     rowsPerPage : 5,
-    page : 0
+    page : 0,
+    deleteModal : false,
+    deleteStateToken : null
   };
   componentDidMount = async () => {
     await this.getStateList();
@@ -34,6 +37,40 @@ class state extends Component{
      handleChangeRowsPerPage = event => {
        this.setState({ rowsPerPage : event.target.value})
     };
+
+    //to delete state
+    deleteStateClicked = async (token) => {
+    if (token) {
+      this.setState({ deleteStateToken: token });
+    }
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+    });
+  };
+
+  yesDeleteClicked = async () => {
+    //call delete Api
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+      deleteStateToken: null,
+    });
+    // this.props.setLoader(true);
+    const deleteState = await deleteStateApi(this.state.deleteStateToken);
+    if (deleteState && deleteState.status === status.success) {
+      await this.getStateList();
+      // toastr.success('State deleted successfully');
+    } else {
+      // toastr.error('Deletion Failed');
+    }
+    // this.props.setLoader(false);
+  };
+
+  noDeleteClicked = () => {
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+      deleteStateToken: null,
+    });
+  };
   render(){
     const { page , rowsPerPage , stateList} = this.state;
     return (
@@ -67,14 +104,14 @@ class state extends Component{
                   {index}
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left">
-                  {state.title}
+                  {state.stateName}
                 </TableCell>
                 <TableCell className="px-0">
                   <IconButton>
                     <Icon color="primary">edit</Icon>
                   </IconButton>
                   <IconButton>                   
-                    <Icon color="error" onClick={() => console.log('Delete Clicked', state.id)}>delete</Icon>
+                    <Icon color="error" onClick={() => this.deleteStateClicked(state.stateToken)}>delete</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -100,6 +137,16 @@ class state extends Component{
       />
     </div>
         </SimpleCard>
+        <div>
+          <ConfirmationDialog
+            open={this.state.deleteModal}
+            title = "Delete Confirmation"
+            message = {"R you sure want to delete this state?"}
+            toggle={this.deleteStateClicked}
+            onYesClick={() => this.yesDeleteClicked(this.state.deleteStateToken)}
+            onNoClick={this.noDeleteClicked}
+          />
+        </div>
       </div>
     );
   }

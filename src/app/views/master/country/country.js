@@ -38,6 +38,7 @@ class country extends Component{
      handleChangeRowsPerPage = event => {
        this.setState({ rowsPerPage : event.target.value})
     };
+
     //to delete Country
   deleteCountryClicked = async (token) => {
     console.log("token",token)
@@ -59,7 +60,7 @@ class country extends Component{
     const deleteCountry = await deleteCountryApi(this.state.deleteCountryToken);
     if (deleteCountry && deleteCountry.status === status.success) {
       await this.getCountryListFunc();
-      // toastr.success('Lesson deleted successfully');
+      // toastr.success('Country deleted successfully');
     } else {
       // toastr.error('Deletion Failed');
     }
@@ -75,7 +76,6 @@ class country extends Component{
 
   render(){
     const { page , rowsPerPage , countryList} = this.state;
-    console.log("C LIST:",countryList)
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
@@ -99,7 +99,7 @@ class country extends Component{
         </TableHead>
         <TableBody>
           {countryList
-            // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map
             ((country, index) => (
               <TableRow key={index}>
@@ -147,7 +147,7 @@ class country extends Component{
             message = {"R you sure want to delete this country?"}
             toggle={this.deleteCountryClicked}
             onYesClick={() => this.yesDeleteClicked(this.state.deleteCountryToken)}
-            onNoClick={this.deleteCountryClicked}
+            onNoClick={this.noDeleteClicked}
           />
         </div>
       </div>
