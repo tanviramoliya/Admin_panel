@@ -26,9 +26,9 @@ class country extends Component{
     deleteCountryToken : null
   };
   componentDidMount = async () => {
-    await this.getCountryListFunc();
+    await this.getCountryList();
   };
-  getCountryListFunc = async () => {
+  getCountryList = async () => {
     await this.props.countryListApi();
     this.setState({ countryList : this.props.countryList})
   };
@@ -59,7 +59,7 @@ class country extends Component{
     // this.props.setLoader(true);
     const deleteCountry = await deleteCountryApi(this.state.deleteCountryToken);
     if (deleteCountry && deleteCountry.status === status.success) {
-      await this.getCountryListFunc();
+      await this.getCountryList();
       // toastr.success('Country deleted successfully');
     } else {
       // toastr.error('Deletion Failed');
