@@ -16,12 +16,12 @@ export const addCountry = (value) => {
     payload: value,
   };
 };
-export const deleteCountry = (value) => {
-  return {
-    type: DELETE_COUNTRY,
-    payload: value,
-  };
-};
+// export const deleteCountry = (value) => {
+//   return {
+//     type: DELETE_COUNTRY,
+//     payload: value,
+//   };
+// };
 
 export const updateCountry = (value) => {
   return {

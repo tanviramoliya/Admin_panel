@@ -3,27 +3,28 @@ import { Dialog, Button } from "@material-ui/core";
 
 const ConfirmationDialog = ({
   open,
-  onConfirmDialogClose,
-  text,
+  onNoClick,
+  message,
   title,
-  onYesClick
+  onYesClick,
+  toggle
 }) => {
   return (
     <Dialog
       maxWidth="xs"
       fullWidth={true}
       open={open}
-      // onClose={onConfirmDialogClose}
+      onClose={toggle}
     >
       <div className="pt-24 px-20 pb-8">
         <h4 className="capitalize">{title}</h4>
-        <p>{text}</p>
+        <p>{message}</p>
         <div className="flex flex-space-between pt-8">
           <Button onClick={onYesClick} variant="contained" color="primary">
             Yes
           </Button>
           <Button
-            onClick={onConfirmDialogClose}
+            onClick={onNoClick}
             variant="contained"
             color="secondary"
           >

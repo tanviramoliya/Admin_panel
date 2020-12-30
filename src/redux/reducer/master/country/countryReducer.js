@@ -30,12 +30,12 @@ import {
           countryList: [...action.payload]
         };
       }
-      case DELETE_COUNTRY: {
-        return {
-          ...state,
-          countryList: [...action.payload]
-        };
-      }
+      // case DELETE_COUNTRY: {
+      //   return {
+      //     ...state,
+      //     countryList: [...action.payload]
+      //   };
+      // }
       case UPDATE_COUNTRY: {
         return {
           ...state,

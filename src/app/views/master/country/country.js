@@ -14,6 +14,7 @@ import {
   TablePagination
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
+import { status } from '../../../../utility/config';
 
 
 class country extends Component{
@@ -22,13 +23,12 @@ class country extends Component{
     rowsPerPage : 5,
     page : 0,
     deleteModal : false,
-    deleteCountryId : null
+    deleteCountryToken : null
   };
   componentDidMount = async () => {
     await this.getCountryListFunc();
   };
   getCountryListFunc = async () => {
-    console.log('IN FUnction..')
     await this.props.countryListApi();
     this.setState({ countryList : this.props.countryList})
   };
@@ -38,9 +38,41 @@ class country extends Component{
      handleChangeRowsPerPage = event => {
        this.setState({ rowsPerPage : event.target.value})
     };
-    deleteCountryClicked = () => {
-      this.setState({ deleteModal : !this.state.deleteModal , deleteCountryId : null})
+    //to delete Country
+  deleteCountryClicked = async (token) => {
+    console.log("token",token)
+    if (token) {
+      this.setState({ deleteCountryToken: token });
     }
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+    });
+  };
+
+  yesDeleteClicked = async () => {
+    //call delete Api
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+      deleteCountryToken: null,
+    });
+    // this.props.setLoader(true);
+    const deleteCountry = await deleteCountryApi(this.state.deleteCountryToken);
+    if (deleteCountry && deleteCountry.status === status.success) {
+      await this.getCountryListFunc();
+      // toastr.success('Lesson deleted successfully');
+    } else {
+      // toastr.error('Deletion Failed');
+    }
+    // this.props.setLoader(false);
+  };
+
+  noDeleteClicked = () => {
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+      deleteCountryToken: null,
+    });
+  };
+
   render(){
     const { page , rowsPerPage , countryList} = this.state;
     console.log("C LIST:",countryList)
@@ -82,7 +114,7 @@ class country extends Component{
                     <Icon color="primary">edit</Icon>
                   </IconButton>
                   <IconButton>                   
-                    <Icon color="error" onClick={() => this.setState({deleteModal : true})}>delete</Icon>
+                    <Icon color="error" onClick={() => this.deleteCountryClicked(country.countryToken)}>delete</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -110,10 +142,12 @@ class country extends Component{
         </SimpleCard>
         <div>
           <ConfirmationDialog
-            onConfirmDialogClose={this.deleteCountryClicked}
             open={this.state.deleteModal}
             title = "Delete Confirmation"
-            text = {"R you sure want to delete this country?"}
+            message = {"R you sure want to delete this country?"}
+            toggle={this.deleteCountryClicked}
+            onYesClick={() => this.yesDeleteClicked(this.state.deleteCountryToken)}
+            onNoClick={this.deleteCountryClicked}
           />
         </div>
       </div>
@@ -123,7 +157,6 @@ class country extends Component{
 
 const mapStateToProps = (state) => {
   const { countryList } = state.country;
-  console.log(" C lISt in props",countryList);
   return {
     countryList
   };
