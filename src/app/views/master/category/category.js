@@ -90,7 +90,7 @@ class category extends Component{
         <TableHead>
           <TableRow>
           <TableCell className="px-0">ID</TableCell>
-            <TableCell className="px-0">Category</TableCell>
+            <TableCell className="px-0">Category Name</TableCell>
             <TableCell className="px-0">Active/Not Active</TableCell>
             <TableCell className="px-0">Action</TableCell>
           </TableRow>

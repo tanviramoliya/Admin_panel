@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Breadcrumb, SimpleCard } from "../../../../components/matx/index";
 
-import { subCategoryListApi } from "../../../../redux/actions/index";
+import { subCategoryListApi , deleteSubCategoryApi} from "../../../../redux/actions/index";
 import { connect } from "react-redux";
 import {
   IconButton,
@@ -13,13 +13,16 @@ import {
   Icon,
   TablePagination
 } from "@material-ui/core";
-
+import ConfirmationDialog from "components/matx/ConfirmationDialog";
+import { status } from '../../../../utility/config';
 
 class subCategory extends Component{
   state = {
     subCategoryList: [],
     rowsPerPage : 5,
-    page : 0
+    page : 0,
+    deleteModal : false,
+    deleteSubCategoryToken : null
   };
   componentDidMount = async () => {
     await this.subCategoryList();
@@ -34,6 +37,40 @@ class subCategory extends Component{
      handleChangeRowsPerPage = event => {
        this.setState({ rowsPerPage : event.target.value})
     };
+
+      //to delete SubCategory
+  deleteSubCategoryClicked = async (token) => {
+    if (token) {
+      this.setState({ deleteSubCategoryToken: token });
+    }
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+    });
+  };
+
+  yesDeleteClicked = async () => {
+    //call delete Api
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+      deleteSubCategoryToken: null,
+    });
+    // this.props.setLoader(true);
+    const deleteSubCategory = await deleteSubCategoryApi(this.state.deleteSubCategoryToken);
+    if (deleteSubCategory && deleteSubCategory.status === status.success) {
+      await this.subCategoryList();
+      // toastr.success('Sub category deleted successfully');
+    } else {
+      // toastr.error('Deletion Failed');
+    }
+    // this.props.setLoader(false);
+  };
+
+  noDeleteClicked = () => {
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+      deleteSubCategoryToken: null,
+    });
+  };
   render(){
     const { page , rowsPerPage , subCategoryList} = this.state;
     return (
@@ -53,7 +90,8 @@ class subCategory extends Component{
         <TableHead>
           <TableRow>
           <TableCell className="px-0">ID</TableCell>
-            <TableCell className="px-0">SubCategory</TableCell>
+            <TableCell className="px-0">Category Name</TableCell>
+            <TableCell className="px-0">SubCategory Name</TableCell>
             <TableCell className="px-0">Active/Not Active</TableCell>
             <TableCell className="px-0">Action</TableCell>
           </TableRow>
@@ -68,7 +106,10 @@ class subCategory extends Component{
                   {index}
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left">
-                  {subCategory.title}
+                  {subCategory.categoryName}
+                </TableCell>
+                <TableCell className="px-0 capitalize" align="left">
+                  {subCategory.subCategoryName}
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left">
                 {subCategory.isActive ?
@@ -85,7 +126,7 @@ class subCategory extends Component{
                     <Icon color="primary">edit</Icon>
                   </IconButton>
                   <IconButton>                   
-                    <Icon color="error">delete</Icon>
+                    <Icon color="error"  onClick={() => this.deleteSubCategoryClicked(subCategory.subCategoryToken)}>delete</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -111,6 +152,16 @@ class subCategory extends Component{
       />
     </div>
         </SimpleCard>
+        <div>
+          <ConfirmationDialog
+            open={this.state.deleteModal}
+            title = "Delete Confirmation"
+            message = {"R you sure want to delete this Subcategory?"}
+            toggle={this.deleteSubCategoryClicked}
+            onYesClick={() => this.yesDeleteClicked(this.state.deleteSubCategoryToken)}
+            onNoClick={this.noDeleteClicked}
+          />
+        </div>
       </div>
     );
   }
