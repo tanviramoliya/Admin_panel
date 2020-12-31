@@ -57,8 +57,7 @@ const SidenavTheme = ({ theme, settings }) => {
         }
 
         
-        ${darkHoverStyle()}
-        
+        ${darkHoverStyle()}        
       `}
       </style>
     </Helmet>

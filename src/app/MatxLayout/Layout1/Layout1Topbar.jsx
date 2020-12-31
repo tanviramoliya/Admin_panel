@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 import {
   Icon,
   IconButton,
-  Badge,
   MenuItem,
   withStyles,
   MuiThemeProvider
@@ -14,7 +13,6 @@ import { logoutUser } from "redux/actions/UserActions";
 import { PropTypes } from "prop-types";
 import { MatxMenu, MatxSearchBox } from "../../../components/matx/index";
 import { isMdScreen } from "utils";
-import NotificationBar from "../SharedCompoents/NotificationBar";
 import { Link } from "react-router-dom";
 
 const styles = theme => ({
