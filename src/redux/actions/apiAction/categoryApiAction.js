@@ -17,7 +17,6 @@ import {
   };
 
   export const deleteCategoryApi = async (id) => {
-    console.log("in API")
     const deleteCategory = await api(`category/deleteCategory?categoryToken=${id}`, {}, 'delete');
     if (deleteCategory) {
       return deleteCategory;
