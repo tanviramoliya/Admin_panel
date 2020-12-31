@@ -143,7 +143,7 @@ class country extends Component{
           <ConfirmationDialog
             open={this.state.deleteModal}
             title = "Delete Confirmation"
-            message = {"R you sure want to delete this country?"}
+            message = {"Make sure related states & cities also be deleted?"}
             toggle={this.deleteCountryClicked}
             onYesClick={() => this.yesDeleteClicked(this.state.deleteCountryToken)}
             onNoClick={this.noDeleteClicked}

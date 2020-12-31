@@ -145,7 +145,7 @@ class state extends Component{
           <ConfirmationDialog
             open={this.state.deleteModal}
             title = "Delete Confirmation"
-            message = {"R you sure want to delete this state?"}
+            message = {"Make sure related cities also be deleted?"}
             toggle={this.deleteStateClicked}
             onYesClick={() => this.yesDeleteClicked(this.state.deleteStateToken)}
             onNoClick={this.noDeleteClicked}
