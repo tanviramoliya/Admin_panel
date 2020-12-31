@@ -16,7 +16,6 @@ export * from './MatxListItem1'
 export * from './MatxMenu';
 export * from './MatxProgressBar';
 export * from './MatxSearchBox';
-export * from './MatxSnackbar';
 export * from './MatxToolbarMenu';
 export * from './RectangleAvatar';
 export * from './RichTextEditor';

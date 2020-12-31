@@ -41,7 +41,6 @@ class country extends Component{
 
     //to delete Country
   deleteCountryClicked = async (token) => {
-    console.log("token",token)
     if (token) {
       this.setState({ deleteCountryToken: token });
     }
