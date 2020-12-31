@@ -1,17 +1,24 @@
 import {
     getNewsTypeList,
   } from "../index";
-  const axios = require("axios");
-  
+  import { api } from '../../../api/api';
+
   export const newsTypeListApi = () => {
-    return async (dispatch, store) => {
-        await axios.get("https://gorest.co.in/public-api/posts").then((res) => {
-                dispatch(getNewsTypeList(res.data.data));
-              })
-              .catch((err) => {
-                  console.log(err);
-              })
+    return async (dispatch) => {
+      await api('newsType/getAllNewsType', {}, 'get')
+        .then((res) => {
+          dispatch(getNewsTypeList(res.data.data));
+        })
+        .catch((error) => {
+          console.log(error)
+          // toastr.error('Can not able to get lesson list');
+        });
     };
   };
   
- 
+  export const deleteNewsTypeApi = async (id) => {
+    const deleteNewsType = await api(`newsType/deleteNewsType?newsTypeToken=${id}`, {}, 'delete');
+    if (deleteNewsType) {
+      return deleteNewsType;
+    }
+  };

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Breadcrumb, SimpleCard } from "../../../../components/matx/index";
 
-import { newsTypeListApi } from "../../../../redux/actions/index";
+import { newsTypeListApi, deleteNewsTypeApi } from "../../../../redux/actions/index";
 import { connect } from "react-redux";
 import {
   IconButton,
@@ -13,13 +13,16 @@ import {
   Icon,
   TablePagination
 } from "@material-ui/core";
-
+import ConfirmationDialog from "components/matx/ConfirmationDialog";
+import { status } from '../../../../utility/config';
 
 class newsType extends Component{
   state = {
     newsTypeList: [],
     rowsPerPage : 5,
-    page : 0
+    page : 0,
+    deleteModal : false,
+    deleteNewsTypeToken : null
   };
   componentDidMount = async () => {
     await this.newsTypeList();
@@ -34,6 +37,40 @@ class newsType extends Component{
      handleChangeRowsPerPage = event => {
        this.setState({ rowsPerPage : event.target.value})
     };
+
+    //to delete NewsType
+  deleteNewsTypeClicked = async (token) => {
+    if (token) {
+      this.setState({ deleteNewsTypeToken: token });
+    }
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+    });
+  };
+
+  yesDeleteClicked = async () => {
+    //call delete Api
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+      deleteNewsTypeToken: null,
+    });
+    // this.props.setLoader(true);
+    const deleteNewsType = await deleteNewsTypeApi(this.state.deleteNewsTypeToken);
+    if (deleteNewsType && deleteNewsType.status === status.success) {
+      await this.newsTypeList();
+      // toastr.success('News Type deleted successfully');
+    } else {
+      // toastr.error('Deletion Failed');
+    }
+    // this.props.setLoader(false);
+  };
+
+  noDeleteClicked = () => {
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+      deleteNewsTypeToken: null,
+    });
+  };
   render(){
     const { page , rowsPerPage , newsTypeList} = this.state;
     return (
@@ -65,10 +102,10 @@ class newsType extends Component{
             ((newsType, index) => (
               <TableRow key={index}>
                 <TableCell className="px-0 capitalize" align="left">
-                  {index}
+                  {index + 1}
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left">
-                  {newsType.title}
+                  {newsType.newsTypeName}
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left">
                 {newsType.isActive ?
@@ -85,7 +122,7 @@ class newsType extends Component{
                     <Icon color="primary">edit</Icon>
                   </IconButton>
                   <IconButton>                   
-                    <Icon color="error">delete</Icon>
+                    <Icon color="error" onClick={() => this.deleteNewsTypeClicked(newsType.newsTypeToken)}>delete</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -111,6 +148,16 @@ class newsType extends Component{
       />
     </div>
         </SimpleCard>
+        <div>
+          <ConfirmationDialog
+            open={this.state.deleteModal}
+            title = "Delete Confirmation"
+            message = {"R you sure want to delete this News Type?"}
+            toggle={this.deleteNewsTypeClicked}
+            onYesClick={() => this.yesDeleteClicked(this.state.deleteNewsTypeToken)}
+            onNoClick={this.noDeleteClicked}
+          />
+        </div>
       </div>
     );
   }
