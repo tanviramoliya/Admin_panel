@@ -90,6 +90,7 @@ class state extends Component{
         <TableHead>
           <TableRow>
             <TableCell className="px-0">ID</TableCell>
+            <TableCell className="px-0">Country Name</TableCell>
             <TableCell className="px-0">State Name</TableCell>
             <TableCell className="px-0">Action</TableCell>
           </TableRow>
@@ -101,7 +102,10 @@ class state extends Component{
             ((state, index) => (
               <TableRow key={index}>
                 <TableCell className="px-0 capitalize" align="left">
-                  {index}
+                  {index + 1}
+                </TableCell>
+                <TableCell className="px-0 capitalize" align="left">
+                  {state.countryName}
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left">
                   {state.stateName}

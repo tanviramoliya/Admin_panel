@@ -1,17 +1,25 @@
 import {
     getCategoryList,
   } from "../index";
-  const axios = require("axios");
-  
+  import { api } from '../../../api/api';
+
   export const categoryListApi = () => {
-    return async (dispatch, store) => {
-        await axios.get("https://gorest.co.in/public-api/posts").then((res) => {
-                dispatch(getCategoryList(res.data));
-              })
-              .catch((err) => {
-                  console.log(err);
-              })
+    return async (dispatch) => {
+      await api('category/getAllCategory', {}, 'get')
+        .then((res) => {
+          dispatch(getCategoryList(res.data.data));
+        })
+        .catch((error) => {
+          console.log(error)
+          // toastr.error('Can not able to get Category list');
+        });
     };
   };
-  
- 
+
+  export const deleteCategoryApi = async (id) => {
+    console.log("in API")
+    const deleteCategory = await api(`category/deleteCategory?categoryToken=${id}`, {}, 'delete');
+    if (deleteCategory) {
+      return deleteCategory;
+    }
+  };

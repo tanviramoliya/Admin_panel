@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Breadcrumb, SimpleCard } from "../../../../components/matx/index";
 
-import { categoryListApi } from "../../../../redux/actions/index";
+import { categoryListApi, deleteCategoryApi } from "../../../../redux/actions/index";
 import { connect } from "react-redux";
 import {
   IconButton,
@@ -13,13 +13,16 @@ import {
   Icon,
   TablePagination
 } from "@material-ui/core";
-
+import ConfirmationDialog from "components/matx/ConfirmationDialog";
+import { status } from '../../../../utility/config';
 
 class category extends Component{
   state = {
     categoryList: [],
     rowsPerPage : 5,
-    page : 0
+    page : 0,
+    deleteModal : false,
+    deleteCategoryToken : null
   };
   componentDidMount = async () => {
     await this.categoryList();
@@ -34,6 +37,40 @@ class category extends Component{
      handleChangeRowsPerPage = event => {
        this.setState({ rowsPerPage : event.target.value})
     };
+
+    //to delete Category
+  deleteCategoryClicked = async (token) => {
+    if (token) {
+      this.setState({ deleteCategoryToken: token });
+    }
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+    });
+  };
+
+  yesDeleteClicked = async () => {
+    //call delete Api
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+      deleteCategoryToken: null,
+    });
+    // this.props.setLoader(true);
+    const deleteCategory = await deleteCategoryApi(this.state.deleteCategoryToken);
+    if (deleteCategory && deleteCategory.status === status.success) {
+      await this.categoryList();
+      // toastr.success('category deleted successfully');
+    } else {
+      // toastr.error('Deletion Failed');
+    }
+    // this.props.setLoader(false);
+  };
+
+  noDeleteClicked = () => {
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+      deleteCategoryToken: null,
+    });
+  };
   render(){
     const { page , rowsPerPage , categoryList} = this.state;
     return (
@@ -68,7 +105,7 @@ class category extends Component{
                   {index}
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left">
-                  {category.title}
+                  {category.categoryName}
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left">
                 {category.isActive ?
@@ -85,7 +122,7 @@ class category extends Component{
                     <Icon color="primary">edit</Icon>
                   </IconButton>
                   <IconButton>                   
-                    <Icon color="error">delete</Icon>
+                    <Icon color="error" onClick={() => this.deleteCategoryClicked(category.categoryToken)}>delete</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -111,6 +148,16 @@ class category extends Component{
       />
     </div>
         </SimpleCard>
+        <div>
+          <ConfirmationDialog
+            open={this.state.deleteModal}
+            title = "Delete Confirmation"
+            message = {"R you sure want to delete this category?"}
+            toggle={this.deleteCategoryClicked}
+            onYesClick={() => this.yesDeleteClicked(this.state.deleteCategoryToken)}
+            onNoClick={this.noDeleteClicked}
+          />
+        </div>
       </div>
     );
   }

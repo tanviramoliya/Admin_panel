@@ -81,7 +81,6 @@ class country extends Component{
         <div className="mb-sm-30">
           <Breadcrumb
             routeSegments={[
-              { name: "Master", path: "/country" },
               { name: "Country" },
             ]}
           />
@@ -104,7 +103,7 @@ class country extends Component{
             ((country, index) => (
               <TableRow key={index}>
                 <TableCell className="px-0 capitalize" align="left">
-                  {index}
+                  {index + 1}
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left">
                   {country.countryName}
