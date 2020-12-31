@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from '../../../../utility/config';
+import { toastr } from 'react-redux-toastr';
 
 class category extends Component{
   state = {
@@ -56,11 +57,13 @@ class category extends Component{
     });
     // this.props.setLoader(true);
     const deleteCategory = await deleteCategoryApi(this.state.deleteCategoryToken);
-    if (deleteCategory && deleteCategory.status === status.success) {
+    if (deleteCategory && deleteCategory.data.code === status.success) {
       await this.categoryList();
-      // toastr.success('category deleted successfully');
-    } else {
-      // toastr.error('Deletion Failed');
+      toastr.success(deleteCategory.data.message);
+    } else if(deleteCategory && deleteCategory.data.code === status.badRequest) {
+      toastr.warning(deleteCategory.data.message)
+    } else{
+      toastr.error(deleteCategory.data.message);
     }
     // this.props.setLoader(false);
   };

@@ -11,11 +11,22 @@ import {Store}  from "../redux/Store";
 import Auth from "./auth/Auth";
 import MatxLayout from "./MatxLayout/MatxLayout";
 import AuthGuard from "./auth/AuthGuard";
+import ReduxToastr from 'react-redux-toastr'
 
 const App = () => {
   return (
     <AppContext.Provider value={{ routes }}>
       <Provider store={Store}>
+      <ReduxToastr
+        timeOut={2000}
+        newestOnTop={false}
+        preventDuplicates
+        position="top-right"
+        transitionIn="fadeIn"
+        transitionOut="fadeOut"
+        progressBar
+        closeOnToastrClick
+      />
         <MatxTheme>
           <Auth>
             <Router history={history}>

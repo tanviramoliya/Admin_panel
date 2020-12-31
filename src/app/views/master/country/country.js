@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from '../../../../utility/config';
-
+import { toastr } from 'react-redux-toastr';
 
 class country extends Component{
   state = {
@@ -57,11 +57,11 @@ class country extends Component{
     });
     // this.props.setLoader(true);
     const deleteCountry = await deleteCountryApi(this.state.deleteCountryToken);
-    if (deleteCountry && deleteCountry.status === status.success) {
+    if (deleteCountry && deleteCountry.data.code === status.success) {
       await this.getCountryList();
-      // toastr.success('Country deleted successfully');
+      toastr.success(deleteCountry.data.message);
     } else {
-      // toastr.error('Deletion Failed');
+      toastr.error(deleteCountry.data.message);
     }
     // this.props.setLoader(false);
   };

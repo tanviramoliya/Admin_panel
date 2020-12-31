@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from '../../../../utility/config';
+import { toastr } from 'react-redux-toastr';
 
 class city extends Component{
   state = {
@@ -57,11 +58,11 @@ class city extends Component{
     });
     // this.props.setLoader(true);
     const deleteCity = await deleteCityApi(this.state.deleteCityToken);
-    if (deleteCity && deleteCity.status === status.success) {
+    if (deleteCity && deleteCity.data.code === status.success) {
       await this.getCityList();
-      // toastr.success('City deleted successfully');
+      toastr.success(deleteCity.data.message);
     } else {
-      // toastr.error('Deletion Failed');
+      toastr.error(deleteCity.data.message);
     }
     // this.props.setLoader(false);
   };

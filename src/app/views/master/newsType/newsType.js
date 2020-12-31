@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from '../../../../utility/config';
+import { toastr } from 'react-redux-toastr';
 
 class newsType extends Component{
   state = {
@@ -56,11 +57,11 @@ class newsType extends Component{
     });
     // this.props.setLoader(true);
     const deleteNewsType = await deleteNewsTypeApi(this.state.deleteNewsTypeToken);
-    if (deleteNewsType && deleteNewsType.status === status.success) {
+    if (deleteNewsType && deleteNewsType.data.code === status.success) {
       await this.newsTypeList();
-      // toastr.success('News Type deleted successfully');
+      toastr.success(deleteNewsType.data.message);
     } else {
-      // toastr.error('Deletion Failed');
+      toastr.error(deleteNewsType.data.message);
     }
     // this.props.setLoader(false);
   };

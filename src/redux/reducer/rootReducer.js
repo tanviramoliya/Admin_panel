@@ -5,7 +5,7 @@ import LayoutReducer from "./LayoutReducer";
 import ScrumBoardReducer from "./ScrumBoardReducer";
 import NotificationReducer from "./NotificationReducer";
 import EcommerceReducer from "./EcommerceReducer";
-
+import {reducer as toastrReducer} from 'react-redux-toastr';
 import CountryReducer from "./master/country/countryReducer";
 import StateReducer from "./master/state/stateReducer";
 import CityReducer from "./master/city/cityReducer";
@@ -14,6 +14,7 @@ import CategoryReducer from "./master/category/categoryReducer";
 import SubCategoryReducer from "./master/subCategory/subCategoryReducer";
 
 const RootReducer = combineReducers({
+  toastr: toastrReducer,
   login: LoginReducer,
   user: UserReducer,
   layout: LayoutReducer,
