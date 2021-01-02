@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { Breadcrumb, SimpleCard } from "../../../../components/matx/index";
+import { Breadcrumb } from "../../../../components/matx/index";
 
 import {
   countryListApi,
   deleteCountryApi,
   addCountryApi,
-  updateCountryApi
+  updateCountryApi,
 } from "../../../../redux/actions/index";
 import { connect } from "react-redux";
 import {
@@ -18,8 +18,10 @@ import {
   TableCell,
   Icon,
   TablePagination,
-  Dialog, DialogTitle, DialogContent, CircularProgress,
-  Card
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Card,
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
@@ -34,10 +36,10 @@ class country extends Component {
     page: 0,
     deleteModal: false,
     deleteCountryToken: null,
-    openModal : false,
+    openModal: false,
     countryName: "",
     countryToken: "",
-    type : 'new'
+    type: "new",
   };
   componentDidMount = async () => {
     await this.getCountryList();
@@ -87,86 +89,111 @@ class country extends Component {
     });
   };
   // for open a modal
-  setModel = (type , data) => {
-    this.setState({ openModal : true , type : type})
-    if(type === 'edit'){
-      this.setState({ countryName : data.countryName, countryToken : data.countryToken})
+  setModel = (type, data) => {
+    this.setState({ openModal: true, type: type });
+    if (type === "edit") {
+      this.setState({
+        countryName: data.countryName,
+        countryToken: data.countryToken,
+      });
     }
-  }
+  };
   //for close a modal
   handleClose = () => {
-    this.setState({ openModal : false , countryName: "", type :'new', countryToken: ""})
-  }
+    this.setState({
+      openModal: false,
+      countryName: "",
+      type: "new",
+      countryToken: "",
+    });
+  };
   AddCountry = async () => {
     const { type, countryName } = this.state;
-   if(type === 'new'){
-    if (!countryName) {
-      toastr.error("Country name is required");
-      return;
-    }
-    // this.props.setLoader(true);
-    // this.setState({
-    //   addOrg: false,
-    // });
-    let data = {
-      countryName: countryName,
-    };
-    const createCountry = await addCountryApi(data);
-    if (createCountry) {
-      if (createCountry.status === status.success) {
-        if(createCountry.data.code === status.success) {          
-          toastr.success(createCountry.data.message);
-          this.getCountryList();
-        }else{
-          toastr.warning(createCountry.data.message)
-        }
-      } else {
-        toastr.error(createCountry.data.message);
+    if (type === "new") {
+      if (!countryName) {
+        toastr.error("Country name is required");
+        return;
       }
+      // this.props.setLoader(true);
+      // this.setState({
+      //   addOrg: false,
+      // });
+      let data = {
+        countryName: countryName,
+      };
+      const createCountry = await addCountryApi(data);
+      if (createCountry) {
+        if (createCountry.status === status.success) {
+          if (createCountry.data.code === status.success) {
+            toastr.success(createCountry.data.message);
+            this.getCountryList();
+          } else {
+            toastr.warning(createCountry.data.message);
+          }
+        } else {
+          toastr.error(createCountry.data.message);
+        }
+      }
+      // this.props.setLoader(false);
+      this.setState({
+        countryName: "",
+        openModal: false,
+        countryToken: "",
+        type: "new",
+      });
     }
-    // this.props.setLoader(false);
-    this.setState({ countryName: "" , openModal : false, countryToken: "",type : 'new'});
-   }
   };
- UpdateCountry = async () => {
-  const { type, countryName, countryToken } = this.state;
-  if(type === 'edit'){
-   if (!countryName) {
-     toastr.error("Country name is required");
-     return;
-   }
-   // this.props.setLoader(true);
-   // this.setState({
-   //   addOrg: false,
-   // });
-   let data = {
-     countryName: countryName,
-     countryToken :countryToken
-   };
-   const updateCountry = await updateCountryApi(data);
-   if (updateCountry) {
-     if (updateCountry.status === status.success) {
-       if(updateCountry.data.code === status.success) {          
-         toastr.success(updateCountry.data.message);
-         this.getCountryList();
-       }else{
-         toastr.warning(updateCountry.data.message)
-       }
-     } else {
-       toastr.error(updateCountry.data.message);
-     }
-   }
-   // this.props.setLoader(false);
-   this.setState({ countryName: "" , openModal : false, countryToken : "", type :'new'});
-  }
- } 
-  handleChange = event => {
+  UpdateCountry = async () => {
+    const { type, countryName, countryToken } = this.state;
+    if (type === "edit") {
+      if (!countryName) {
+        toastr.error("Country name is required");
+        return;
+      }
+      // this.props.setLoader(true);
+      // this.setState({
+      //   addOrg: false,
+      // });
+      let data = {
+        countryName: countryName,
+        countryToken: countryToken,
+      };
+      const updateCountry = await updateCountryApi(data);
+      if (updateCountry) {
+        if (updateCountry.status === status.success) {
+          if (updateCountry.data.code === status.success) {
+            toastr.success(updateCountry.data.message);
+            this.getCountryList();
+          } else {
+            toastr.warning(updateCountry.data.message);
+          }
+        } else {
+          toastr.error(updateCountry.data.message);
+        }
+      }
+      // this.props.setLoader(false);
+      this.setState({
+        countryName: "",
+        openModal: false,
+        countryToken: "",
+        type: "new",
+      });
+    }
+  };
+  handleChange = (event) => {
     event.persist();
     this.setState({ [event.target.name]: event.target.value });
   };
 
   render() {
-    const { page, rowsPerPage, countryList, openModal , countryName, type} = this.state;
+    const {
+      page,
+      rowsPerPage,
+      countryList,
+      openModal,
+      countryName,
+      type,
+    } = this.state;
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
@@ -174,11 +201,14 @@ class country extends Component {
         </div>
         <div className="py-12" />
         <Card elevation={6} className="px-24 py-20 h-100">
-        <div className="flex flex-middle flex-space-between">
-      <div className="card-title">Country Infromation</div>
-
-        {/* <SimpleCard title="Country Information"> */}
-          <Button className="capitalize text-white bg-circle-primary" onClick={() =>this.setModel('new')}>Add Country</Button>
+          <div className="flex flex-middle flex-space-between">
+            <div className="card-title">Country Infromation</div>
+            <Button
+              className="capitalize text-white bg-circle-primary"
+              onClick={() => this.setModel("new")}
+            >
+              Add Country
+            </Button>
           </div>
           <div className="w-100 overflow-auto">
             <Table style={{ whiteSpace: "pre" }}>
@@ -202,7 +232,12 @@ class country extends Component {
                       </TableCell>
                       <TableCell className="px-0">
                         <IconButton>
-                          <Icon color="primary" onClick={() =>this.setModel('edit',country)}>edit</Icon>
+                          <Icon
+                            color="primary"
+                            onClick={() => this.setModel("edit", country)}
+                          >
+                            edit
+                          </Icon>
                         </IconButton>
                         <IconButton>
                           <Icon
@@ -237,7 +272,6 @@ class country extends Component {
               onChangeRowsPerPage={this.handleChangeRowsPerPage}
             />
           </div>
-        {/* </SimpleCard> */}
         </Card>
         <div>
           <ConfirmationDialog
@@ -252,16 +286,20 @@ class country extends Component {
           />
         </div>
         <div>
-        <Dialog open={openModal}
-        //  onClose={this.handleClose}
-          aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">{type === 'new' ? "Add a New Country" : "Edit Country"} </DialogTitle>
-        <DialogContent>
-         <ValidatorForm
-            ref="form"
-            onSubmit={type === 'new' ? this.AddCountry : this.UpdateCountry}
-            onError={errors => null}
+          <Dialog
+            open={openModal}
+            //  onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
           >
+            <DialogTitle id="form-dialog-title">
+              {type === "new" ? "Add a New Country" : "Edit Country"}
+            </DialogTitle>
+            <DialogContent>
+              <ValidatorForm
+                ref="form"
+                onSubmit={type === "new" ? this.AddCountry : this.UpdateCountry}
+                onError={(errors) => null}
+              >
                 <TextValidator
                   className="mb-16 w-300"
                   label="Country Name"
@@ -269,23 +307,24 @@ class country extends Component {
                   type="text"
                   name="countryName"
                   value={countryName}
-                  validators={[
-                    "required",
-                    "minStringLength: 2"
-                  ]}
+                  validators={["required", "minStringLength: 2"]}
                   errorMessages={["this field is required"]}
                 />
-            <Button onClick={this.handleClose} color="primary">
-            Cancel
-          </Button>
-          {type === 'new' ?
-           <Button color="primary" type="submit">Add</Button> : 
-           <Button color="primary" type="submit">Save</Button>
-           }
-          
-          </ValidatorForm>
-          </DialogContent>
-      </Dialog>
+                <Button onClick={this.handleClose} color="primary">
+                  Cancel
+                </Button>
+                {type === "new" ? (
+                  <Button color="primary" type="submit">
+                    Add
+                  </Button>
+                ) : (
+                  <Button color="primary" type="submit">
+                    Save
+                  </Button>
+                )}
+              </ValidatorForm>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     );
@@ -296,8 +335,10 @@ const mapStateToProps = (state) => {
   const { countryList, countryName } = state.country;
   return {
     countryList,
-    countryName
+    countryName,
   };
 };
 
-export default connect(mapStateToProps, { countryListApi, addCountryApi})(country);
+export default connect(mapStateToProps, { countryListApi, addCountryApi })(
+  country
+);

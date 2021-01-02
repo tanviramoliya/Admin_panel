@@ -22,4 +22,24 @@ import {
       return deleteState;
     }
   };
- 
+  export const addStateApi = async (data) => {
+    const createState = await api(
+      "state/addState",
+      data,
+      "post"
+    );
+    if (createState) {
+      return createState;
+    }
+  };
+  
+  export const updateStateApi = async (data) => {
+    const updateState = await api(
+      `state/updateState`,
+      data,
+      "put"
+    );
+    if (updateState) {
+      return updateState;
+    }
+  };
