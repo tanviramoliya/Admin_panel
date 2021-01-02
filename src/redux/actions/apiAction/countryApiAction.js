@@ -36,3 +36,14 @@ export const addCountryApi = async (data) => {
     return createCountry;
   }
 };
+
+export const updateCountryApi = async (data) => {
+  const updateCountry = await api(
+    `country/updateCountry`,
+    data,
+    "put"
+  );
+  if (updateCountry) {
+    return updateCountry;
+  }
+};

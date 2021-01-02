@@ -4,7 +4,8 @@ import { Breadcrumb, SimpleCard } from "../../../../components/matx/index";
 import {
   countryListApi,
   deleteCountryApi,
-  addCountryApi
+  addCountryApi,
+  updateCountryApi
 } from "../../../../redux/actions/index";
 import { connect } from "react-redux";
 import {
@@ -35,6 +36,7 @@ class country extends Component {
     deleteCountryToken: null,
     openModal : false,
     countryName: "",
+    countryToken: "",
     type : 'new'
   };
   componentDidMount = async () => {
@@ -85,14 +87,17 @@ class country extends Component {
     });
   };
   // for open a modal
-  handleClickOpen = () => {
-    this.setState({ openModal : true})
+  setModel = (type , data) => {
+    this.setState({ openModal : true , type : type})
+    if(type === 'edit'){
+      this.setState({ countryName : data.countryName, countryToken : data.countryToken})
+    }
   }
   //for close a modal
   handleClose = () => {
-    this.setState({ openModal : false , countryName: "", type :'new'})
+    this.setState({ openModal : false , countryName: "", type :'new', countryToken: ""})
   }
-  handleSubmit = async () => {
+  AddCountry = async () => {
     const { type, countryName } = this.state;
    if(type === 'new'){
     if (!countryName) {
@@ -120,10 +125,40 @@ class country extends Component {
       }
     }
     // this.props.setLoader(false);
-    this.setState({ countryName: "" , openModal : false});
+    this.setState({ countryName: "" , openModal : false, countryToken: "",type : 'new'});
    }
   };
- saveCountry = async () => {
+ UpdateCountry = async () => {
+  const { type, countryName, countryToken } = this.state;
+  if(type === 'edit'){
+   if (!countryName) {
+     toastr.error("Country name is required");
+     return;
+   }
+   // this.props.setLoader(true);
+   // this.setState({
+   //   addOrg: false,
+   // });
+   let data = {
+     countryName: countryName,
+     countryToken :countryToken
+   };
+   const updateCountry = await updateCountryApi(data);
+   if (updateCountry) {
+     if (updateCountry.status === status.success) {
+       if(updateCountry.data.code === status.success) {          
+         toastr.success(updateCountry.data.message);
+         this.getCountryList();
+       }else{
+         toastr.warning(updateCountry.data.message)
+       }
+     } else {
+       toastr.error(updateCountry.data.message);
+     }
+   }
+   // this.props.setLoader(false);
+   this.setState({ countryName: "" , openModal : false, countryToken : "", type :'new'});
+  }
  } 
   handleChange = event => {
     event.persist();
@@ -143,7 +178,7 @@ class country extends Component {
       <div className="card-title">Country Infromation</div>
 
         {/* <SimpleCard title="Country Information"> */}
-          <Button className="capitalize text-white bg-circle-primary" onClick={this.handleClickOpen}>Add Country</Button>
+          <Button className="capitalize text-white bg-circle-primary" onClick={() =>this.setModel('new')}>Add Country</Button>
           </div>
           <div className="w-100 overflow-auto">
             <Table style={{ whiteSpace: "pre" }}>
@@ -167,7 +202,7 @@ class country extends Component {
                       </TableCell>
                       <TableCell className="px-0">
                         <IconButton>
-                          <Icon color="primary">edit</Icon>
+                          <Icon color="primary" onClick={() =>this.setModel('edit',country)}>edit</Icon>
                         </IconButton>
                         <IconButton>
                           <Icon
@@ -224,7 +259,7 @@ class country extends Component {
         <DialogContent>
          <ValidatorForm
             ref="form"
-            onSubmit={this.handleSubmit}
+            onSubmit={type === 'new' ? this.AddCountry : this.UpdateCountry}
             onError={errors => null}
           >
                 <TextValidator
@@ -243,9 +278,11 @@ class country extends Component {
             <Button onClick={this.handleClose} color="primary">
             Cancel
           </Button>
-          <Button color="primary" type="submit">
-          {type === 'new' ? "Add" : "Save"}
-          </Button>
+          {type === 'new' ?
+           <Button color="primary" type="submit">Add</Button> : 
+           <Button color="primary" type="submit">Save</Button>
+           }
+          
           </ValidatorForm>
           </DialogContent>
       </Dialog>
