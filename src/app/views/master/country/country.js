@@ -22,6 +22,7 @@ import {
   DialogTitle,
   DialogContent,
   Card,
+  DialogActions
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
@@ -290,6 +291,7 @@ class country extends Component {
             open={openModal}
             //  onClose={this.handleClose}
             aria-labelledby="form-dialog-title"
+            fullWidth={true}
           >
             <DialogTitle id="form-dialog-title">
               {type === "new" ? "Add a New Country" : "Edit Country"}
@@ -309,7 +311,9 @@ class country extends Component {
                   value={countryName}
                   validators={["required", "minStringLength: 2"]}
                   errorMessages={["this field is required"]}
+                  style={{width: "-webkit-fill-available"}}
                 />
+                <DialogActions>
                 <Button onClick={this.handleClose} color="primary">
                   Cancel
                 </Button>
@@ -322,6 +326,7 @@ class country extends Component {
                     Save
                   </Button>
                 )}
+                </DialogActions>
               </ValidatorForm>
             </DialogContent>
           </Dialog>

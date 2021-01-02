@@ -29,6 +29,7 @@ import {
   FormControl,
   Input,
   MenuItem,
+  DialogActions,
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
@@ -332,8 +333,8 @@ class state extends Component {
           <Dialog
             open={openModal}
             //  onClose={this.handleClose}
-            aria-labelledby="form-dialog-title"
-            className="w-800"
+            // aria-labelledby="form-dialog-title"
+            fullWidth={true}
           >
             <DialogTitle id="form-dialog-title">
               {type === "new" ? "Add a New State" : "Edit State"}
@@ -344,18 +345,22 @@ class state extends Component {
                 onSubmit={type === "new" ? this.AddState : this.UpdateState}
                 onError={(errors) => null}
               >
-                <FormControl style={{ width: "-webkit-fill-available"}}>
+                <div style={{margin : "5px"}}>
+                <FormControl style={{ width: "-webkit-fill-available"}} error={countryName === ""} >
                   <InputLabel htmlFor="grouped-select" id="country">Country</InputLabel>
                   <Select name="countryName" labelId="country" value={countryName}>
                   {countryList.map((country, index) => {
                         return (
-                          <MenuItem value={country.countryName} onClick={() =>this.handleChangeCountry(country)}>
+                          <MenuItem value={country.countryName} key={index}
+                          onClick={() =>this.handleChangeCountry(country)}>
                             {country.countryName}
                           </MenuItem>
                         );
                       })}
                     </Select>
                 </FormControl>
+                </div>
+                <div style={{margin : "5px"}}>
                 <TextValidator
                   label="State Name"
                   onChange={this.handleChange}
@@ -364,7 +369,10 @@ class state extends Component {
                   value={stateName}
                   validators={["required", "minStringLength: 2"]}
                   errorMessages={["this field is required"]}
+                  style={{width: "-webkit-fill-available"}}
                 />
+                </div>
+                <DialogActions>
                 <Button onClick={this.handleClose} color="primary">
                   Cancel
                 </Button>
@@ -377,6 +385,7 @@ class state extends Component {
                     Save
                   </Button>
                 )}
+                </DialogActions>
               </ValidatorForm>
             </DialogContent>
           </Dialog>
