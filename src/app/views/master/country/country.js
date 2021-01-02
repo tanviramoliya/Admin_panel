@@ -1,9 +1,14 @@
 import React, { Component } from "react";
 import { Breadcrumb, SimpleCard } from "../../../../components/matx/index";
 
-import { countryListApi, deleteCountryApi } from "../../../../redux/actions/index";
+import {
+  countryListApi,
+  deleteCountryApi,
+  addCountryApi
+} from "../../../../redux/actions/index";
 import { connect } from "react-redux";
 import {
+  Button,
   IconButton,
   Table,
   TableHead,
@@ -11,35 +16,42 @@ import {
   TableRow,
   TableCell,
   Icon,
-  TablePagination
+  TablePagination,
+  Dialog, DialogTitle, DialogContent, CircularProgress,
+  Card
 } from "@material-ui/core";
-import ConfirmationDialog from "components/matx/ConfirmationDialog";
-import { status } from '../../../../utility/config';
-import { toastr } from 'react-redux-toastr';
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
-class country extends Component{
+import ConfirmationDialog from "components/matx/ConfirmationDialog";
+import { status } from "../../../../utility/config";
+import { toastr } from "react-redux-toastr";
+
+class country extends Component {
   state = {
     countryList: [],
-    rowsPerPage : 5,
-    page : 0,
-    deleteModal : false,
-    deleteCountryToken : null
+    rowsPerPage: 5,
+    page: 0,
+    deleteModal: false,
+    deleteCountryToken: null,
+    openModal : false,
+    countryName: "",
+    type : 'new'
   };
   componentDidMount = async () => {
     await this.getCountryList();
   };
   getCountryList = async () => {
     await this.props.countryListApi();
-    this.setState({ countryList : this.props.countryList})
+    this.setState({ countryList: this.props.countryList });
   };
-     handleChangePage = (event, newPage) => {
-      this.setState({ page : newPage})
-    };  
-     handleChangeRowsPerPage = event => {
-       this.setState({ rowsPerPage : event.target.value})
-    };
+  handleChangePage = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ rowsPerPage: event.target.value });
+  };
 
-    //to delete Country
+  //to delete Country
   deleteCountryClicked = async (token) => {
     if (token) {
       this.setState({ deleteCountryToken: token });
@@ -72,81 +84,171 @@ class country extends Component{
       deleteCountryToken: null,
     });
   };
+  // for open a modal
+  handleClickOpen = () => {
+    this.setState({ openModal : true})
+  }
+  //for close a modal
+  handleClose = () => {
+    this.setState({ openModal : false , countryName: "", type :'new'})
+  }
+  handleSubmit = async () => {
+    const { type, countryName } = this.state;
+   if(type === 'new'){
+    if (!countryName) {
+      toastr.error("Country name is required");
+      return;
+    }
+    // this.props.setLoader(true);
+    // this.setState({
+    //   addOrg: false,
+    // });
+    let data = {
+      countryName: countryName,
+    };
+    const createCountry = await addCountryApi(data);
+    if (createCountry) {
+      if (createCountry.status === status.success) {
+        if(createCountry.data.code === status.success) {          
+          toastr.success(createCountry.data.message);
+          this.getCountryList();
+        }else{
+          toastr.warning(createCountry.data.message)
+        }
+      } else {
+        toastr.error(createCountry.data.message);
+      }
+    }
+    // this.props.setLoader(false);
+    this.setState({ countryName: "" , openModal : false});
+   }
+  };
+ saveCountry = async () => {
+ } 
+  handleChange = event => {
+    event.persist();
+    this.setState({ [event.target.name]: event.target.value });
+  };
 
-  render(){
-    const { page , rowsPerPage , countryList} = this.state;
+  render() {
+    const { page, rowsPerPage, countryList, openModal , countryName, type} = this.state;
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
-          <Breadcrumb
-            routeSegments={[
-              { name: "Country" },
-            ]}
-          />
+          <Breadcrumb routeSegments={[{ name: "Country" }]} />
         </div>
         <div className="py-12" />
-        <SimpleCard title="Country Information">
-        <div className="w-100 overflow-auto">
-      <Table style={{ whiteSpace: "pre" }}>
-        <TableHead>
-          <TableRow>
-          <TableCell className="px-0">ID</TableCell>
-            <TableCell className="px-0">Country Name</TableCell>
-            <TableCell className="px-0">Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {countryList
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map
-            ((country, index) => (
-              <TableRow key={index}>
-                <TableCell className="px-0 capitalize" align="left">
-                  {index + 1}
-                </TableCell>
-                <TableCell className="px-0 capitalize" align="left">
-                  {country.countryName}
-                </TableCell>
-                <TableCell className="px-0">
-                  <IconButton>
-                    <Icon color="primary">edit</Icon>
-                  </IconButton>
-                  <IconButton>                   
-                    <Icon color="error" onClick={() => this.deleteCountryClicked(country.countryToken)}>delete</Icon>
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+        <Card elevation={6} className="px-24 py-20 h-100">
+        <div className="flex flex-middle flex-space-between">
+      <div className="card-title">Country Infromation</div>
 
-      <TablePagination
-        className="px-16"
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={countryList.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        backIconButtonProps={{
-          "aria-label": "Previous Page"
-        }}
-        nextIconButtonProps={{
-          "aria-label": "Next Page"
-        }}
-        onChangePage={this.handleChangePage}
-        onChangeRowsPerPage={this.handleChangeRowsPerPage}
-      />
-    </div>
-        </SimpleCard>
+        {/* <SimpleCard title="Country Information"> */}
+          <Button className="capitalize text-white bg-circle-primary" onClick={this.handleClickOpen}>Add Country</Button>
+          </div>
+          <div className="w-100 overflow-auto">
+            <Table style={{ whiteSpace: "pre" }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell className="px-0">No</TableCell>
+                  <TableCell className="px-0">Country Name</TableCell>
+                  <TableCell className="px-0">Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {countryList
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((country, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="px-0 capitalize" align="left">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell className="px-0 capitalize" align="left">
+                        {country.countryName}
+                      </TableCell>
+                      <TableCell className="px-0">
+                        <IconButton>
+                          <Icon color="primary">edit</Icon>
+                        </IconButton>
+                        <IconButton>
+                          <Icon
+                            color="error"
+                            onClick={() =>
+                              this.deleteCountryClicked(country.countryToken)
+                            }
+                          >
+                            delete
+                          </Icon>
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+
+            <TablePagination
+              className="px-16"
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={countryList.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              backIconButtonProps={{
+                "aria-label": "Previous Page",
+              }}
+              nextIconButtonProps={{
+                "aria-label": "Next Page",
+              }}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            />
+          </div>
+        {/* </SimpleCard> */}
+        </Card>
         <div>
           <ConfirmationDialog
             open={this.state.deleteModal}
-            title = "Delete Confirmation"
-            message = {"Make sure related states & cities also be deleted?"}
+            title="Delete Confirmation"
+            message={"Make sure related states & cities also be deleted?"}
             toggle={this.deleteCountryClicked}
-            onYesClick={() => this.yesDeleteClicked(this.state.deleteCountryToken)}
+            onYesClick={() =>
+              this.yesDeleteClicked(this.state.deleteCountryToken)
+            }
             onNoClick={this.noDeleteClicked}
           />
+        </div>
+        <div>
+        <Dialog open={openModal}
+        //  onClose={this.handleClose}
+          aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">{type === 'new' ? "Add a New Country" : "Edit Country"} </DialogTitle>
+        <DialogContent>
+         <ValidatorForm
+            ref="form"
+            onSubmit={this.handleSubmit}
+            onError={errors => null}
+          >
+                <TextValidator
+                  className="mb-16 w-300"
+                  label="Country Name"
+                  onChange={this.handleChange}
+                  type="text"
+                  name="countryName"
+                  value={countryName}
+                  validators={[
+                    "required",
+                    "minStringLength: 2"
+                  ]}
+                  errorMessages={["this field is required"]}
+                />
+            <Button onClick={this.handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button color="primary" type="submit">
+          {type === 'new' ? "Add" : "Save"}
+          </Button>
+          </ValidatorForm>
+          </DialogContent>
+      </Dialog>
         </div>
       </div>
     );
@@ -154,10 +256,11 @@ class country extends Component{
 }
 
 const mapStateToProps = (state) => {
-  const { countryList } = state.country;
+  const { countryList, countryName } = state.country;
   return {
-    countryList
+    countryList,
+    countryName
   };
 };
 
-export default connect(mapStateToProps, { countryListApi })(country);
+export default connect(mapStateToProps, { countryListApi, addCountryApi})(country);

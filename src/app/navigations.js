@@ -107,7 +107,7 @@ export const navigations = [
       },
       {
         name: "FAQ",
-        path: "/utilities/display",
+        path: "/forms/simple",
         iconText: "F"
       },
       {

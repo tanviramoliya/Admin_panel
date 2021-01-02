@@ -87,7 +87,7 @@ class city extends Component{
           />
         </div>
         <div className="py-12" />
-        <SimpleCard title="City Information">
+        <SimpleCard title="City Information" buttonTitle="Add City">
         <div className="w-100 overflow-auto">
       <Table style={{ whiteSpace: "pre" }}>
         <TableHead>

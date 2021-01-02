@@ -8,6 +8,10 @@ const EditorForm = MatxLoadable({
   loader: () => import("./EditorForm")
 });
 
+const SimpleForm = MatxLoadable({
+  loader : () => import("./SimpleFrom")
+})
+
 const formsRoutes = [
   {
     path: "/forms/basic",
@@ -16,6 +20,11 @@ const formsRoutes = [
   {
     path: "/forms/editor",
     component: EditorForm
+  },
+  {
+    path : "/forms/simple",
+    component : SimpleForm
+
   }
 ];
 
