@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Breadcrumb, SimpleCard } from "../../../../components/matx/index";
+import { Breadcrumb } from "../../../../components/matx/index";
 
-import { newsTypeListApi, deleteNewsTypeApi } from "../../../../redux/actions/index";
+import { newsTypeListApi, deleteNewsTypeApi, addNewsTypeApi, updateNewsTypeApi } from "../../../../redux/actions/index";
 import { connect } from "react-redux";
 import {
+  Button,
   IconButton,
   Table,
   TableHead,
@@ -11,8 +12,18 @@ import {
   TableRow,
   TableCell,
   Icon,
-  TablePagination
+  TablePagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Card,
+  DialogActions,
+  RadioGroup,
+  FormControlLabel,
+  Radio
 } from "@material-ui/core";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from '../../../../utility/config';
 import { toastr } from 'react-redux-toastr';
@@ -23,7 +34,12 @@ class newsType extends Component{
     rowsPerPage : 5,
     page : 0,
     deleteModal : false,
-    deleteNewsTypeToken : null
+    deleteNewsTypeToken : null,
+    openModal: false,
+    newsTypeName: "",
+    newsTypeToken: "",
+    isActive : "active",
+    type: "new",
   };
   componentDidMount = async () => {
     await this.newsTypeList();
@@ -72,8 +88,110 @@ class newsType extends Component{
       deleteNewsTypeToken: null,
     });
   };
+  // for open a modal
+  setModel = (type, data) => {
+    this.setState({ openModal: true, type: type });
+    if (type === "edit") {
+      this.setState({
+        newsTypeName: data.newsTypeName,
+        newsTypeToken: data.newsTypeToken,
+        isActive : data.isActive ? 'active' : 'notActive'
+      });
+    }
+  };
+  //for close a modal
+  handleClose = () => {
+    this.setState({
+      openModal: false,
+      newsTypeName: "",
+      type: "new",
+      newsTypeToken: "",
+      isActive : "active"
+    });
+  };
+  AddNewsType = async () => {
+    const { type, newsTypeName ,isActive} = this.state;
+    if (type === "new") {
+      if (!newsTypeName) {
+        toastr.error("News type is required");
+        return;
+      }
+      // this.props.setLoader(true);
+      // this.setState({
+      //   addOrg: false,
+      // });
+      let data = {
+        newsTypeName: newsTypeName,
+        isActive : isActive === 'active' ? true : false
+      };
+      const createNewsType = await addNewsTypeApi(data);
+      if (createNewsType) {
+        if (createNewsType.status === status.success) {
+          if (createNewsType.data.code === status.success) {
+            toastr.success(createNewsType.data.message);
+            this.newsTypeList();
+          } else {
+            toastr.warning(createNewsType.data.message);
+          }
+        } else {
+          toastr.error(createNewsType.data.message);
+        }
+      }
+      // this.props.setLoader(false);
+      this.setState({
+        newsTypeName: "",
+        openModal: false,
+        newsTypeToken: "",
+        type: "new",
+        isActive : "active"
+      });
+    }
+  };
+  UpdateNewsType = async () => {
+    const { type, newsTypeName, newsTypeToken,isActive } = this.state;
+    if (type === "edit") {
+      if (!newsTypeName) {
+        toastr.error("News Type is required");
+        return;
+      }
+      // this.props.setLoader(true);
+      // this.setState({
+      //   addOrg: false,
+      // });
+      let data = {
+        newsTypeName: newsTypeName,
+        newsTypeToken: newsTypeToken,
+        isActive : isActive === 'active' ? true : false
+      };
+      const updateNewsType = await updateNewsTypeApi(data);
+      if (updateNewsType) {
+        if (updateNewsType.status === status.success) {
+          if (updateNewsType.data.code === status.success) {
+            toastr.success(updateNewsType.data.message);
+            this.newsTypeList();
+          } else {
+            toastr.warning(updateNewsType.data.message);
+          }
+        } else {
+          toastr.error(updateNewsType.data.message);
+        }
+      }
+      // this.props.setLoader(false);
+      this.setState({
+        newsTypeName: "",
+        openModal: false,
+        newsTypeToken: "",
+        type: "new",
+        isActive : "active"
+      });
+    }
+  };
+  handleChange = (event) => {
+    event.persist();
+    this.setState({ [event.target.name]: event.target.value });
+  };
   render(){
-    const { page , rowsPerPage , newsTypeList} = this.state;
+    const { page , rowsPerPage , newsTypeList, newsTypeName, type, openModal, isActive} = this.state;
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
@@ -85,7 +203,16 @@ class newsType extends Component{
           />
         </div>
         <div className="py-12" />
-        <SimpleCard title="NEWS Type Information">
+        <Card elevation={6} className="px-24 py-20 h-100">
+          <div className="flex flex-middle flex-space-between">
+            <div className="card-title">News Type Infromation</div>
+            <Button
+              className="capitalize text-white bg-circle-primary"
+              onClick={() => this.setModel("new")}
+            >
+              Add News type
+            </Button>
+          </div>
         <div className="w-100 overflow-auto">
       <Table style={{ whiteSpace: "pre" }}>
         <TableHead>
@@ -120,7 +247,7 @@ class newsType extends Component{
                 </TableCell>
                 <TableCell className="px-0">
                   <IconButton>
-                    <Icon color="primary">edit</Icon>
+                    <Icon color="primary" onClick={() => this.setModel("edit", newsType)}>edit</Icon>
                   </IconButton>
                   <IconButton>                   
                     <Icon color="error" onClick={() => this.deleteNewsTypeClicked(newsType.newsTypeToken)}>delete</Icon>
@@ -148,7 +275,7 @@ class newsType extends Component{
         onChangeRowsPerPage={this.handleChangeRowsPerPage}
       />
     </div>
-        </SimpleCard>
+    </Card>
         <div>
           <ConfirmationDialog
             open={this.state.deleteModal}
@@ -158,6 +285,70 @@ class newsType extends Component{
             onYesClick={() => this.yesDeleteClicked(this.state.deleteNewsTypeToken)}
             onNoClick={this.noDeleteClicked}
           />
+        </div>
+        <div>
+          <Dialog
+            open={openModal}
+            aria-labelledby="form-dialog-title"
+            fullWidth={true}
+          >
+            <DialogTitle id="form-dialog-title">
+              {type === "new" ? "Add a New News Type" : "Edit News Type"}
+            </DialogTitle>
+            <DialogContent>
+              <ValidatorForm
+                ref="form"
+                onSubmit={type === "new" ? this.AddNewsType : this.UpdateNewsType}
+                onError={(errors) => null}
+              >
+                <TextValidator
+                  className="mb-16 w-300"
+                  label="News Type"
+                  onChange={this.handleChange}
+                  type="text"
+                  name="newsTypeName"
+                  value={newsTypeName}
+                  validators={["required", "minStringLength: 2"]}
+                  errorMessages={["this field is required"]}
+                  style={{width: "-webkit-fill-available"}}
+                />
+                 <RadioGroup
+                className="mb-16"
+                value={isActive}
+                name="isActive"
+                onChange={this.handleChange}
+                row
+              >
+                <FormControlLabel
+                  value={"active"}
+                  control={<Radio color="secondary" />}
+                  label="Active"
+                  labelPlacement="end"
+                />
+                <FormControlLabel
+                  value={"notActive"}
+                  control={<Radio color="secondary" />}
+                  label="Not Active"
+                  labelPlacement="end"
+                />
+              </RadioGroup>
+                <DialogActions>
+                <Button onClick={this.handleClose} color="primary">
+                  Cancel
+                </Button>
+                {type === "new" ? (
+                  <Button color="primary" type="submit">
+                    Add
+                  </Button>
+                ) : (
+                  <Button color="primary" type="submit">
+                    Save
+                  </Button>
+                )}
+                </DialogActions>
+              </ValidatorForm>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     );

@@ -22,3 +22,24 @@ import {
       return deleteNewsType;
     }
   };
+  export const addNewsTypeApi = async (data) => {
+    const createNewsType = await api(
+      "newsType/addNewsType",
+      data,
+      "post"
+    );
+    if (createNewsType) {
+      return createNewsType;
+    }
+  };
+  
+  export const updateNewsTypeApi = async (data) => {
+    const updateNewsType = await api(
+      `newsType/updateNewsType`,
+      data,
+      "put"
+    );
+    if (updateNewsType) {
+      return updateNewsType;
+    }
+  };
