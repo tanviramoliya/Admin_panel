@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Breadcrumb, SimpleCard } from "../../../../components/matx/index";
+import { Breadcrumb } from "../../../../components/matx/index";
 
 import {
   stateListApi,
@@ -25,9 +25,7 @@ import {
   Card,
   Select,
   InputLabel,
-  FormControlLabel,
   FormControl,
-  Input,
   MenuItem,
   DialogActions,
 } from "@material-ui/core";

@@ -21,4 +21,25 @@ import {
       return deleteCity;
     }
   };
+  export const addCityApi = async (data) => {
+    const createCity = await api(
+      "city/addCity",
+      data,
+      "post"
+    );
+    if (createCity) {
+      return createCity;
+    }
+  };
+  
+  export const updateCityApi = async (data) => {
+    const updateCity = await api(
+      `city/updateCity`,
+      data,
+      "put"
+    );
+    if (updateCity) {
+      return updateCity;
+    }
+  };
  
