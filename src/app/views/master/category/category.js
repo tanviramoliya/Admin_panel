@@ -209,15 +209,8 @@ class category extends Component {
     }
   };
   handleChange = (event) => {
-    const { serialNo , isActive , categoryName } = this.state;
     event.persist();
     this.setState({ [event.target.name]: event.target.value });
-    console.log(event.target.name, event.target.value)
-    if(serialNo && isActive && categoryName){
-      if(serialNo === event.target.name){
-         this.setState({ isEdited :  serialNo === event.target.value ?false : true}) 
-      }
-    }
   };
   render() {
     const {

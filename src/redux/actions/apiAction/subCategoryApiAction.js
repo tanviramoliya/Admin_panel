@@ -22,3 +22,24 @@ import {
       return deleteSubCategory;
     }
   };
+  export const addSubCategoryApi = async (data) => {
+    const createSubCategory = await api(
+      "subCategory/addSubCategory",
+      data,
+      "post"
+    );
+    if (createSubCategory) {
+      return createSubCategory;
+    }
+  };
+  
+  export const updateSubCategoryApi = async (data) => {
+    const updateSubCategory = await api(
+      `subCategory/updateSubCategory`,
+      data,
+      "put"
+    );
+    if (updateSubCategory) {
+      return updateSubCategory;
+    }
+  };
