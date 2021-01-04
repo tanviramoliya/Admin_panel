@@ -52,9 +52,7 @@ class subCategory extends Component {
     type: "new",
     categoryName: "",
     categoryToken: "",
-    isActive: "active",
-    serialNo: 0,
-    serialList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    isActive: "active"
   };
   componentDidMount = async () => {
     await this.subCategoryList();
@@ -119,8 +117,7 @@ class subCategory extends Component {
         subCategoryToken: data.subCategoryToken,
         categoryName: data.categoryName,
         categoryToken: data.categoryToken,
-        isActive: data.isActive ? "active" : "notActive",
-        serialNo: data.serialNo,
+        isActive: data.isActive ? "active" : "notActive"
       });
     }
   };
@@ -133,8 +130,7 @@ class subCategory extends Component {
       subCategoryToken: "",
       categoryName: "",
       categoryToken: "",
-      isActive: "active",
-      serialNo: 0,
+      isActive: "active"
     });
   };
   AddSubCategory = async () => {
@@ -142,8 +138,7 @@ class subCategory extends Component {
       type,
       subCategoryName,
       categoryToken,
-      isActive,
-      serialNo,
+      isActive
     } = this.state;
     if (type === "new") {
       if (!categoryToken) {
@@ -154,9 +149,6 @@ class subCategory extends Component {
         toastr.error("Sub Category is required");
         return;
       }
-      if(!serialNo){
-        toastr.error("Serial No is Required");
-      }
       // this.props.setLoader(true);
       // this.setState({
       //   addOrg: false,
@@ -164,8 +156,7 @@ class subCategory extends Component {
       let data = {
         subCategoryName: subCategoryName,
         categoryToken: categoryToken,
-        isActive: isActive === "active" ? true : false,
-        serialNo: serialNo,
+        isActive: isActive === "active" ? true : false
       };
       const createSubCategory = await addSubCategoryApi(data);
       if (createSubCategory) {
@@ -188,8 +179,7 @@ class subCategory extends Component {
         type: "new",
         subCategoryName: "",
         subCategoryToken: "",
-        isActive: "active",
-        serialNo: 0,
+        isActive: "active"
       });
     }
   };
@@ -199,8 +189,7 @@ class subCategory extends Component {
       subCategoryName,
       subCategoryToken,
       categoryToken,
-      isActive,
-      serialNo,
+      isActive
     } = this.state;
     if (type === "edit") {
       if (!categoryToken) {
@@ -215,8 +204,7 @@ class subCategory extends Component {
         subCategoryName: subCategoryName,
         categoryToken: categoryToken,
         subCategoryToken: subCategoryToken,
-        isActive: isActive === "active" ? true : false,
-        serialNo: serialNo,
+        isActive: isActive === "active" ? true : false
       };
       const updateSubCategory = await updateSubCategoryApi(data);
       if (updateSubCategory) {
@@ -239,8 +227,7 @@ class subCategory extends Component {
         type: "new",
         subCategoryToken: "",
         subCategoryName: "",
-        isActive: "active",
-        serialNo: 0,
+        isActive: "active"
       });
     }
   };
@@ -264,9 +251,7 @@ class subCategory extends Component {
       type,
       categoryList,
       categoryName,
-      isActive,
-      serialNo,
-      serialList,
+      isActive
     } = this.state;
     return (
       <div className="m-sm-30">
@@ -293,7 +278,7 @@ class subCategory extends Component {
             <Table style={{ whiteSpace: "pre" }}>
               <TableHead>
                 <TableRow>
-                  <TableCell className="px-0">Serial No</TableCell>
+                  <TableCell className="px-0">No</TableCell>
                   <TableCell className="px-0">Category Name</TableCell>
                   <TableCell className="px-0">SubCategory Name</TableCell>
                   <TableCell className="px-0">Active/Not Active</TableCell>
@@ -306,7 +291,7 @@ class subCategory extends Component {
                   .map((subCategory, index) => (
                     <TableRow key={index}>
                       <TableCell className="px-0 capitalize" align="left">
-                        {subCategory.serialNo}
+                        {index + 1}
                       </TableCell>
                       <TableCell className="px-0 capitalize" align="left">
                         {subCategory.categoryName}
@@ -421,30 +406,6 @@ class subCategory extends Component {
                             onClick={() => this.handleChangeCategory(category)}
                           >
                             {category.categoryName}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  </FormControl>
-                </div>
-                <div style={{ margin: "5px" }}>
-                  <FormControl
-                    style={{ width: "-webkit-fill-available" }}
-                    error={!serialNo}
-                  >
-                    <InputLabel htmlFor="grouped-select" id="serialNo">
-                      Serial No
-                    </InputLabel>
-                    <Select
-                      name="serialNo"
-                      labelId="serialNo"
-                      value={serialNo}
-                      onChange={this.handleChange}
-                    >
-                      {serialList.map((list, index) => {
-                        return (
-                          <MenuItem value={list} key={index}>
-                            {list}
                           </MenuItem>
                         );
                       })}

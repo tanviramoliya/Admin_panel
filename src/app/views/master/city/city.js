@@ -242,7 +242,7 @@ class city extends Component{
       <Table style={{ whiteSpace: "pre" }}>
         <TableHead>
           <TableRow>
-            <TableCell className="px-0">ID</TableCell>
+            <TableCell className="px-0">No</TableCell>
             <TableCell className="px-0">State Name</TableCell>
             <TableCell className="px-0">City Name</TableCell>
             <TableCell className="px-0">Action</TableCell>

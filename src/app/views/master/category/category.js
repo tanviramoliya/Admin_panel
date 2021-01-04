@@ -47,7 +47,7 @@ class category extends Component {
     categoryToken: "",
     isActive: "active",
     type: "new",
-    serialNo: 0,
+    serialNo: 1,
     serialList : [1,2,3,4,5,6,7,8,9,10]
   };
   componentDidMount = async () => {
@@ -124,7 +124,7 @@ class category extends Component {
       type: "new",
       categoryToken: "",
       isActive: "active",
-      serialNo : 0
+      serialNo : 1
     });
   };
   AddCategory = async () => {
@@ -163,7 +163,7 @@ class category extends Component {
         categoryToken: "",
         type: "new",
         isActive: "active",
-        serialNo : 0
+        serialNo : 1
       });
     }
   };
@@ -204,7 +204,7 @@ class category extends Component {
         categoryToken: "",
         type: "new",
         isActive: "active",
-        serialNo :0
+        serialNo : 1
       });
     }
   };
@@ -249,6 +249,7 @@ class category extends Component {
             <Table style={{ whiteSpace: "pre" }}>
               <TableHead>
                 <TableRow>
+                  <TableCell className="px-0">No</TableCell>
                   <TableCell className="px-0">Serial No</TableCell>
                   <TableCell className="px-0">Category Name</TableCell>
                   <TableCell className="px-0">Active/Not Active</TableCell>
@@ -261,7 +262,12 @@ class category extends Component {
                   .map((category, index) => (
                     <TableRow key={index}>
                       <TableCell className="px-0 capitalize" align="left">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell className="px-0 capitalize" align="left">
+                      <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
                         {category.serialNo}
+                        </small>
                       </TableCell>
                       <TableCell className="px-0 capitalize" align="left">
                         {category.categoryName}
