@@ -1,2 +1,2 @@
 # Admin_panel
-GNTV Admin Panel Demo
+GNTV Admin Panel Demo.
