@@ -320,10 +320,9 @@ class city extends Component{
                 onSubmit={type === "new" ? this.AddCity : this.UpdateCity}
                 onError={(errors) => null}
               >
-                <div style={{margin : "5px"}}>
-                <FormControl style={{ width: "-webkit-fill-available"}} error={stateName === ""} >
+                <FormControl style={{ width: "-webkit-fill-available"}} error={stateName === ""} variant="outlined" >
                   <InputLabel htmlFor="grouped-select" id="state">State</InputLabel>
-                  <Select name="stateName" labelId="state" value={stateName}>
+                  <Select name="stateName" labelId="state" value={stateName} label="State">
                   {stateList.map((state, index) => {
                         return (
                           <MenuItem value={state.stateName} key={index}
@@ -334,9 +333,9 @@ class city extends Component{
                       })}
                     </Select>
                 </FormControl>
-                </div>
-                <div style={{margin : "5px"}}>
+                <div style={{marginTop : "25px"}}>
                 <TextValidator
+                  className="mb-16"
                   label="City Name"
                   onChange={this.handleChange}
                   type="text"
@@ -345,6 +344,7 @@ class city extends Component{
                   validators={["required", "minStringLength: 2"]}
                   errorMessages={["this field is required"]}
                   style={{width: "-webkit-fill-available"}}
+                  variant="outlined"
                 />
                 </div>
                 <DialogActions>

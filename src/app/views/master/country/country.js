@@ -303,7 +303,7 @@ class country extends Component {
                 onError={(errors) => null}
               >
                 <TextValidator
-                  className="mb-16 w-300"
+                  className="mb-16"
                   label="Country Name"
                   onChange={this.handleChange}
                   type="text"
@@ -312,6 +312,7 @@ class country extends Component {
                   validators={["required", "minStringLength: 2"]}
                   errorMessages={["this field is required"]}
                   style={{width: "-webkit-fill-available"}}
+                  variant="outlined"
                 />
                 <DialogActions>
                 <Button onClick={this.handleClose} color="primary">

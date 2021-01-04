@@ -343,10 +343,9 @@ class state extends Component {
                 onSubmit={type === "new" ? this.AddState : this.UpdateState}
                 onError={(errors) => null}
               >
-                <div style={{margin : "5px"}}>
-                <FormControl style={{ width: "-webkit-fill-available"}} error={countryName === ""} >
+                <FormControl style={{ width: "-webkit-fill-available"}} error={countryName === ""} variant="outlined">
                   <InputLabel htmlFor="grouped-select" id="country">Country</InputLabel>
-                  <Select name="countryName" labelId="country" value={countryName}>
+                  <Select name="countryName" labelId="country" value={countryName} label="Country">
                   {countryList.map((country, index) => {
                         return (
                           <MenuItem value={country.countryName} key={index}
@@ -357,9 +356,9 @@ class state extends Component {
                       })}
                     </Select>
                 </FormControl>
-                </div>
-                <div style={{margin : "5px"}}>
+                <div style={{marginTop : "25px"}}>
                 <TextValidator
+                className="mb-16"
                   label="State Name"
                   onChange={this.handleChange}
                   type="text"
@@ -368,6 +367,7 @@ class state extends Component {
                   validators={["required", "minStringLength: 2"]}
                   errorMessages={["this field is required"]}
                   style={{width: "-webkit-fill-available"}}
+                  variant="outlined"
                 />
                 </div>
                 <DialogActions>

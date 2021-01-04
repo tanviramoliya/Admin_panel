@@ -385,10 +385,10 @@ class subCategory extends Component {
                 }
                 onError={(errors) => null}
               >
-                <div style={{ margin: "5px" }}>
                   <FormControl
                     style={{ width: "-webkit-fill-available" }}
                     error={categoryName === ""}
+                    variant="outlined"
                   >
                     <InputLabel htmlFor="grouped-select" id="category">
                       Category
@@ -397,6 +397,7 @@ class subCategory extends Component {
                       name="categoryName"
                       labelId="category"
                       value={categoryName}
+                      label="Category"
                     >
                       {categoryList.map((category, index) => {
                         return (
@@ -411,9 +412,10 @@ class subCategory extends Component {
                       })}
                     </Select>
                   </FormControl>
-                </div>
-                <div style={{ margin: "5px" }}>
+                <div style={{ marginTop: "25px" }}>
                   <TextValidator
+                    className="mb-16"
+                    variant="outlined"
                     label="Sub Category Name"
                     onChange={this.handleChange}
                     type="text"
@@ -425,7 +427,6 @@ class subCategory extends Component {
                   />
                 </div>
                 <RadioGroup
-                  className="mb-16"
                   value={isActive}
                   name="isActive"
                   onChange={this.handleChange}
@@ -444,8 +445,7 @@ class subCategory extends Component {
                     labelPlacement="end"
                   />
                 </RadioGroup>
-
-                <DialogActions>
+                <DialogActions className="p-0">
                   <Button onClick={this.handleClose} color="primary">
                     Cancel
                   </Button>

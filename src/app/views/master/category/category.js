@@ -389,9 +389,7 @@ class category extends Component {
                   variant="outlined"
                 />
                 </div>
-                <div style={{ margin : "5px"}}>
                 <RadioGroup
-                  className="mb-16"
                   value={isActive}
                   name="isActive"
                   onChange={this.handleChange}
@@ -410,8 +408,7 @@ class category extends Component {
                     labelPlacement="end"
                   />
                 </RadioGroup>
-                </div>
-                <DialogActions>
+                <DialogActions className="p-0">
                   <Button onClick={this.handleClose} color="primary">
                     Cancel
                   </Button>
