@@ -9,6 +9,7 @@ import sessionRoutes from "./views/sessions/SessionRoutes";
 import formsRoutes from "./views/forms/FormsRoutes";
 
 import masterRoutes from "./views/master/masterRoutes";
+import newsUpdateRoutes from "./views/newsUpdate/newsUpdateRoutes";
 
 const redirectRoute = [
   {
@@ -28,6 +29,7 @@ const routes = [
   ...sessionRoutes,
   ...masterRoutes,
   ...dashboardRoutes,
+  ...newsUpdateRoutes,
   ...utilitiesRoutes,
   ...formsRoutes,
   ...redirectRoute,

@@ -28,6 +28,7 @@ import {
   FormControl,
   MenuItem,
   DialogActions,
+  TableContainer,
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
@@ -39,7 +40,7 @@ class state extends Component {
   state = {
     stateList: [],
     countryList: [],
-    rowsPerPage: 5,
+    rowsPerPage: 8,
     page: 0,
     deleteModal: false,
     deleteStateToken: null,
@@ -47,7 +48,7 @@ class state extends Component {
     stateName: "",
     stateToken: "",
     type: "new",
-    countryName : "",
+    countryName: "",
     countryToken: ""
   };
   componentDidMount = async () => {
@@ -109,8 +110,8 @@ class state extends Component {
       this.setState({
         stateName: data.stateName,
         stateToken: data.stateToken,
-        countryName : data.countryName,
-        countryToken : data.countryToken
+        countryName: data.countryName,
+        countryToken: data.countryToken
       });
     }
   };
@@ -122,13 +123,13 @@ class state extends Component {
       type: "new",
       stateToken: "",
       countryName: "",
-      countryToken : ""
+      countryToken: ""
     });
   };
   AddState = async () => {
-    const { type, stateName , countryToken} = this.state;
+    const { type, stateName, countryToken } = this.state;
     if (type === "new") {
-      if(!countryToken){
+      if (!countryToken) {
         toastr.error("Country name is required");
         return;
       }
@@ -142,7 +143,7 @@ class state extends Component {
       // });
       let data = {
         stateName: stateName,
-        countryToken : countryToken
+        countryToken: countryToken
       };
       const createState = await addStateApi(data);
       if (createState) {
@@ -164,7 +165,7 @@ class state extends Component {
         countryToken: "",
         type: "new",
         stateName: "",
-        stateToken :""
+        stateToken: ""
       });
     }
   };
@@ -182,7 +183,7 @@ class state extends Component {
       let data = {
         stateName: stateName,
         countryToken: countryToken,
-        stateToken : stateToken
+        stateToken: stateToken
       };
       const updateState = await updateStateApi(data);
       if (updateState) {
@@ -204,7 +205,7 @@ class state extends Component {
         countryToken: "",
         type: "new",
         stateToken: "",
-        stateName :""
+        stateName: ""
       });
     }
   };
@@ -214,7 +215,7 @@ class state extends Component {
     console.log(event.target.name, event.target.value);
   };
   handleChangeCountry = (countryData) => {
-    this.setState({ countryName : countryData.countryName, countryToken : countryData.countryToken})
+    this.setState({ countryName: countryData.countryName, countryToken: countryData.countryToken })
   }
   render() {
     const {
@@ -232,74 +233,74 @@ class state extends Component {
         <div className="mb-sm-30">
           <Breadcrumb
             routeSegments={[
-              { name: "Master", path: "/master/country" },
+              { name: "Master", path: "/master/state" },
               { name: "State" },
             ]}
           />
         </div>
-        <div className="py-12" />
-        <Card elevation={6} className="px-24 py-20 h-100">
-          <div className="flex flex-middle flex-space-between">
-            <div className="card-title">State Infromation</div>
-            <Button
-              className="capitalize text-white bg-circle-primary"
-              onClick={() => this.setModel("new")}
-            >
-              Add State
+        <div className="py-12" >
+        <Card elevation={6} className="px-24 pt-20 h-100">
+            <div className="flex flex-middle flex-space-between pb-12">
+              <div className="card-title">State Infromation</div>
+              <Button
+                className="capitalize text-white bg-circle-primary"
+                onClick={() => this.setModel("new")}
+              >
+                Add State
             </Button>
-          </div>
-          <div className="w-100 overflow-auto">
-            <Table style={{ whiteSpace: "pre" }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell className="px-0">No</TableCell>
-                  <TableCell className="px-0">Country Name</TableCell>
-                  <TableCell className="px-0">State Name</TableCell>
-                  <TableCell className="px-0">Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {stateList
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((state, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="px-0 capitalize" align="left">
-                        {index + 1}
-                      </TableCell>
-                      <TableCell className="px-0 capitalize" align="left">
-                        {state.countryName}
-                      </TableCell>
-                      <TableCell className="px-0 capitalize" align="left">
-                        {state.stateName}
-                      </TableCell>
-                      <TableCell className="px-0">
-                        <IconButton>
-                          <Icon
-                            color="primary"
-                            onClick={() => this.setModel("edit", state)}
-                          >
-                            edit
+            </div>
+            <TableContainer style={{ maxHeight: "405px" }}>
+              <Table style={{ whiteSpace: "pre" }} stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell className="px-0" width="20%">No</TableCell>
+                    <TableCell className="px-0" width="30%">Country Name</TableCell>
+                    <TableCell className="px-0" width="30%">State Name</TableCell>
+                    <TableCell className="px-0">Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {stateList
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((state, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="p-0" align="left">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell className="p-0" align="left">
+                          {state.countryName}
+                        </TableCell>
+                        <TableCell className="p-0" align="left">
+                          {state.stateName}
+                        </TableCell>
+                        <TableCell className="p-0">
+                          <IconButton>
+                            <Icon style={{ fontSize: 20 }}
+                              color="primary"
+                              onClick={() => this.setModel("edit", state)}
+                            >
+                              edit
                           </Icon>
-                        </IconButton>
-                        <IconButton>
-                          <Icon
-                            color="error"
-                            onClick={() =>
-                              this.deleteStateClicked(state.stateToken)
-                            }
-                          >
-                            delete
+                          </IconButton>
+                          <IconButton>
+                            <Icon style={{ fontSize: 20 }}
+                              color="error"
+                              onClick={() =>
+                                this.deleteStateClicked(state.stateToken)
+                              }
+                            >
+                              delete
                           </Icon>
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
             <TablePagination
               className="px-16"
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[8, 16, 24]}
               component="div"
               count={stateList.length}
               rowsPerPage={rowsPerPage}
@@ -313,8 +314,9 @@ class state extends Component {
               onChangePage={this.handleChangePage}
               onChangeRowsPerPage={this.handleChangeRowsPerPage}
             />
-          </div>
-        </Card>
+
+          </Card>
+        </div>
         <div>
           <ConfirmationDialog
             open={this.state.deleteModal}
@@ -343,46 +345,46 @@ class state extends Component {
                 onSubmit={type === "new" ? this.AddState : this.UpdateState}
                 onError={(errors) => null}
               >
-                <FormControl style={{ width: "-webkit-fill-available"}} error={countryName === ""} variant="outlined">
+                <FormControl style={{ width: "-webkit-fill-available" }} error={countryName === ""} variant="outlined">
                   <InputLabel htmlFor="grouped-select" id="country">Country</InputLabel>
                   <Select name="countryName" labelId="country" value={countryName} label="Country">
-                  {countryList.map((country, index) => {
-                        return (
-                          <MenuItem value={country.countryName} key={index}
-                          onClick={() =>this.handleChangeCountry(country)}>
-                            {country.countryName}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
+                    {countryList.map((country, index) => {
+                      return (
+                        <MenuItem value={country.countryName} key={index}
+                          onClick={() => this.handleChangeCountry(country)}>
+                          {country.countryName}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
                 </FormControl>
-                <div style={{marginTop : "25px"}}>
-                <TextValidator
-                className="mb-16"
-                  label="State Name"
-                  onChange={this.handleChange}
-                  type="text"
-                  name="stateName"
-                  value={stateName}
-                  validators={["required", "minStringLength: 2"]}
-                  errorMessages={["this field is required"]}
-                  style={{width: "-webkit-fill-available"}}
-                  variant="outlined"
-                />
+                <div style={{ marginTop: "25px" }}>
+                  <TextValidator
+                    className="mb-16"
+                    label="State Name"
+                    onChange={this.handleChange}
+                    type="text"
+                    name="stateName"
+                    value={stateName}
+                    validators={["required", "minStringLength: 2"]}
+                    errorMessages={["this field is required"]}
+                    style={{ width: "-webkit-fill-available" }}
+                    variant="outlined"
+                  />
                 </div>
                 <DialogActions>
-                <Button onClick={this.handleClose} color="primary">
-                  Cancel
+                  <Button onClick={this.handleClose} color="primary">
+                    Cancel
                 </Button>
-                {type === "new" ? (
-                  <Button color="primary" type="submit">
-                    Add
+                  {type === "new" ? (
+                    <Button color="primary" type="submit">
+                      Add
                   </Button>
-                ) : (
-                  <Button color="primary" type="submit">
-                    Save
+                  ) : (
+                      <Button color="primary" type="submit">
+                        Save
                   </Button>
-                )}
+                    )}
                 </DialogActions>
               </ValidatorForm>
             </DialogContent>
@@ -394,7 +396,7 @@ class state extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { stateList, stateName } = state.state;
+  const { stateList } = state.state;
   const { countryList } = state.country;
   return {
     stateList,

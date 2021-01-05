@@ -5,3 +5,5 @@ export * from "./apiAction/cityApiAction";
 export * from "./apiAction/newsTypeApiAction";
 export * from "./apiAction/categoryApiAction";
 export * from "./apiAction/subCategoryApiAction";
+export * from "./newsUpdate/index"
+export * from "./apiAction/newsUpdateApiAction";

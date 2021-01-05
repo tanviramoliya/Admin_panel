@@ -22,6 +22,7 @@ import {
   FormControl,
   MenuItem,
   DialogActions,
+  TableContainer,
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
@@ -33,7 +34,7 @@ class city extends Component{
   state = {
     cityList: [],
     stateList: [],
-    rowsPerPage : 5,
+    rowsPerPage : 8,
     page : 0,
     deleteModal : false,
     deleteCityToken : null,
@@ -227,9 +228,9 @@ class city extends Component{
             ]}
           />
         </div>
-        <div className="py-12" />
-        <Card elevation={6} className="px-24 py-20 h-100">
-          <div className="flex flex-middle flex-space-between">
+        <div className="py-12" >
+        <Card elevation={6} className="px-24 pt-20 h-100">
+            <div className="flex flex-middle flex-space-between pb-12">
             <div className="card-title">City Infromation</div>
             <Button
               className="capitalize text-white bg-circle-primary"
@@ -238,47 +239,46 @@ class city extends Component{
               Add City
             </Button>
           </div>
-        <div className="w-100 overflow-auto">
-      <Table style={{ whiteSpace: "pre" }}>
+          <TableContainer style={{ maxHeight: "405px" }}>
+      <Table style={{ whiteSpace: "pre" }} stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell className="px-0">No</TableCell>
-            <TableCell className="px-0">State Name</TableCell>
-            <TableCell className="px-0">City Name</TableCell>
+            <TableCell className="px-0" width="20%">No</TableCell>
+            <TableCell className="px-0" width="30%">State Name</TableCell>
+            <TableCell className="px-0" width="30%">City Name</TableCell>
             <TableCell className="px-0">Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {cityList  ?
-            cityList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map
-            ((city, index) => (
+          {cityList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((city, index) => (
               <TableRow key={index}>
-                <TableCell className="px-0 capitalize" align="left">
+                <TableCell className="p-0" align="left">
                   {index + 1}
                 </TableCell>
-                <TableCell className="px-0 capitalize" align="left">
+                <TableCell className="p-0" align="left">
                   {city.stateName}
                 </TableCell>
-                <TableCell className="px-0 capitalize" align="left">
+                <TableCell className="p-0" align="left">
                   {city.cityName}
                 </TableCell>
-                <TableCell className="px-0">
+                <TableCell className="p-0">
                   <IconButton>
-                    <Icon color="primary" onClick={() => this.setModel("edit", city)}>edit</Icon>
+                    <Icon style={{ fontSize: 20 }} color="primary" onClick={() => this.setModel("edit", city)}>edit</Icon>
                   </IconButton>
                   <IconButton>                   
-                    <Icon color="error"  onClick={() => this.deleteCityClicked(city.cityToken)}>delete</Icon>
+                    <Icon style={{ fontSize: 20 }} color="error"  onClick={() => this.deleteCityClicked(city.cityToken)}>delete</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
-            )) : <div>No City Added there!</div>}
+            ))}
         </TableBody>
       </Table>
+      </TableContainer>
 
       <TablePagination
         className="px-16"
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[8, 16, 24]}
         component="div"
         count={cityList.length}
         rowsPerPage={rowsPerPage}
@@ -292,8 +292,9 @@ class city extends Component{
         onChangePage={this.handleChangePage}
         onChangeRowsPerPage={this.handleChangeRowsPerPage}
       />
-    </div>
+    
     </Card>
+    </div>
         <div>
           <ConfirmationDialog
             open={this.state.deleteModal}

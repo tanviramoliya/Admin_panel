@@ -23,7 +23,7 @@ export const navigations = [
   {
     name: "NEWS Updates",
     icon: "widgets",
-    path: "/others/drag-and-drop"
+    path: "/newsUpdate"
   },
   {
     name: "Comments",

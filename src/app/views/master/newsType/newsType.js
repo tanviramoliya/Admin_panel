@@ -20,7 +20,8 @@ import {
   DialogActions,
   RadioGroup,
   FormControlLabel,
-  Radio
+  Radio,
+  TableContainer
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
@@ -31,7 +32,7 @@ import { toastr } from 'react-redux-toastr';
 class newsType extends Component{
   state = {
     newsTypeList: [],
-    rowsPerPage : 5,
+    rowsPerPage : 8,
     page : 0,
     deleteModal : false,
     deleteNewsTypeToken : null,
@@ -197,14 +198,14 @@ class newsType extends Component{
         <div className="mb-sm-30">
           <Breadcrumb
             routeSegments={[
-              { name: "Master", path: "/country" },
+              { name: "Master", path: "master/newsType" },
               { name: "NEWS Type" },
             ]}
           />
         </div>
-        <div className="py-12" />
-        <Card elevation={6} className="px-24 py-20 h-100">
-          <div className="flex flex-middle flex-space-between">
+        <div className="py-12" >
+        <Card elevation={6} className="px-24 pt-20 h-100">
+            <div className="flex flex-middle flex-space-between pb-12">
             <div className="card-title">News Type Infromation</div>
             <Button
               className="capitalize text-white bg-circle-primary"
@@ -213,8 +214,8 @@ class newsType extends Component{
               Add News type
             </Button>
           </div>
-        <div className="w-100 overflow-auto">
-      <Table style={{ whiteSpace: "pre" }}>
+          <TableContainer style={{ maxHeight: "405px" }}>
+              <Table style={{ whiteSpace: "pre" }} stickyHeader>
         <TableHead>
           <TableRow>
           <TableCell className="px-0">No</TableCell>
@@ -226,16 +227,16 @@ class newsType extends Component{
         <TableBody>
           {newsTypeList
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map
-            ((newsType, index) => (
+            .map(
+            (newsType, index) => (
               <TableRow key={index}>
-                <TableCell className="px-0 capitalize" align="left">
+                <TableCell className="p-0" align="left">
                   {index + 1}
                 </TableCell>
-                <TableCell className="px-0 capitalize" align="left">
+                <TableCell className="p-0" align="left">
                   {newsType.newsTypeName}
                 </TableCell>
-                <TableCell className="px-0 capitalize" align="left">
+                <TableCell className="p-0" align="left">
                 {newsType.isActive ?
                ( <small className="border-radius-4 bg-primary text-white px-8 py-2 ">
                 Active
@@ -245,22 +246,22 @@ class newsType extends Component{
                 </small>)
                   }
                 </TableCell>
-                <TableCell className="px-0">
+                <TableCell className="p-0">
                   <IconButton>
-                    <Icon color="primary" onClick={() => this.setModel("edit", newsType)}>edit</Icon>
+                    <Icon  style={{ fontSize: 20 }} color="primary" onClick={() => this.setModel("edit", newsType)}>edit</Icon>
                   </IconButton>
                   <IconButton>                   
-                    <Icon color="error" onClick={() => this.deleteNewsTypeClicked(newsType.newsTypeToken)}>delete</Icon>
+                    <Icon style={{ fontSize: 20 }} color="error" onClick={() => this.deleteNewsTypeClicked(newsType.newsTypeToken)}>delete</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
             ))}
         </TableBody>
       </Table>
-
+                  </TableContainer>
       <TablePagination
         className="px-16"
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[8, 16, 24]}
         component="div"
         count={newsTypeList.length}
         rowsPerPage={rowsPerPage}
@@ -274,13 +275,14 @@ class newsType extends Component{
         onChangePage={this.handleChangePage}
         onChangeRowsPerPage={this.handleChangeRowsPerPage}
       />
-    </div>
+    
     </Card>
+    </div>
         <div>
           <ConfirmationDialog
             open={this.state.deleteModal}
             title = "Delete Confirmation"
-            message = {"R you sure want to delete this News Type?"}
+            message = {"are you sure want to delete this News Type?"}
             toggle={this.deleteNewsTypeClicked}
             onYesClick={() => this.yesDeleteClicked(this.state.deleteNewsTypeToken)}
             onNoClick={this.noDeleteClicked}
