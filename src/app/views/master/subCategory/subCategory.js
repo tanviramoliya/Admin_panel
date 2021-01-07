@@ -31,6 +31,7 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  TableContainer,
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
@@ -41,7 +42,7 @@ import { toastr } from "react-redux-toastr";
 class subCategory extends Component {
   state = {
     subCategoryList: [],
-    rowsPerPage: 5,
+    rowsPerPage: 8,
     page: 0,
     deleteModal: false,
     deleteSubCategoryToken: null,
@@ -258,103 +259,104 @@ class subCategory extends Component {
         <div className="mb-sm-30">
           <Breadcrumb
             routeSegments={[
-              { name: "Master", path: "/master/country" },
+              { name: "Master", path: "/master/subcountry" },
               { name: "Sub Category" },
             ]}
           />
         </div>
-        <div className="py-12" />
-        <Card elevation={6} className="px-24 py-20 h-100">
-          <div className="flex flex-middle flex-space-between">
-            <div className="card-title">Sub Category Infromation</div>
-            <Button
-              className="capitalize text-white bg-circle-primary"
-              onClick={() => this.setModel("new")}
-            >
-              Add Sub category
+        <div className="py-12" >
+        <Card elevation={6} className="px-24 pt-20 h-100">
+            <div className="flex flex-middle flex-space-between pb-12">
+              <div className="card-title">Sub Category Infromation</div>
+              <Button
+                className="capitalize text-white bg-circle-primary"
+                onClick={() => this.setModel("new")}
+              >
+                Add Sub Category
             </Button>
-          </div>
-          <div className="w-100 overflow-auto">
-            <Table style={{ whiteSpace: "pre" }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell className="px-0">No</TableCell>
-                  <TableCell className="px-0">Category Name</TableCell>
-                  <TableCell className="px-0">SubCategory Name</TableCell>
-                  <TableCell className="px-0">Active/Not Active</TableCell>
-                  <TableCell className="px-0">Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {subCategoryList
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((subCategory, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="px-0 capitalize" align="left">
-                        {index + 1}
-                      </TableCell>
-                      <TableCell className="px-0 capitalize" align="left">
-                        {subCategory.categoryName}
-                      </TableCell>
-                      <TableCell className="px-0 capitalize" align="left">
-                        {subCategory.subCategoryName}
-                      </TableCell>
-                      <TableCell className="px-0 capitalize" align="left">
-                        {subCategory.isActive ? (
-                          <small className="border-radius-4 bg-primary text-white px-8 py-2 ">
-                            Active
+            </div>
+            <TableContainer style={{ maxHeight: "405px" }}>
+              <Table style={{ whiteSpace: "pre" }} stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell className="px-0" width="15%">No</TableCell>
+                    <TableCell className="px-0" width="25%">Category Name</TableCell>
+                    <TableCell className="px-0" width="25%">SubCategory Name</TableCell>
+                    <TableCell className="px-0" width="20%">Active/Not Active</TableCell>
+                    <TableCell className="px-0">Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {subCategoryList
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((subCategory, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="p-0" align="left">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell className="p-0" align="left">
+                          {subCategory.categoryName}
+                        </TableCell>
+                        <TableCell className="p-0" align="left">
+                          {subCategory.subCategoryName}
+                        </TableCell>
+                        <TableCell className="p-0" align="left">
+                          {subCategory.isActive ? (
+                            <small className="border-radius-4 bg-primary text-white px-8 py-2 ">
+                              Active
                           </small>
-                        ) : (
-                          <small className="border-radius-4 bg-error text-white px-8 py-2 ">
-                            Not Active
+                          ) : (
+                              <small className="border-radius-4 bg-error text-white px-8 py-2 ">
+                                Not Active
                           </small>
-                        )}
-                      </TableCell>
-                      <TableCell className="px-0">
-                        <IconButton>
-                          <Icon
-                            color="primary"
-                            onClick={() => this.setModel("edit", subCategory)}
-                          >
-                            edit
+                            )}
+                        </TableCell>
+                        <TableCell className="p-0">
+                          <IconButton>
+                            <Icon style={{ fontSize: 20 }}
+                              color="primary"
+                              onClick={() => this.setModel("edit", subCategory)}
+                            >
+                              edit
                           </Icon>
-                        </IconButton>
-                        <IconButton>
-                          <Icon
-                            color="error"
-                            onClick={() =>
-                              this.deleteSubCategoryClicked(
-                                subCategory.subCategoryToken
-                              )
-                            }
-                          >
-                            delete
+                          </IconButton>
+                          <IconButton>
+                            <Icon style={{ fontSize: 20 }}
+                              color="error"
+                              onClick={() =>
+                                this.deleteSubCategoryClicked(
+                                  subCategory.subCategoryToken
+                                )
+                              }
+                            >
+                              delete
                           </Icon>
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
             <TablePagination
               className="px-16"
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
+              rowsPerPageOptions={[8, 16, 24]}
+            component="div"
               count={subCategoryList.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              backIconButtonProps={{
-                "aria-label": "Previous Page",
-              }}
-              nextIconButtonProps={{
-                "aria-label": "Next Page",
-              }}
-              onChangePage={this.handleChangePage}
-              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{
+              "aria-label": "Previous Page",
+            }}
+            nextIconButtonProps={{
+              "aria-label": "Next Page",
+            }}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangeRowsPerPage}
             />
-          </div>
+
         </Card>
+        </div>
         <div>
           <ConfirmationDialog
             open={this.state.deleteModal}
@@ -385,33 +387,33 @@ class subCategory extends Component {
                 }
                 onError={(errors) => null}
               >
-                  <FormControl
-                    style={{ width: "-webkit-fill-available" }}
-                    error={categoryName === ""}
-                    variant="outlined"
-                  >
-                    <InputLabel htmlFor="grouped-select" id="category">
-                      Category
+                <FormControl
+                  style={{ width: "-webkit-fill-available" }}
+                  error={categoryName === ""}
+                  variant="outlined"
+                >
+                  <InputLabel htmlFor="grouped-select" id="category">
+                    Category
                     </InputLabel>
-                    <Select
-                      name="categoryName"
-                      labelId="category"
-                      value={categoryName}
-                      label="Category"
-                    >
-                      {categoryList.map((category, index) => {
-                        return (
-                          <MenuItem
-                            value={category.categoryName}
-                            key={index}
-                            onClick={() => this.handleChangeCategory(category)}
-                          >
-                            {category.categoryName}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  </FormControl>
+                  <Select
+                    name="categoryName"
+                    labelId="category"
+                    value={categoryName}
+                    label="Category"
+                  >
+                    {categoryList.map((category, index) => {
+                      return (
+                        <MenuItem
+                          value={category.categoryName}
+                          key={index}
+                          onClick={() => this.handleChangeCategory(category)}
+                        >
+                          {category.categoryName}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
                 <div style={{ marginTop: "25px" }}>
                   <TextValidator
                     className="mb-16"
@@ -454,10 +456,10 @@ class subCategory extends Component {
                       Add
                     </Button>
                   ) : (
-                    <Button color="primary" type="submit">
-                      Save
+                      <Button color="primary" type="submit">
+                        Save
                     </Button>
-                  )}
+                    )}
                 </DialogActions>
               </ValidatorForm>
             </DialogContent>

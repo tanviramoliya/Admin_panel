@@ -12,7 +12,9 @@ import CityReducer from "./master/city/cityReducer";
 import NewsTypeReducer from "./master/newsType/newsTypeReducer";
 import CategoryReducer from "./master/category/categoryReducer";
 import SubCategoryReducer from "./master/subCategory/subCategoryReducer";
-
+import NewsUpdateReducer from "./newsUpdate/newsUpdateReducer";
+import SubscriberReducer from "./subscriber/subcscriberReducer"
+import AdminUserReducer from "./adminUser/adminUserReducer"
 const RootReducer = combineReducers({
   toastr: toastrReducer,
   login: LoginReducer,
@@ -26,7 +28,10 @@ const RootReducer = combineReducers({
   city : CityReducer,
   newsType : NewsTypeReducer,
   category : CategoryReducer,
-  subCategory : SubCategoryReducer
+  subCategory : SubCategoryReducer,
+  newsUpdate : NewsUpdateReducer,
+  subscriber : SubscriberReducer,
+  adminUser : AdminUserReducer
 });
 
 export default RootReducer;
