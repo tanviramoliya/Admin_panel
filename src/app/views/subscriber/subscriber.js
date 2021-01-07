@@ -99,7 +99,7 @@ class subscriber extends Component {
               <div className="card-title">Subscriber Infromation</div>
               <Button
                 className="capitalize text-white bg-circle-primary"
-                //onClick={() => this.setModel("new")}
+                style={{visibility : "hidden"}}
               >
                 Add News Update
                   </Button>

@@ -11,7 +11,8 @@ import formsRoutes from "./views/forms/FormsRoutes";
 import masterRoutes from "./views/master/masterRoutes";
 import newsUpdateRoutes from "./views/newsUpdate/newsUpdateRoutes";
 import subscriberRoutes from "./views/subscriber/subscriberRoutes";
-import adminUserRoutes from "./views/adminUser/adminUserRoutes"
+import adminUserRoutes from "./views/adminUser/adminUserRoutes";
+import settingRoutes from "./views/settingModule/settingRoutes";
 
 const redirectRoute = [
   {
@@ -31,6 +32,7 @@ const routes = [
   ...sessionRoutes,
   ...adminUserRoutes,
   ...masterRoutes,
+  ...settingRoutes,
   ...dashboardRoutes,
   ...newsUpdateRoutes,
   ...subscriberRoutes,
