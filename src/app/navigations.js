@@ -33,7 +33,7 @@ export const navigations = [
   {
     name: "Admin Users",
     icon: "supervisor_account",
-    path: "/others/drag-and-drop"
+    path: "/adminUser"
   },
   {
     name: "Role",
@@ -43,7 +43,7 @@ export const navigations = [
   {
     name: "Subscriber",
     icon: "subscriptions",
-    path: "/others/drag-and-drop"
+    path: "/subscriber"
   },
   {
     name: "Master",
