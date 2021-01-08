@@ -4,6 +4,7 @@ import {
   deleteNewsApi,
   addNewsApi,
   updateNewsApi,
+  changeStatusApi
 } from "../../../redux/actions/index";
 import { status } from "../../../utility/config";
 import { toastr } from "react-redux-toastr";
@@ -11,7 +12,7 @@ import { Breadcrumb } from "../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer
+  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Switch
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
@@ -28,7 +29,7 @@ class newsUpdate extends Component {
     newsText: "",
     newsLink: "",
     createdDate: "",
-    isActive: "active",
+    published: false,
     type: "new",
 
   };
@@ -150,6 +151,7 @@ class newsUpdate extends Component {
         openModal: false,
         newsText: "",
         type: "new",
+        published:false,
         newsToken: ""
       });
     }
@@ -196,6 +198,7 @@ class newsUpdate extends Component {
         newsLink: "",
         openModal: false,
         newsText: "",
+        published: false,
         type: "new",
         newsToken: ""
       });
@@ -206,7 +209,24 @@ class newsUpdate extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-
+  changeStatus = async (token, newStatus) => {
+    let data  = new FormData();
+    data.append('headLineToken', token);
+    data.append('status', !newStatus); ///a to flase hase ne ?wait
+    const changeStatus = await changeStatusApi(data
+    );
+    if (changeStatus && changeStatus.data.code === status.success) {
+      await this.getNewsList();
+      toastr.success(changeStatus.data.message);
+    } else if (
+      changeStatus &&
+      changeStatus.data.code === status.badRequest
+    ) {
+      toastr.warning(changeStatus.data.message);
+    } else {
+      toastr.error(changeStatus.data.message);
+    }
+  }
 
 
   render() {
@@ -231,7 +251,7 @@ class newsUpdate extends Component {
           />
         </div>
         <div className="py-12">
-        <Card elevation={6} className="px-24 pt-20 h-100">
+          <Card elevation={6} className="px-24 pt-20 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
               <div className="card-title">News Update Infromation</div>
               <Button
@@ -245,11 +265,12 @@ class newsUpdate extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="15%">No</TableCell>
+                    <TableCell className="px-0" width="10%">No</TableCell>
                     <TableCell className="px-0" width="30%">News Text</TableCell>
                     <TableCell className="px-0" width="30%">News Link</TableCell>
-                    <TableCell className="px-0" width="20%">Updated Date</TableCell>
-                    <TableCell className="px-0" width="20%">Actions</TableCell>
+                    <TableCell className="px-0" width="20%">Published</TableCell>
+                    <TableCell className="px-0" width="15%">Updated Date</TableCell>
+                    <TableCell className="px-0" width="10%">Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -267,7 +288,16 @@ class newsUpdate extends Component {
                           {newsUpdate.newsLink}
                         </TableCell>
                         <TableCell className="p-0" align="left">
-                          {newsUpdate.zoneTime}
+                          <Switch 
+                            onClick={() =>this.changeStatus(newsUpdate.newsToken,newsUpdate.published)}
+                            name="published"
+                            color="secondary"
+                            checked={newsUpdate.published}
+                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                          />
+                        </TableCell>
+                        <TableCell className="p-0" align="left">
+                          {newsUpdate.updatedTime}
                         </TableCell>
                         <TableCell className="p-0">
                           <IconButton>
@@ -392,11 +422,12 @@ class newsUpdate extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  const { newsList, newsText, newsLink } = state.newsUpdate;
+  const { newsList, newsText, newsLink, published } = state.newsUpdate;
   return {
     newsList,
     newsText,
-    newsLink
+    newsLink,
+    published
 
   };
 };

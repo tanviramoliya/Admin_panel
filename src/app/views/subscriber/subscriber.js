@@ -119,7 +119,9 @@ class subscriber extends Component {
                   {subscriberList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((subscriberUpdate, index) => (
-                      <TableRow key={index} >
+                      
+                      <TableRow key={subscriberUpdate.userToken} >
+                        
                         <TableCell className="px-0" style={{padding:"12.5px"}} align="left">
                           {index + 1}
                         </TableCell>

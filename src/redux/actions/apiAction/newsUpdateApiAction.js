@@ -43,3 +43,9 @@ import {
       return updateNews;
     }
   };
+  export const changeStatusApi = async (data) => {
+    const changeStatus = await api(`newsHeadLine/changeStatus`, data, 'postWithUrlEncoded');
+    if (changeStatus) {
+      return changeStatus;
+    }
+  };

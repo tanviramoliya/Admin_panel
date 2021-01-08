@@ -157,10 +157,7 @@ export const api = async (endpoint, data, type) => {
       await axios({
         method: 'post',
         data: data,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          // 'x-auth': token,
-        },
+        headers: {'Content-Type': 'multipart/form-data' },
         url: mainUrl + endpoint,
       })
         .then(function (response) {

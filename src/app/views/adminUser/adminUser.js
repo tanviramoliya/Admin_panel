@@ -340,7 +340,10 @@ class AdminUser extends Component {
                           {AdminUser.firstName +" "+AdminUser.lastName}
                         </TableCell>
                         <TableCell className="p-0" align="left">
-                          {AdminUser.role}
+                        <medium className="border-radius-4 bg-secondary text-white px-8 py-2 ">
+                            {AdminUser.role}
+                          </medium>
+                          
                         </TableCell>
                         <TableCell className="p-0" align="left">
                           {AdminUser.email}

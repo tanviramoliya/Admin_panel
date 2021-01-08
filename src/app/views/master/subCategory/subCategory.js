@@ -302,13 +302,13 @@ class subCategory extends Component {
                         </TableCell>
                         <TableCell className="p-0" align="left">
                           {subCategory.isActive ? (
-                            <small className="border-radius-4 bg-primary text-white px-8 py-2 ">
+                            <medium className="border-radius-4 bg-primary text-white px-8 py-2 ">
                               Active
-                          </small>
+                          </medium>
                           ) : (
-                              <small className="border-radius-4 bg-error text-white px-8 py-2 ">
+                              <medium className="border-radius-4 bg-error text-white px-8 py-2 ">
                                 Not Active
-                          </small>
+                          </medium>
                             )}
                         </TableCell>
                         <TableCell className="p-0">
