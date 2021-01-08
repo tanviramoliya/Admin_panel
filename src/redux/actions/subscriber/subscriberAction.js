@@ -16,13 +16,6 @@ export const addSubscriber = (value) => {
     payload: value,
   };
 };
-// export const deleteCountry = (value) => {
-//   return {
-//     type: DELETE_COUNTRY,
-//     payload: value,
-//   };
-// };
-
 export const updateSubscriber = (value) => {
   return {
     type: UPDATE_SUBSCRIBER,
