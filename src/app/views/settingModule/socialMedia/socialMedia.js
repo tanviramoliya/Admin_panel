@@ -1,24 +1,90 @@
 import React, { Component } from "react";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-import { Button, Icon, Grid , TextField, InputAdornment} from "@material-ui/core";
+import { Button, Icon, Grid , InputAdornment} from "@material-ui/core";
 import { Breadcrumb } from "../../../../components/matx/index";
 
 import {Facebook , Instagram , YouTube, Twitter, Email,LinkedIn} from '@material-ui/icons';
+import {
+  socialMediaListApi,
+  updateSocialMediaApi,
+} from "../../../../redux/actions/index";
+import { connect } from "react-redux";
+import { toastr } from "react-redux-toastr";
+import { status } from "../../../../utility/config";
+
 
 class socialMedia extends Component {
   state = {
     facebook: "",
     twitter: "",
-    googlePlus: "",
-    linkedIn: "",
+    linkedin: "",
     instagram: "",
     youTube: "",
-    email : ""
+    email : "",
+    socialMediaList : []
   };
-  handleSubmit = (event) => {
+  componentDidMount = async () => {
+    await this.getSocialMediaList();
+  };
+  getSocialMediaList = async () => {
+    await this.props.socialMediaListApi();
+    this.setState({ socialMediaList: this.props.socialMediaList });
+    this.state.socialMediaList.map((s) => {
+      this.setState({[s.socialMediaName] : s.socialMediaLink})
+      console.log(s.socialMediaName, s.socialMediaLink);
+    })
+  };
+  handleSubmit = async () => {
     console.log("submitted");
-    console.log(event);
-  };
+    const { facebook,instagram, youTube,email, twitter, linkedin} = this.state;
+      let data = [{
+        "socialMediaName" : "facebook",
+        "socialMediaLink" : facebook
+      },
+      {
+        "socialMediaName" : "instagram",
+        "socialMediaLink" : instagram
+      },
+      {
+        "socialMediaName" : "youTube",
+        "socialMediaLink" : youTube
+      },
+      {
+        "socialMediaName" : "email",
+        "socialMediaLink" : email
+      },
+      {
+        "socialMediaName" : "twitter",
+        "socialMediaLink" : twitter
+      },
+      {
+        "socialMediaName" : "linkedin",
+        "socialMediaLink" : linkedin
+      }
+      ];
+      const updateSocialMedia = await updateSocialMediaApi(data);
+      if (updateSocialMedia) {
+        if (updateSocialMedia.status === status.success) {
+          if (updateSocialMedia.data.code === status.success) {
+            toastr.success(updateSocialMedia.data.message);
+            this.getSocialMediaList();
+          } else {
+            toastr.warning(updateSocialMedia.data.message);
+          }
+        } else {
+          toastr.error(updateSocialMedia.data.message);
+        }
+      }
+      // this.props.setLoader(false);
+      this.setState({
+        facebook: "",
+        instagram: "",
+        youTube : "",
+        email : "",
+        twitter : "",
+        linkedin : ""
+      });
+    };
 
   handleChange = (event) => {
     event.persist();
@@ -28,8 +94,7 @@ class socialMedia extends Component {
     const {
       facebook,
       twitter,
-      googlePlus,
-      linkedIn,
+      linkedin,
       email,
       instagram,
       youTube,
@@ -56,11 +121,11 @@ class socialMedia extends Component {
                   className="mb-16 w-100"
                   label="instagram"
                   onChange={this.handleChange}
-                  type="text"
+                  type="url"
                   name="instagram"
                   value={instagram}
                   validators={[
-                    "required",
+                    "required"
                   ]}
                   InputProps={{
                     startAdornment: (
@@ -75,7 +140,7 @@ class socialMedia extends Component {
                   className="mb-16 w-100"
                   label="youTube"
                   onChange={this.handleChange}
-                  type="text"
+                  type="url"
                   name="youTube"
                   value={youTube}
                   validators={[
@@ -94,11 +159,11 @@ class socialMedia extends Component {
                   className="mb-16 w-100"
                   label="Twitter"
                   onChange={this.handleChange}
-                  type="text"
+                  type="url"
                   name="twitter"
                   value={twitter}
-                  validators={["required"]}
-                  errorMessages={["this field is required"]}
+                  validators={["required","matchRegexp:^(http\:\/\/|https\:\/\/)?(?:www\.)?twitter\.com\/(?:#!\/)?@?([^\?#]*)(?:[?#].*)?$"]}
+                  errorMessages={["this field is required","Please enter valid Twitter URL"]}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -114,8 +179,8 @@ class socialMedia extends Component {
                   type="text"
                   name="email"
                   value={email}
-                  validators={["required"]}
-                  errorMessages={["this field is required"]}
+                  validators={["required", "isEmail"]}
+                  errorMessages={["this field is required","Please enter valid email"]}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -131,7 +196,7 @@ class socialMedia extends Component {
                   className="mb-16 w-100"
                   label="Facebook"
                   onChange={this.handleChange}
-                  type="text"
+                  type="url"
                   name="facebook"
                   value={facebook}
                   validators={["required"]}
@@ -148,9 +213,9 @@ class socialMedia extends Component {
                   className="mb-16 w-100"
                   label="LinkedIn"
                   onChange={this.handleChange}
-                  type="text"
-                  name="linkedIn"
-                  value={linkedIn}
+                  type="url"
+                  name="linkedin"
+                  value={linkedin}
                   validators={["required"]}
                   errorMessages={["this field is required"]}
                   InputProps={{
@@ -173,5 +238,14 @@ class socialMedia extends Component {
     );
   }
 }
+const mapStateToProps = (state) => {
+  const { socialMediaList, facebook } = state.socialMedia;
+  return {
+    socialMediaList,
+    facebook,
+  };
+};
 
-export default socialMedia;
+export default connect(mapStateToProps, { socialMediaListApi, updateSocialMediaApi })(
+  socialMedia
+);
