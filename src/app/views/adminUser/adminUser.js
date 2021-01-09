@@ -11,11 +11,13 @@ import { Breadcrumb } from "../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer
+  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
+import {PhoneIphone, Email, Person,GroupAdd} from '@material-ui/icons';
+
 class AdminUser extends Component {
   state = {
     adminUserList: [],
@@ -35,12 +37,25 @@ class AdminUser extends Component {
     createdTime: "",
     updatedTime: "",
     type: "new",
+    passWord : "",
+    confirmPassWord : ""
 
   };
 
   componentDidMount = async () => {
     await this.getAdminUserList();
+      // custom rule will have name 'isPasswordMatch'
+      ValidatorForm.addValidationRule("isPasswordMatch", value => {
+        if (value !== this.state.passWord) {
+          return false;
+        }
+        return true;
+      });
   };
+  componentWillUnmount() {
+    // remove rule when it is not needed
+    ValidatorForm.removeValidationRule("isPasswordMatch");
+  }
   getAdminUserList = async () => {
     await this.props.adminUserListApi();
     this.setState({ adminUserList: this.props.adminUserList });
@@ -123,7 +138,8 @@ class AdminUser extends Component {
       roleToken: "",
       email: "",
       contactNumber: "",
-      passWord: ""
+      passWord: "",
+      confirmPassWord : ""
 
     });
   };
@@ -196,7 +212,8 @@ class AdminUser extends Component {
         roleToken: "",
         email: "",
         contactNumber: "",
-        passWord: ""
+        passWord: "",
+        confirmPassWord : ""
 
       });
     }
@@ -273,7 +290,8 @@ class AdminUser extends Component {
         roleToken: "",
         email: "",
         contactNumber: "",
-        passWord: ""
+        passWord: "",
+        confirmPassWord : ""
       });
     }
   };
@@ -419,7 +437,7 @@ class AdminUser extends Component {
             fullWidth={true}
           >
             <DialogTitle id="form-dialog-title">
-              {type === "new" ? "Add a Admin User" : "Edit Admin User"}
+              {type === "new" ? <div style={{display : "contents"}}><GroupAdd fontSize="large"/>Add a Admin User</div> : "Edit Admin User"}
             </DialogTitle>
             <DialogContent>
               <ValidatorForm
@@ -429,23 +447,35 @@ class AdminUser extends Component {
                 }
                 onError={(errors) => null}
               >
-                 
+              <Grid container spacing={1} > 
+              <Grid item lg={6} md={6} sm={12} xs={12}>                 
                 <TextValidator
                   className="mb-16 "
                   label="first Name"
                   onChange={this.handleChange}
                   type="text"
                   name="firstName"
+                  placeholder="Enter First Name"
                   value={firstName}
                   validators={["required", "minStringLength: 2"]}
                   errorMessages={["this field is required"]}
                   style={{ width: "-webkit-fill-available" }}
                   variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Person />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
+                </Grid> 
+                <Grid item lg={6} md={6} sm={12} xs={12}>
                 <TextValidator
                   className="mb-16 "
                   label="last Name"
                   onChange={this.handleChange}
+                  placeholder="Enter Last Name"
                   type="text"
                   name="lastName"
                   value={lastName}
@@ -453,7 +483,16 @@ class AdminUser extends Component {
                   errorMessages={["this field is required"]}
                   style={{ width: "-webkit-fill-available" }}
                   variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Person />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
+                </Grid>
+                 </Grid>
                 
                 <TextValidator
                   className="mb-16 "
@@ -468,53 +507,76 @@ class AdminUser extends Component {
                   variant="outlined"
                 />
                 <TextValidator
-                  className="mb-16 "
-                  label="email"
-                  onChange={this.handleChange}
-                  type="text"
-                  name="email"
-                  value={email}
-                  validators={["required"]}
-                  errorMessages={["this field is required"]}
-                  style={{ width: "-webkit-fill-available" }}
-                  variant="outlined"
+                className="mb-16 "
+                label="email"
+                placeholder="Enter Email"
+                onChange={this.handleChange}
+                type="email"
+                name="email"
+                value={email}
+                validators={["required","isEmail"]}
+                errorMessages={["this field is required", "Enter valid email"]}
+                style={{ width: "-webkit-fill-available" }}
+                variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Email />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <TextValidator
-                  className="mb-16 "
-                  label="contact Number"
-                  onChange={this.handleChange}
-                  type="text"
-                  name="contactNumber"
-                  value={contactNumber}
-                  validators={["required"]}
-                  errorMessages={["this field is required"]}
-                  style={{ width: "-webkit-fill-available" }}
-                  variant="outlined"
+                className="mb-16 "
+                label="contact Number"
+                onChange={this.handleChange}
+                type="number"
+                name="contactNumber"
+                placeholder="Enter Contact Number"
+                value={contactNumber}
+                validators={["required","minStringLength:10",
+                "maxStringLength: 10"]}
+                errorMessages={["this field is required","Contact Number must contains 10 digits","Contact Number must contains 10 digits"]}
+                style={{ width: "-webkit-fill-available" }}
+                variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PhoneIphone />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
-                <TextValidator
-                  className="mb-16 "
-                  label="password"
-                  onChange={this.handleChange}
-                  type="text"
-                  name="passWord"
-                  value={passWord}
-                  validators={["required"]}
-                  errorMessages={["this field is required"]}
-                  style={{ width: "-webkit-fill-available" }}
-                  variant="outlined"
-                />
-                 <TextValidator
-                  className="mb-16 "
-                  label="confirm Password"
-                  onChange={this.handleChange}
-                  type="text"
-                  name="confirmPassWord"
-                  value={confirmPassWord}
-                  validators={["required"]}
-                  errorMessages={["this field is required"]}
-                  style={{ width: "-webkit-fill-available" }}
-                  variant="outlined"
-                />
+                {
+                  type === 'new' ?
+                  <>
+                  <TextValidator
+                    className="mb-16 "
+                    label="password"
+                    onChange={this.handleChange}
+                    type="password"
+                    name="passWord"
+                    value={passWord}
+                    validators={["required"]}
+                    errorMessages={["this field is required"]}
+                    style={{ width: "-webkit-fill-available" }}
+                    variant="outlined"
+                  />
+                   <TextValidator
+                    className="mb-16 "
+                    label="confirm Password"
+                    onChange={this.handleChange}
+                    type="password"
+                    name="confirmPassWord"
+                    value={confirmPassWord}
+                    validators={["required","isPasswordMatch"]}
+                    errorMessages={["this field is required","password didn't match"]}
+                    style={{ width: "-webkit-fill-available" }}
+                    variant="outlined"
+                  />
+                  </>
+                  : null
+                }
 
                 <DialogActions className="p-0">
                   <Button onClick={this.handleClose} color="primary">

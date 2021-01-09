@@ -16,8 +16,8 @@ import {
     };
   };
 
-  export const deleteSubscriberApi = async (id) => {
-    const deleteSubscriber = await api(`subscription/delete?delete=${id}`, {}, 'delete');
+  export const deleteSubscriberApi = async (data) => {
+    const deleteSubscriber = await api(`subscription/delete`, data, 'delete');
     if (deleteSubscriber) {
       return deleteSubscriber;
     }

@@ -11,3 +11,5 @@ export * from "./subscriber/index";
 export * from "./apiAction/subscriberApiAction";
 export * from "./adminUser/index";
 export * from "./apiAction/adminUserApiAction";
+export * from "./settingModule/index"
+export * from "./apiAction/socialMediaApiAction";

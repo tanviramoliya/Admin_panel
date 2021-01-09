@@ -87,7 +87,7 @@ export const navigations = [
     children: [
       {
         name: "Social Media",
-        path: "/utilities/color",
+        path: "/setting/socialMedia",
         iconText: "S"
       },
       {

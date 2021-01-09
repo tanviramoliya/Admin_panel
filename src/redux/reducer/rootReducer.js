@@ -14,7 +14,9 @@ import CategoryReducer from "./master/category/categoryReducer";
 import SubCategoryReducer from "./master/subCategory/subCategoryReducer";
 import NewsUpdateReducer from "./newsUpdate/newsUpdateReducer";
 import SubscriberReducer from "./subscriber/subcscriberReducer"
-import AdminUserReducer from "./adminUser/adminUserReducer"
+import AdminUserReducer from "./adminUser/adminUserReducer";
+import socialMediaReducer from "./settingModule/socialMedia/socialMediaReducer";
+
 const RootReducer = combineReducers({
   toastr: toastrReducer,
   login: LoginReducer,
@@ -31,7 +33,8 @@ const RootReducer = combineReducers({
   subCategory : SubCategoryReducer,
   newsUpdate : NewsUpdateReducer,
   subscriber : SubscriberReducer,
-  adminUser : AdminUserReducer
+  adminUser : AdminUserReducer,
+  socialMedia : socialMediaReducer
 });
 
 export default RootReducer;
