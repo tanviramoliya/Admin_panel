@@ -89,7 +89,7 @@ class AdminUser extends Component {
       this.state.deleteAdminUserToken
     );
     if (deleteAdminUser && deleteAdminUser.data.code === status.success) {
-      await this.getdeleteAdminUserList();
+      await this.getAdminUserList();
       toastr.success(deleteAdminUser.data.message);
     } else if (
       deleteAdminUser &&
@@ -244,14 +244,14 @@ class AdminUser extends Component {
         toastr.error("contactNumber is required");
         return;
       }
-      if (!passWord) {
-        toastr.error("password is required");
-        return;
-      }
-      if (!confirmPassWord) {
-        toastr.error("confirmPassword is required");
-        return;
-      }
+      // if (!passWord) {
+      //   toastr.error("password is required");
+      //   return;
+      // }
+      // if (!confirmPassWord) {
+      //   toastr.error("confirmPassword is required");
+      //   return;
+      // }
       // this.props.setLoader(true);
       // this.setState({
       //   addOrg: false,
@@ -262,9 +262,7 @@ class AdminUser extends Component {
         lastName: lastName,
         role: role,
         email: email,
-        contactNumber: contactNumber,
-        passWord: passWord
-      };
+        contactNumber: contactNumber      };
       const updateAdminUser = await updateAdminUserApi(data);
       if (updateAdminUser) {
         if (updateAdminUser.status === status.success) {

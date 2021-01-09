@@ -18,7 +18,7 @@ const App = () => {
     <AppContext.Provider value={{ routes }}>
       <Provider store={Store}>
       <ReduxToastr
-        timeOut={6000}
+        timeOut={3000}
         newestOnTop={false}
         preventDuplicates
         position="top-right"
