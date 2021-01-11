@@ -16,6 +16,7 @@ import NewsUpdateReducer from "./newsUpdate/newsUpdateReducer";
 import SubscriberReducer from "./subscriber/subcscriberReducer"
 import AdminUserReducer from "./adminUser/adminUserReducer";
 import socialMediaReducer from "./settingModule/socialMedia/socialMediaReducer";
+import aboutUsReducer from "./settingModule/aboutUs/aboutUsReducer"
 
 const RootReducer = combineReducers({
   toastr: toastrReducer,
@@ -34,7 +35,8 @@ const RootReducer = combineReducers({
   newsUpdate : NewsUpdateReducer,
   subscriber : SubscriberReducer,
   adminUser : AdminUserReducer,
-  socialMedia : socialMediaReducer
+  socialMedia : socialMediaReducer,
+  aboutUs : aboutUsReducer
 });
 
 export default RootReducer;

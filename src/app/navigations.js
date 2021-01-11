@@ -92,6 +92,11 @@ export const navigations = [
       },
       {
         name: "About US",
+        path: "/setting/aboutUs",
+        iconText: "A"
+      },
+      {
+        name: "Spacing",
         path: "/utilities/spacing",
         iconText: "A"
       },

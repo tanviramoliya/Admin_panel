@@ -174,7 +174,7 @@ class subscriber extends Component {
                 <TableHead>
                   <TableRow>
                     <TableCell>
-                      <Checkbox
+                      <Checkbox 
                         indeterminate={
                           selected.length > 0 &&
                           selected.length < subscriberList.length
