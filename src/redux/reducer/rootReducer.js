@@ -15,8 +15,10 @@ import SubCategoryReducer from "./master/subCategory/subCategoryReducer";
 import NewsUpdateReducer from "./newsUpdate/newsUpdateReducer";
 import SubscriberReducer from "./subscriber/subcscriberReducer"
 import AdminUserReducer from "./adminUser/adminUserReducer";
-import socialMediaReducer from "./settingModule/socialMedia/socialMediaReducer";
-import aboutUsReducer from "./settingModule/aboutUs/aboutUsReducer"
+import SocialMediaReducer from "./settingModule/socialMedia/socialMediaReducer";
+import AboutUsReducer from "./settingModule/aboutUs/aboutUsReducer";
+import InquiryReducer from "./inquiry/inquiryReducer";
+
 
 const RootReducer = combineReducers({
   toastr: toastrReducer,
@@ -35,8 +37,9 @@ const RootReducer = combineReducers({
   newsUpdate : NewsUpdateReducer,
   subscriber : SubscriberReducer,
   adminUser : AdminUserReducer,
-  socialMedia : socialMediaReducer,
-  aboutUs : aboutUsReducer
+  socialMedia : SocialMediaReducer,
+  aboutUs : AboutUsReducer,
+  inquiry : InquiryReducer,
 });
 
 export default RootReducer;

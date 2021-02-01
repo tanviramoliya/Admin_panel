@@ -138,6 +138,14 @@ class newsUpdate extends Component {
           if (createNews.data.code === status.success) {
             toastr.success(createNews.data.message);
             this.getNewsList();
+            this.setState({
+              newsLink: "",
+              openModal: false,
+              newsText: "",
+              type: "new",
+              published:false,
+              newsToken: ""
+            });
           } else {
             toastr.warning(createNews.data.message);
           }
@@ -146,14 +154,7 @@ class newsUpdate extends Component {
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        newsLink: "",
-        openModal: false,
-        newsText: "",
-        type: "new",
-        published:false,
-        newsToken: ""
-      });
+      
     }
   };
   UpdateNews = async () => {
@@ -186,6 +187,14 @@ class newsUpdate extends Component {
           if (updateNews.data.code === status.success) {
             toastr.success(updateNews.data.message);
             this.getNewsList();
+            this.setState({
+              newsLink: "",
+              openModal: false,
+              newsText: "",
+              published: false,
+              type: "new",
+              newsToken: ""
+            });
           } else {
             toastr.warning(updateNews.data.message);
           }
@@ -194,14 +203,7 @@ class newsUpdate extends Component {
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        newsLink: "",
-        openModal: false,
-        newsText: "",
-        published: false,
-        type: "new",
-        newsToken: ""
-      });
+      
     }
   };
   handleChange = (event) => {
@@ -265,7 +267,7 @@ class newsUpdate extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="10%">No</TableCell>
+                    <TableCell className="px-0" width="10%">Sr.No</TableCell>
                     <TableCell className="px-0" width="30%">News Text</TableCell>
                     <TableCell className="px-0" width="30%">News Link</TableCell>
                     <TableCell className="px-0" width="20%">Published</TableCell>
@@ -278,16 +280,16 @@ class newsUpdate extends Component {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((newsUpdate, index) => (
                       <TableRow key={index}>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" >
                           {index + 1}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
                           {newsUpdate.newsText}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
                           {newsUpdate.newsLink}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0">
                           <Switch 
                             onClick={() =>this.changeStatus(newsUpdate.newsToken,newsUpdate.published)}
                             name="published"
@@ -296,20 +298,20 @@ class newsUpdate extends Component {
                             inputProps={{ 'aria-label': 'secondary checkbox' }}
                           />
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0">
                           {newsUpdate.updatedTime}
                         </TableCell>
                         <TableCell className="p-0">
-                          <IconButton>
-                            <Icon style={{ fontSize: 20 }}
+                          <IconButton className="p-8">
+                            <Icon 
                               color="primary"
                               onClick={() => this.setModel("edit", newsUpdate)}
                             >
                               edit
                                 </Icon>
                           </IconButton>
-                          <IconButton>
-                            <Icon style={{ fontSize: 20 }}
+                          <IconButton className="p-8">
+                            <Icon 
                               color="error"
                               onClick={() =>
                                 this.deleteNewsClicked(newsUpdate.newsToken)

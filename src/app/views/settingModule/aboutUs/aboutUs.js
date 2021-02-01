@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-import { Button, Icon, Grid, InputAdornment, TextField } from "@material-ui/core";
+import { ValidatorForm } from "react-material-ui-form-validator";
+import { Button, Icon, Grid, TextField } from "@material-ui/core";
 import { Breadcrumb } from "../../../../components/matx/index";
 
-import { Facebook, Instagram, YouTube, Twitter, Email, LinkedIn } from '@material-ui/icons';
 import {
   aboutUsListApi,
   updateAboutUsApi
@@ -22,6 +21,7 @@ class aboutUs extends Component {
     heading: "",
     abstraction: "",
     token: "",
+    fileToken:"",
     aboutUsList: []
   };
   componentDidMount = async () => {
@@ -32,34 +32,39 @@ class aboutUs extends Component {
     this.setState({ aboutUsList: this.props.aboutUsList });
     this.state.aboutUsList.map((a) => {
       this.setState({
-        [a.goal]: a.goal,
-        [a.mission]: a.mission,
-        [a.vision]: a.vision,
-        [a.objective]: a.objective,
-        [a.heading]: a.heading,
-        [a.abstraction]: a.token
+        goal: a.goal,
+        mission: a.mission,
+        vision: a.vision,
+        objective: a.objective,
+        heading: a.heading,
+        abstraction: a.abstraction,
+        token:a.token,
+        fileToken : a.fileToken
+
       })
       //console.log(a.socialMediaName, a.socialMediaLink);
     })
   };
   handleSubmit = async () => {
     console.log("submitted");
-    const { goal, mission, vision, objective, heading, abstraction } = this.state;
-    let data = [{
+    const { goal, mission, vision, objective, heading, abstraction,token,fileToken } = this.state;
+    let data = {
       goal: goal,
       mission: mission,
       vision: vision,
       objective: objective,
       heading: heading,
-      abstraction: abstraction
-    }
-    ];
+      abstraction: abstraction,
+      token:token,
+      fileToken:fileToken
+
+    };
     const updateAboutUs = await updateAboutUsApi(data);
     if (updateAboutUs) {
       if (updateAboutUs.status === status.success) {
         if (updateAboutUs.data.code === status.success) {
           toastr.success(updateAboutUs.data.message);
-          this.getSocialMediaList();
+          this.getAboutUsList();
         } else {
           toastr.warning(updateAboutUs.data.message);
         }
@@ -114,21 +119,19 @@ class aboutUs extends Component {
                   type="file"
                   name="media"
                   //value={goal}
-                  required
+                  
                 />
                 <TextField
                   id="outlined-multiline-static"
                   multiline
                   rows={4}
                   variant="outlined"
-
                   className="mb-16 w-100"
                   label="goal"
                   onChange={this.handleChange}
                   type="textarea"
                   name="goal"
                   value={goal}
-
                   required
                 />
 
@@ -137,14 +140,12 @@ class aboutUs extends Component {
                   multiline
                   rows={4}
                   variant="outlined"
-
                   className="mb-16 w-100"
                   label="vision"
                   onChange={this.handleChange}
                   type="textarea"
                   name="vision"
                   value={vision}
-
                   required
                 />
 
@@ -217,7 +218,7 @@ class aboutUs extends Component {
 const mapStateToProps = (state) => {
   const {aboutUsList} = state.aboutUs;
   return {
-          aboutUsList,
+          aboutUsList
   };
       };
       

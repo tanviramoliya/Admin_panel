@@ -13,7 +13,7 @@ import newsUpdateRoutes from "./views/newsUpdate/newsUpdateRoutes";
 import subscriberRoutes from "./views/subscriber/subscriberRoutes";
 import adminUserRoutes from "./views/adminUser/adminUserRoutes";
 import settingRoutes from "./views/settingModule/settingRoutes";
-
+import inquiryRoutes from "./views/inquiry/inquiryRoutes";
 const redirectRoute = [
   {
     path: "/",
@@ -36,10 +36,12 @@ const routes = [
   ...dashboardRoutes,
   ...newsUpdateRoutes,
   ...subscriberRoutes,
+  ...inquiryRoutes,
   ...utilitiesRoutes,
   ...formsRoutes,
   ...redirectRoute,
   ...errorRoute,
+ 
 ];
 
 export default routes;

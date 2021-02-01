@@ -14,3 +14,5 @@ export * from "./apiAction/adminUserApiAction";
 export * from "./settingModule/index"
 export * from "./apiAction/socialMediaApiAction";
 export * from "./apiAction/aboutUsApiAction";
+export * from "./inquiry/index";
+export * from "./apiAction/inquiryApiAction";

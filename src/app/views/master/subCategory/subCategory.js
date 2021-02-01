@@ -165,6 +165,15 @@ class subCategory extends Component {
           if (createSubCategory.data.code === status.success) {
             toastr.success(createSubCategory.data.message);
             this.subCategoryList();
+            this.setState({
+              categoryName: "",
+              openModal: false,
+              categoryToken: "",
+              type: "new",
+              subCategoryName: "",
+              subCategoryToken: "",
+              isActive: "active"
+            });
           } else {
             toastr.warning(createSubCategory.data.message);
           }
@@ -173,15 +182,7 @@ class subCategory extends Component {
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        categoryName: "",
-        openModal: false,
-        categoryToken: "",
-        type: "new",
-        subCategoryName: "",
-        subCategoryToken: "",
-        isActive: "active"
-      });
+      
     }
   };
   UpdateSubCategory = async () => {
@@ -213,6 +214,15 @@ class subCategory extends Component {
           if (updateSubCategory.data.code === status.success) {
             toastr.success(updateSubCategory.data.message);
             this.subCategoryList();
+            this.setState({
+              categoryName: "",
+              openModal: false,
+              categoryToken: "",
+              type: "new",
+              subCategoryToken: "",
+              subCategoryName: "",
+              isActive: "active"
+            });
           } else {
             toastr.warning(updateSubCategory.data.message);
           }
@@ -221,15 +231,7 @@ class subCategory extends Component {
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        categoryName: "",
-        openModal: false,
-        categoryToken: "",
-        type: "new",
-        subCategoryToken: "",
-        subCategoryName: "",
-        isActive: "active"
-      });
+      
     }
   };
   handleChange = (event) => {
@@ -279,7 +281,7 @@ class subCategory extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="15%">No</TableCell>
+                    <TableCell className="px-0" width="15%">Sr.No</TableCell>
                     <TableCell className="px-0" width="25%">Category Name</TableCell>
                     <TableCell className="px-0" width="25%">SubCategory Name</TableCell>
                     <TableCell className="px-0" width="20%">Active/Not Active</TableCell>
@@ -291,37 +293,37 @@ class subCategory extends Component {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((subCategory, index) => (
                       <TableRow key={index}>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" >
                           {index + 1}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0">
                           {subCategory.categoryName}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0">
                           {subCategory.subCategoryName}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0">
                           {subCategory.isActive ? (
-                            <medium className="border-radius-4 bg-primary text-white px-8 py-2 ">
+                            <small className="border-radius-4 bg-primary text-white px-8 py-2 ">
                               Active
-                          </medium>
+                          </small>
                           ) : (
-                              <medium className="border-radius-4 bg-error text-white px-8 py-2 ">
+                              <small className="border-radius-4 bg-error text-white px-8 py-2 ">
                                 Not Active
-                          </medium>
+                          </small>
                             )}
                         </TableCell>
                         <TableCell className="p-0">
-                          <IconButton>
-                            <Icon style={{ fontSize: 20 }}
+                          <IconButton className="p-8">
+                            <Icon 
                               color="primary"
                               onClick={() => this.setModel("edit", subCategory)}
                             >
                               edit
                           </Icon>
                           </IconButton>
-                          <IconButton>
-                            <Icon style={{ fontSize: 20 }}
+                          <IconButton className="p-8">
+                            <Icon
                               color="error"
                               onClick={() =>
                                 this.deleteSubCategoryClicked(

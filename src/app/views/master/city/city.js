@@ -146,6 +146,14 @@ class city extends Component{
           if (createCity.data.code === status.success) {
             toastr.success(createCity.data.message);
             this.getCityList();
+            this.setState({
+              stateName: "",
+              openModal: false,
+              stateToken: "",
+              type: "new",
+              cityName: "",
+              cityToken :""
+            });
           } else {
             toastr.warning(createCity.data.message);
           }
@@ -154,14 +162,7 @@ class city extends Component{
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        stateName: "",
-        openModal: false,
-        stateToken: "",
-        type: "new",
-        cityName: "",
-        cityToken :""
-      });
+     
     }
   };
   UpdateCity = async () => {
@@ -186,6 +187,14 @@ class city extends Component{
           if (updateCity.data.code === status.success) {
             toastr.success(updateCity.data.message);
             this.getCityList();
+            this.setState({
+              stateName: "",
+              openModal: false,
+              stateToken: "",
+              type: "new",
+              cityName: "",
+              cityToken :""
+            });
           } else {
             toastr.warning(updateCity.data.message);
           }
@@ -194,14 +203,7 @@ class city extends Component{
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        stateName: "",
-        openModal: false,
-        stateToken: "",
-        type: "new",
-        cityName: "",
-        cityToken :""
-      });
+      
     }
   };
   handleChange = (event) => {
@@ -240,10 +242,10 @@ class city extends Component{
             </Button>
           </div>
           <TableContainer style={{ maxHeight: "405px" }}>
-      <Table style={{ whiteSpace: "pre" }} stickyHeader>
+      <Table style={{ whiteSpace: "pre" }}  stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell className="px-0" width="20%">No</TableCell>
+            <TableCell className="px-0" width="20%">Sr.No</TableCell>
             <TableCell className="px-0" width="30%">State Name</TableCell>
             <TableCell className="px-0" width="30%">City Name</TableCell>
             <TableCell className="px-0">Action</TableCell>
@@ -253,21 +255,21 @@ class city extends Component{
           {cityList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((city, index) => (
               <TableRow key={index}>
-                <TableCell className="p-0" align="left">
+                <TableCell className="p-0" >
                   {index + 1}
                 </TableCell>
-                <TableCell className="p-0" align="left">
+                <TableCell className="p-0">
                   {city.stateName}
                 </TableCell>
-                <TableCell className="p-0" align="left">
+                <TableCell className="p-0">
                   {city.cityName}
                 </TableCell>
                 <TableCell className="p-0">
-                  <IconButton>
-                    <Icon style={{ fontSize: 20 }} color="primary" onClick={() => this.setModel("edit", city)}>edit</Icon>
+                  <IconButton className="p-8">
+                    <Icon  color="primary" onClick={() => this.setModel("edit", city)}>edit</Icon>
                   </IconButton>
-                  <IconButton>                   
-                    <Icon style={{ fontSize: 20 }} color="error"  onClick={() => this.deleteCityClicked(city.cityToken)}>delete</Icon>
+                  <IconButton className="p-8">                   
+                    <Icon color="error"  onClick={() => this.deleteCityClicked(city.cityToken)}>delete</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>

@@ -149,6 +149,14 @@ class category extends Component {
           if (createCategory.data.code === status.success) {
             toastr.success(createCategory.data.message);
             this.categoryList();
+            this.setState({
+              categoryName: "",
+              openModal: false,
+              categoryToken: "",
+              type: "new",
+              isActive: "active",
+              serialNo: 1,
+            });
           } else {
             toastr.warning(createCategory.data.message);
           }
@@ -157,14 +165,7 @@ class category extends Component {
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        categoryName: "",
-        openModal: false,
-        categoryToken: "",
-        type: "new",
-        isActive: "active",
-        serialNo: 1,
-      });
+      
     }
   };
   UpdateCategory = async () => {
@@ -196,6 +197,14 @@ class category extends Component {
           if (updateCategory.data.code === status.success) {
             toastr.success(updateCategory.data.message);
             this.categoryList();
+            this.setState({
+              categoryName: "",
+              openModal: false,
+              categoryToken: "",
+              type: "new",
+              isActive: "active",
+              serialNo: 1,
+            });
           } else {
             toastr.warning(updateCategory.data.message);
           }
@@ -204,14 +213,7 @@ class category extends Component {
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        categoryName: "",
-        openModal: false,
-        categoryToken: "",
-        type: "new",
-        isActive: "active",
-        serialNo: 1,
-      });
+     
     }
   };
   handleChange = (event) => {
@@ -254,7 +256,7 @@ class category extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="15%">No</TableCell>
+                    <TableCell className="px-0" width="15%">Sr.No</TableCell>
                     <TableCell className="px-0" width="30%">Category Name</TableCell>
                     <TableCell className="px-0" width="20%">Serial No</TableCell>
                     <TableCell className="px-0" width="20%">Active/Not Active</TableCell>
@@ -266,39 +268,39 @@ class category extends Component {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((category, index) => (
                       <TableRow key={index}>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" >
                           {index + 1}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0">
                           {category.categoryName}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
-                        <medium className="border-radius-4 bg-secondary text-white px-8 py-2 ">
+                        <TableCell className="p-0">
+                        <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
                             {category.serialNo}
-                          </medium>
+                          </small>
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0">
                           {category.isActive ? (
-                            <medium  className="border-radius-4 bg-primary text-white px-8 py-2 ">
+                            <small  className="border-radius-4 bg-primary text-white px-8 py-2 ">
                               Active
-                          </medium >
+                          </small >
                           ) : (
-                              <medium className="border-radius-4 bg-error text-white px-8 py-2 ">
+                              <small className="border-radius-4 bg-error text-white px-8 py-2 ">
                                 Not Active
-                          </medium>
+                          </small>
                             )}
                         </TableCell>
                         <TableCell className="p-0">
-                          <IconButton>
-                            <Icon style={{ fontSize: 20 }}
+                          <IconButton className="p-8">
+                            <Icon 
                               color="primary"
                               onClick={() => this.setModel("edit", category)}
                             >
                               edit
                           </Icon>
                           </IconButton>
-                          <IconButton>
-                            <Icon style={{ fontSize: 20 }}
+                          <IconButton className="p-8">
+                            <Icon 
                               color="error"
                               onClick={() =>
                                 this.deleteCategoryClicked(category.categoryToken)
