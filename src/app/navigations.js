@@ -46,6 +46,11 @@ export const navigations = [
     path: "/subscriber"
   },
   {
+    name: "Inquiry",
+    icon: "live_help",
+    path: "/inquiry"
+  },
+  {
     name: "Master",
     icon: "trending_up",
     children: [

@@ -193,6 +193,21 @@ class AdminUser extends Component {
           if (createAdminUser.data.code === status.success) {
             toastr.success(createAdminUser.data.message);
             this.getAdminUserList();
+            this.setState({
+              openModal: false,
+              type: "new",
+              adminId: "",
+              adminToken: "",
+              firstName: "",
+              lastName: "",
+              role: "",
+              roleToken: "",
+              email: "",
+              contactNumber: "",
+              passWord: "",
+              confirmPassWord : ""
+      
+            });
           } else {
             toastr.warning(createAdminUser.data.message);
           }
@@ -201,21 +216,7 @@ class AdminUser extends Component {
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        openModal: false,
-        type: "new",
-        adminId: "",
-        adminToken: "",
-        firstName: "",
-        lastName: "",
-        role: "",
-        roleToken: "",
-        email: "",
-        contactNumber: "",
-        passWord: "",
-        confirmPassWord : ""
-
-      });
+      
     }
   };
   UpdateAdminUser = async () => {
@@ -269,6 +270,20 @@ class AdminUser extends Component {
           if (updateAdminUser.data.code === status.success) {
             toastr.success(updateAdminUser.data.message);
             this.getAdminUserList();
+            this.setState({
+              openModal: false,
+              newsText: "",
+              type: "new",
+              adminToken: "",
+              firstName: "",
+              lastName: "",
+              role: "",
+              roleToken: "",
+              email: "",
+              contactNumber: "",
+              passWord: "",
+              confirmPassWord : ""
+            });
           } else {
             toastr.warning(updateAdminUser.data.message);
           }
@@ -277,22 +292,10 @@ class AdminUser extends Component {
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        openModal: false,
-        newsText: "",
-        type: "new",
-        adminToken: "",
-        firstName: "",
-        lastName: "",
-        role: "",
-        roleToken: "",
-        email: "",
-        contactNumber: "",
-        passWord: "",
-        confirmPassWord : ""
-      });
+      
     }
   };
+  
   handleChange = (event) => {
     event.persist();
     this.setState({ [event.target.name]: event.target.value });
@@ -334,7 +337,7 @@ class AdminUser extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="5%" >No</TableCell>
+                    <TableCell className="px-0" width="5%" >Sr.No</TableCell>
                     <TableCell className="px-0" width="15%" >UserName</TableCell>
                     <TableCell className="px-0" width="8%" >Role</TableCell>
                     <TableCell className="px-0"  width="20%">Email</TableCell>
@@ -349,39 +352,39 @@ class AdminUser extends Component {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((AdminUser, index) => (
                       <TableRow key={index}>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" >
                           {index + 1}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" >
                           {AdminUser.firstName +" "+AdminUser.lastName}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
-                        <medium className="border-radius-4 bg-secondary text-white px-8 py-2 ">
+                        <TableCell className="p-0">
+                        <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
                             {AdminUser.role}
-                          </medium>
+                          </small>
                           
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
                           {AdminUser.email}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" >
                           {AdminUser.contactNumber}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" >
                           {AdminUser.createdTime}
                         </TableCell>
 
                         <TableCell className="p-0">
-                          <IconButton>
-                            <Icon style={{ fontSize: 20 }}
+                          <IconButton className="p-8">
+                            <Icon 
                               color="primary"
                               onClick={() => this.setModel("edit", AdminUser)}
                             >
                               edit
                                 </Icon>
                           </IconButton>
-                          <IconButton>
-                            <Icon style={{ fontSize: 20 }}
+                          <IconButton className="p-8">
+                            <Icon 
                               color="error"
                               onClick={() =>
                                 this.deleteAdminUserClicked(AdminUser.adminToken)
@@ -559,6 +562,7 @@ class AdminUser extends Component {
                     errorMessages={["this field is required"]}
                     style={{ width: "-webkit-fill-available" }}
                     variant="outlined"
+                    
                   />
                    <TextValidator
                     className="mb-16 "

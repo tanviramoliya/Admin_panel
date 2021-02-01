@@ -151,6 +151,14 @@ class state extends Component {
           if (createState.data.code === status.success) {
             toastr.success(createState.data.message);
             this.getStateList();
+            this.setState({
+              countryName: "",
+              openModal: false,
+              countryToken: "",
+              type: "new",
+              stateName: "",
+              stateToken: ""
+            });
           } else {
             toastr.warning(createState.data.message);
           }
@@ -159,14 +167,7 @@ class state extends Component {
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        countryName: "",
-        openModal: false,
-        countryToken: "",
-        type: "new",
-        stateName: "",
-        stateToken: ""
-      });
+     
     }
   };
   UpdateState = async () => {
@@ -191,6 +192,14 @@ class state extends Component {
           if (updateState.data.code === status.success) {
             toastr.success(updateState.data.message);
             this.getStateList();
+            this.setState({
+              countryName: "",
+              openModal: false,
+              countryToken: "",
+              type: "new",
+              stateToken: "",
+              stateName: ""
+            });
           } else {
             toastr.warning(updateState.data.message);
           }
@@ -199,14 +208,7 @@ class state extends Component {
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        countryName: "",
-        openModal: false,
-        countryToken: "",
-        type: "new",
-        stateToken: "",
-        stateName: ""
-      });
+      
     }
   };
   handleChange = (event) => {
@@ -253,7 +255,7 @@ class state extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="20%">No</TableCell>
+                    <TableCell className="px-0" width="20%">Sr.No</TableCell>
                     <TableCell className="px-0" width="30%">Country Name</TableCell>
                     <TableCell className="px-0" width="30%">State Name</TableCell>
                     <TableCell className="px-0">Action</TableCell>
@@ -264,26 +266,26 @@ class state extends Component {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((state, index) => (
                       <TableRow key={index}>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" >
                           {index + 1}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0" >
                           {state.countryName}
                         </TableCell>
-                        <TableCell className="p-0" align="left">
+                        <TableCell className="p-0">
                           {state.stateName}
                         </TableCell>
                         <TableCell className="p-0">
-                          <IconButton>
-                            <Icon style={{ fontSize: 20 }}
+                          <IconButton className="p-8">
+                            <Icon 
                               color="primary"
                               onClick={() => this.setModel("edit", state)}
                             >
                               edit
                           </Icon>
                           </IconButton>
-                          <IconButton>
-                            <Icon style={{ fontSize: 20 }}
+                          <IconButton className="p-8">
+                            <Icon 
                               color="error"
                               onClick={() =>
                                 this.deleteStateClicked(state.stateToken)

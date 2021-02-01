@@ -6,6 +6,7 @@ import {
 import { status } from "../../../utility/config";
 import { toastr } from "react-redux-toastr";
 import { Breadcrumb } from "../../../components/matx/Breadcrumb";
+import { XGrid } from '@material-ui/x-grid';
 import {
   Card,
   Table,
@@ -20,7 +21,8 @@ import {
   Tooltip,
   IconButton,
   Chip,
-  Toolbar
+  Toolbar,
+  TableSortLabel
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
@@ -34,7 +36,13 @@ class subscriber extends Component {
     deleteModal: false,
     deleteSubscriberToken: null,
     selected: [],
+    order:"asc",
+    orderBy:"",
+    setOrder:"",
+    sertOrderby:"",
+
   };
+
 
   componentDidMount = async () => {
     await this.getSubscriberList();
@@ -170,10 +178,10 @@ class subscriber extends Component {
               </Toolbar>
               </div>
             <TableContainer style={{ maxHeight: "405px" }}>
-              <Table style={{ whiteSpace: "pre" }} stickyHeader>
+              <Table style={{ whiteSpace: "pre" }}  stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell>
+                    <TableCell className="p-0">
                       <Checkbox 
                         indeterminate={
                           selected.length > 0 &&
@@ -189,9 +197,9 @@ class subscriber extends Component {
                       {/* <FormControlLabel control={<Checkbox onChange={this.handleSelectAllClick} />} /> */}
                     </TableCell>
                     <TableCell className="px-0" width="15%">
-                      No
+                      <TableSortLabel>Sr.No</TableSortLabel>
                     </TableCell>
-                    <TableCell className="px-0" width="30%">
+                    <TableCell className="px-0" width="30%" >
                       User Name
                     </TableCell>
                     <TableCell className="px-0" width="30%">
@@ -223,39 +231,30 @@ class subscriber extends Component {
                           key={subscriberUpdate.userToken}
                           selected={isItemSelected}
                         >
-                          <TableCell>
-                            <Checkbox
+                          <TableCell className="p-0">
+                            <Checkbox 
                               checked={isItemSelected}
                               inputProps={{ "aria-labelledby": labelId }}
                             />
                             {/* <FormControlLabel control={<Checkbox />} /> */}
                           </TableCell>
                           <TableCell
-                            className="px-0"
-                            style={{ padding: "12.5px" }}
-                            align="left"
+                            className="p-0"
                           >
                             {index + 1}
                           </TableCell>
                           <TableCell
                             id={labelId}
-                            className="px-0"
-                            style={{ padding: "12.5px" }}
-                            align="left"
+                            className="p-0"
                           >
                             {subscriberUpdate.userName}
                           </TableCell>
                           <TableCell
-                            className="px-0"
-                            style={{ padding: "12.5px" }}
-                            align="left"
-                          >
+                            className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
                             {subscriberUpdate.emailId}
                           </TableCell>
                           <TableCell
-                            className="px-0"
-                            style={{ padding: "12.5px" }}
-                            align="left"
+                            className="p-0"
                           >
                             {subscriberUpdate.subscriptionDate}
                           </TableCell>

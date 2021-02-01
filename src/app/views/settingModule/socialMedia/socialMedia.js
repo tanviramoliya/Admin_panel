@@ -118,10 +118,12 @@ class socialMedia extends Component {
             <Grid container spacing={6}>
               <Grid item lg={6} md={6} sm={12} xs={12}>               
                 <TextValidator
+                  
                   className="mb-16 w-100"
                   label="instagram"
                   onChange={this.handleChange}
-                  type="url"
+                  type="textArea"
+                  
                   name="instagram"
                   value={instagram}
                   validators={[

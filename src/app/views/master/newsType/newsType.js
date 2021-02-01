@@ -131,6 +131,13 @@ class newsType extends Component{
           if (createNewsType.data.code === status.success) {
             toastr.success(createNewsType.data.message);
             this.newsTypeList();
+            this.setState({
+              newsTypeName: "",
+              openModal: false,
+              newsTypeToken: "",
+              type: "new",
+              isActive : "active"
+            });
           } else {
             toastr.warning(createNewsType.data.message);
           }
@@ -139,13 +146,7 @@ class newsType extends Component{
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        newsTypeName: "",
-        openModal: false,
-        newsTypeToken: "",
-        type: "new",
-        isActive : "active"
-      });
+      
     }
   };
   UpdateNewsType = async () => {
@@ -170,6 +171,13 @@ class newsType extends Component{
           if (updateNewsType.data.code === status.success) {
             toastr.success(updateNewsType.data.message);
             this.newsTypeList();
+            this.setState({
+              newsTypeName: "",
+              openModal: false,
+              newsTypeToken: "",
+              type: "new",
+              isActive : "active"
+            });
           } else {
             toastr.warning(updateNewsType.data.message);
           }
@@ -178,13 +186,7 @@ class newsType extends Component{
         }
       }
       // this.props.setLoader(false);
-      this.setState({
-        newsTypeName: "",
-        openModal: false,
-        newsTypeToken: "",
-        type: "new",
-        isActive : "active"
-      });
+      
     }
   };
   handleChange = (event) => {
@@ -215,10 +217,10 @@ class newsType extends Component{
             </Button>
           </div>
           <TableContainer style={{ maxHeight: "405px" }}>
-              <Table style={{ whiteSpace: "pre" }} stickyHeader>
+              <Table style={{ whiteSpace: "pre" }}  stickyHeader>
         <TableHead>
           <TableRow>
-          <TableCell className="px-0">No</TableCell>
+          <TableCell className="px-0">Sr.No</TableCell>
             <TableCell className="px-0">NEWS Type</TableCell>
             <TableCell className="px-0">Active/Not Active</TableCell>
             <TableCell className="px-0">Action</TableCell>
@@ -230,13 +232,13 @@ class newsType extends Component{
             .map(
             (newsType, index) => (
               <TableRow key={index}>
-                <TableCell className="p-0" align="left">
+                <TableCell className="p-0">
                   {index + 1}
                 </TableCell>
-                <TableCell className="p-0" align="left">
+                <TableCell className="p-0">
                   {newsType.newsTypeName}
                 </TableCell>
-                <TableCell className="p-0" align="left">
+                <TableCell className="p-0" >
                 {newsType.isActive ?
                ( <small className="border-radius-4 bg-primary text-white px-8 py-2 ">
                 Active
@@ -247,11 +249,11 @@ class newsType extends Component{
                   }
                 </TableCell>
                 <TableCell className="p-0">
-                  <IconButton>
-                    <Icon  style={{ fontSize: 20 }} color="primary" onClick={() => this.setModel("edit", newsType)}>edit</Icon>
+                  <IconButton className="p-8">
+                    <Icon  color="primary" onClick={() => this.setModel("edit", newsType)}>edit</Icon>
                   </IconButton>
-                  <IconButton>                   
-                    <Icon style={{ fontSize: 20 }} color="error" onClick={() => this.deleteNewsTypeClicked(newsType.newsTypeToken)}>delete</Icon>
+                  <IconButton className="p-8">                   
+                    <Icon  color="error" onClick={() => this.deleteNewsTypeClicked(newsType.newsTypeToken)}>delete</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
