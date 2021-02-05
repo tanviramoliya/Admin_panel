@@ -5,3 +5,9 @@ TableCell {
     -o-padding: 0;
     padding: 0;
   }
+.ellipse {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 6px;
+}

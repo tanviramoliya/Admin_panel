@@ -25,6 +25,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  TextField,
   CardContent,
   CardActions,
   List,
@@ -33,6 +34,8 @@ import {
   Avatar,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
+import ReplyIcon from "@material-ui/icons/Reply";
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { connect } from "react-redux";
 import { green } from "@material-ui/core/colors";
@@ -46,12 +49,13 @@ class inquiry extends Component {
     inquiryList: [],
     rowsPerPage: 8,
     page: 0,
-    type: "read",
     deleteModal: false,
     deleteInquiryToken: null,
     selected: [],
     openReadModal: false,
     openReplyModal: false,
+    replyMessage: undefined,
+    replySubject: undefined,
   };
 
   componentDidMount = async () => {
@@ -105,9 +109,8 @@ class inquiry extends Component {
       selected: [],
     });
   };
-  setReadModel = (type, data) => {
-    this.setState({ openReadModal: true, type: type });
-    if (type === "read") {
+  setReadModel = (data) => {
+    this.setState({ openReadModal: true });
       this.setState({
         userName: data.userName,
         emailId: data.emailId,
@@ -116,11 +119,10 @@ class inquiry extends Component {
         message: data.message,
         contactNumber: data.contactNumber,
       });
-    }
   };
-  setReplyModel = (type, data) => {
-    this.setState({ openReplyModal: true, type: type });
-    if (type === "read") {
+  setReplyModel = ( data) => {
+    console.log("DATA", data);
+    this.setState({ openReplyModal: true});
       this.setState({
         userName: data.userName,
         emailId: data.emailId,
@@ -129,7 +131,6 @@ class inquiry extends Component {
         message: data.message,
         contactNumber: data.contactNumber,
       });
-    }
   };
   //for close a modal
   handleClose = () => {
@@ -142,7 +143,6 @@ class inquiry extends Component {
       subject: "",
       message: "",
       contactNumber: "",
-      type: "read",
     });
   };
   //all checked
@@ -190,9 +190,10 @@ class inquiry extends Component {
       subject,
       message,
       contactNumber,
-      type,
       openReadModal,
       openReplyModal,
+      replyMessage,
+      replySubject,
     } = this.state;
     return (
       <div className="m-sm-30">
@@ -236,7 +237,7 @@ class inquiry extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="p-0">
+                    <TableCell>
                       <Checkbox
                         indeterminate={
                           selected.length > 0 &&
@@ -293,7 +294,6 @@ class inquiry extends Component {
                           selected={isItemSelected}
                         >
                           <TableCell
-                            className="p-0"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
@@ -305,7 +305,6 @@ class inquiry extends Component {
                             {/* <FormControlLabel control={<Checkbox />} /> */}
                           </TableCell>
                           <TableCell
-                            className="p-0"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
@@ -314,80 +313,58 @@ class inquiry extends Component {
                           </TableCell>
                           <TableCell
                             id={labelId}
-                            className="p-0"
+                            className="ellipse"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
-                            style={{
-                              textOverflow: "ellipsis",
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                            }}
                           >
                             {inquiryUpdate.userName}
                           </TableCell>
                           <TableCell
-                            className="p-0"
+                            className="ellipse"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
-                            style={{
-                              textOverflow: "ellipsis",
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                            }}
                           >
                             {inquiryUpdate.subject}
                           </TableCell>
                           <TableCell
-                            className="p-0"
+                            className="ellipse"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
-                            style={{
-                              textOverflow: "ellipsis",
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                            }}
                           >
                             {inquiryUpdate.message}
                           </TableCell>
                           <TableCell
-                            className="p-0"
+                            className="ellipse"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
-                            style={{
-                              textOverflow: "ellipsis",
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                            }}
                           >
                             {inquiryUpdate.emailId}
                           </TableCell>
                           <TableCell
-                            className="p-0"
+                            className="ellipse"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
                           >
                             {inquiryUpdate.contactNumber}
                           </TableCell>
-                          <TableCell className="p-0">
+                          <TableCell>
                             <IconButton className="p-8">
                               <Icon
-                                style={{ color: "#f44336" }}
                                 onClick={() =>
-                                  this.setReadModel("read", inquiryUpdate)
+                                  this.setReadModel(inquiryUpdate)
                                 }
                               >
-                                more_vert
+                               <VisibilityIcon/>
                               </Icon>
                             </IconButton>
                             <IconButton
-                              className="p-8"
-                              onClick={() =>
-                                this.setReplyModel("read", inquiryUpdate)
+                              className="p-0"
+                              onClick={() => this.setReplyModel(inquiryUpdate)
                               }
                             >
                               <Icon color="primary">send</Icon>
@@ -429,80 +406,71 @@ class inquiry extends Component {
             <DialogContent dividers>
               <TableContainer>
                 <TableBody>
-            <TableRow>
-            <TableCell className="px-0">UserName</TableCell>
-            <TableCell className="px-0" >{userName}</TableCell>
-          </TableRow>
-            <TableRow>
-            <TableCell className="px-0" >Date</TableCell>
-            <TableCell className="px-0" >{Date.now()}</TableCell>
-          </TableRow>
-            <TableRow>
-            <TableCell className="px-0" >EmailId</TableCell>
-            <TableCell className="px-0" >{emailId}</TableCell>
-          </TableRow>
-            <TableRow>
-            <TableCell className="px-0" >Contact No</TableCell>
-            <TableCell className="px-0" >{contactNumber}</TableCell>
-          </TableRow>
-            <TableRow>
-            <TableCell className="px-0" >Subject</TableCell>
-            <TableCell className="px-0" >{subject}</TableCell>
-          </TableRow>
-            <TableRow>
-            <TableCell className="px-0" >Message</TableCell>
-            <TableCell className="px-0" style={{ wordBreak: "break-word"}}>{message}</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-
+                  <TableRow>
+                    <TableCell
+                      width="10%"
+                      style={{ paddingRight: "10px", fontWeight: "bold" }}
+                    >
+                      UserName
+                    </TableCell>
+                    <TableCell width="60%">{userName}</TableCell>
+                    <TableCell
+                      width="10%"
+                      style={{ paddingRight: "10px", fontWeight: "bold" }}
+                    >
+                      Date
+                    </TableCell>
+                    <TableCell width="20%">{Date.now()}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      width="5%"
+                      style={{ paddingRight: "10px", fontWeight: "bold" }}
+                    >
+                      EmailId
+                    </TableCell>
+                    <TableCell width="45%">{emailId}</TableCell>
+                    <TableCell
+                      width="5%"
+                      style={{ paddingRight: "10px", fontWeight: "bold" }}
+                    >
+                      ContactNo
+                    </TableCell>
+                    <TableCell width="45%">{contactNumber}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      style={{ paddingRight: "10px", fontWeight: "bold" }}
+                    >
+                      Subject
+                    </TableCell>
+                    <TableCell colSpan={3}>{subject}</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      style={{ paddingRight: "10px", fontWeight: "bold" }}
+                    >
+                      Message
+                    </TableCell>
+                    <TableCell style={{ wordBreak: "break-word" }} colSpan={3}>
+                      {message}
+                    </TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
                 </TableBody>
               </TableContainer>
-              {/* <Card style={{ minWidth: 275 }}>
-                <CardContent>
-                  <List>
-                    <ListItem>
-                      <ListItemText
-                        primary="UserName"
-                        style={{ paddingRight: "5px" }}
-                      />
-                      <ListItemText primary={userName} />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText primary="Date" />
-                      <ListItemText primary="23-01-2021" />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText primary="EmailId" />
-                      <ListItemText primary={emailId} />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText primary="Contact No" />
-                      <ListItemText primary={contactNumber} />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText primary="Subject" />
-                      <ListItemText primary={subject} />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        primary="Message"
-                        style={{ paddingRight: "5px" }}
-                      />
-                      <p>{message}</p>
-                      <ListItemText primary={message} />
-                    </ListItem>
-                  </List>
-                </CardContent>
-              </Card> */}
             </DialogContent>
 
             <DialogActions>
-              <Button onClick={this.handleClose} color="primary">
+              {/* <Button onClick={this.handleClose} color="primary">
                 Cancel
-              </Button>
+              </Button> */}
               <IconButton
                 className="p-8"
-                onClick={() => this.setReplyModel("read", "")}
+                onClick={() => this.setState({ openReplyModal : true})}
               >
                 <Icon color="primary">send</Icon>
               </IconButton>
@@ -513,24 +481,77 @@ class inquiry extends Component {
             aria-labelledby="customized-dialog-title"
             fullWidth="true"
           >
-            <DialogTitle id="customized-dialog-title">Send Reply</DialogTitle>
+            <DialogTitle id="customized-dialog-title">
+              <ReplyIcon color="primary" /> Send Reply
+            </DialogTitle>
             <DialogContent dividers>
-              same model ma send valu model thy to karvanu ..
-              <table border="1">
-                <tr>
-                  <td>UserName </td>
-                  <td>{userName}</td>
-                  <td>To </td>
-                  <td>{emailId}</td>
-                </tr>
-              </table>
-              avi rit na be value show karvani ...<br></br>
-              1) subject text field.<br></br>
-              2) reply textArea field.
+              <TableRow>
+                <TableCell
+                  width="10%"
+                  style={{ paddingRight: "10px", fontWeight: "bold" }}
+                >
+                  UserName
+                </TableCell>
+                <TableCell width="40%" style={{ wordBreak: "break-word" }}>
+                  {userName}
+                </TableCell>
+                <TableCell
+                  width="10%"
+                  style={{ paddingRight: "10px", fontWeight: "bold" }}
+                >
+                  To
+                </TableCell>
+                <TableCell width="40%" style={{ wordBreak: "break-word" }}>
+                  {emailId}
+                </TableCell>
+              </TableRow>
+              <ValidatorForm
+                ref="form"
+                onSubmit={this.handleSubmit}
+                onError={(errors) => null}
+              >
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  className="mb-16 w-100"
+                  label="Subject"
+                  onChange={this.handleChange}
+                  type="text"
+                  name="replySubject"
+                  value={replySubject}
+                  error={replySubject === ""}
+                  helperText={
+                    replySubject === "" ? "this feild is required" : ""
+                  }
+                />
+                <TextField
+                  error={replyMessage === ""}
+                  id="outlined-basic"
+                  multiline
+                  rows={6}
+                  variant="outlined"
+                  className="mb-16 w-100"
+                  label="Reply message"
+                  onChange={this.handleChange}
+                  type="textarea"
+                  name="replyMessage"
+                  value={replyMessage}
+                  helperText={
+                    replyMessage === "" ? "this feild is required" : ""
+                  }
+                />
+              </ValidatorForm>
             </DialogContent>
-            <DialogActions>
-              <Button onClick={this.handleClose} color="primary">
+            <DialogActions style={{paddingRight : "24px"}}>
+              <Button onClick={this.handleClose} variant="outlined">
                 Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"                
+                endIcon={<Icon>send</Icon>}
+              >
+                Send
               </Button>
             </DialogActions>
           </Dialog>
