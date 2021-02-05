@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import {
-  inquiryListApi,
-  deleteInquiryApi,
-} from "../../../redux/actions/index";
+import { inquiryListApi, deleteInquiryApi } from "../../../redux/actions/index";
 import "../../../assets/styles/utilities/_tableCell.scss";
 import { status } from "../../../utility/config";
 import { toastr } from "react-redux-toastr";
@@ -28,8 +25,12 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField,
-  Avatar
+  CardContent,
+  CardActions,
+  List,
+  ListItem,
+  ListItemText,
+  Avatar,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
@@ -49,8 +50,8 @@ class inquiry extends Component {
     deleteModal: false,
     deleteInquiryToken: null,
     selected: [],
-    openReadModal:false,
-    openReplyModal:false
+    openReadModal: false,
+    openReplyModal: false,
   };
 
   componentDidMount = async () => {
@@ -85,16 +86,11 @@ class inquiry extends Component {
       selected: [],
     });
     // this.props.setLoader(true);
-    const deleteInquiry = await deleteInquiryApi(
-      this.state.deleteInquiryToken
-    );
+    const deleteInquiry = await deleteInquiryApi(this.state.deleteInquiryToken);
     if (deleteInquiry && deleteInquiry.data.code === status.success) {
       await this.getInquiryList();
       toastr.success(deleteInquiry.data.message);
-    } else if (
-      deleteInquiry &&
-      deleteInquiry.data.code === status.badRequest
-    ) {
+    } else if (deleteInquiry && deleteInquiry.data.code === status.badRequest) {
       toastr.warning(deleteInquiry.data.message);
     } else {
       toastr.error(deleteInquiry.data.message);
@@ -119,7 +115,6 @@ class inquiry extends Component {
         subject: data.subject,
         message: data.message,
         contactNumber: data.contactNumber,
-
       });
     }
   };
@@ -133,22 +128,21 @@ class inquiry extends Component {
         subject: data.subject,
         message: data.message,
         contactNumber: data.contactNumber,
-
       });
     }
   };
   //for close a modal
   handleClose = () => {
     this.setState({
-      openReadModal:false,
-      openReplyModal:false,
+      openReadModal: false,
+      openReplyModal: false,
       userName: "",
       emailId: "",
       token: "",
       subject: "",
       message: "",
       contactNumber: "",
-      type:"read"
+      type: "read",
     });
   };
   //all checked
@@ -186,8 +180,11 @@ class inquiry extends Component {
   };
 
   render() {
-    
-    const { page, rowsPerPage, inquiryList, selected,
+    const {
+      page,
+      rowsPerPage,
+      inquiryList,
+      selected,
       userName,
       emailId,
       subject,
@@ -195,27 +192,26 @@ class inquiry extends Component {
       contactNumber,
       type,
       openReadModal,
-      openReplyModal } = this.state;
+      openReplyModal,
+    } = this.state;
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
-          <Breadcrumb
-            routeSegments={[{ name: "Inquiry", path: "/inquiry" }]}
-          />
+          <Breadcrumb routeSegments={[{ name: "Inquiry", path: "/inquiry" }]} />
         </div>
         <div className="py-12">
           <Card elevation={6} className="px-24 pt-20 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
-              <Toolbar >
+              <Toolbar>
                 {selected.length > 0 ? (
                   <Typography color="error" variant="h6" component="div">
                     {selected.length} rows selected
-                </Typography>
+                  </Typography>
                 ) : (
-                    <Typography variant="h6" id="tableTitle" component="div">
-                      Inquiry Information
-                </Typography>
-                  )}
+                  <Typography variant="h6" id="tableTitle" component="div">
+                    Inquiry Information
+                  </Typography>
+                )}
                 {selected.length > 0 ? (
                   <Tooltip title="Delete">
                     <IconButton
@@ -226,21 +222,20 @@ class inquiry extends Component {
                     </IconButton>
                   </Tooltip>
                 ) : (
-                    <Tooltip title="Delete" style=
-                      {{ padding: "12px" }}>
-                      <Chip
-                        variant="outlined"
-                        color="secondary"
-                        label={inquiryList.length + " Inquiries"}
-                      />
-                    </Tooltip>
-                  )}
+                  <Tooltip title="Delete" style={{ padding: "12px" }}>
+                    <Chip
+                      variant="outlined"
+                      color="secondary"
+                      label={inquiryList.length + " Inquiries"}
+                    />
+                  </Tooltip>
+                )}
               </Toolbar>
             </div>
             <TableContainer style={{ maxHeight: "405px" }}>
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
-                <TableHead >
-                  <TableRow >
+                <TableHead>
+                  <TableRow>
                     <TableCell className="p-0">
                       <Checkbox
                         indeterminate={
@@ -280,7 +275,7 @@ class inquiry extends Component {
                   </TableRow>
                 </TableHead>
 
-                <TableBody >
+                <TableBody>
                   {inquiryList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((inquiryUpdate, index) => {
@@ -290,20 +285,22 @@ class inquiry extends Component {
                       const labelId = `enhanced-table-checkbox-${index}`;
                       return (
                         <TableRow
-                        hover
+                          hover
                           role="checkbox"
                           aria-checked={isItemSelected}
                           tabIndex={-1}
                           key={inquiryUpdate.token}
                           selected={isItemSelected}
                         >
-                          <TableCell className="p-0"  onClick={(event) =>
-                                this.handleClick(event, inquiryUpdate.token)
-                              } >
+                          <TableCell
+                            className="p-0"
+                            onClick={(event) =>
+                              this.handleClick(event, inquiryUpdate.token)
+                            }
+                          >
                             <Checkbox
                               checked={isItemSelected}
                               inputProps={{ "aria-labelledby": labelId }}
-                             
                             />
                             {/* <FormControlLabel control={<Checkbox />} /> */}
                           </TableCell>
@@ -311,54 +308,88 @@ class inquiry extends Component {
                             className="p-0"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
-                            }>
+                            }
+                          >
                             {index + 1}
                           </TableCell>
                           <TableCell
                             id={labelId}
-                            className="p-0"  onClick={(event) =>
+                            className="p-0"
+                            onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
-                            } style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                            }
+                            style={{
+                              textOverflow: "ellipsis",
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                            }}
                           >
                             {inquiryUpdate.userName}
                           </TableCell>
                           <TableCell
-                            className="p-0"  onClick={(event) =>
+                            className="p-0"
+                            onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
-                            } style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                            }
+                            style={{
+                              textOverflow: "ellipsis",
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                            }}
                           >
                             {inquiryUpdate.subject}
                           </TableCell>
                           <TableCell
-                            className="p-0"  onClick={(event) =>
+                            className="p-0"
+                            onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
-                            } style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                            }
+                            style={{
+                              textOverflow: "ellipsis",
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                            }}
                           >
                             {inquiryUpdate.message}
-
                           </TableCell>
                           <TableCell
-                            className="p-0"  onClick={(event) =>
+                            className="p-0"
+                            onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
-                            } style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                            }
+                            style={{
+                              textOverflow: "ellipsis",
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                            }}
                           >
                             {inquiryUpdate.emailId}
                           </TableCell>
                           <TableCell
-                            className="p-0"  onClick={(event) =>
+                            className="p-0"
+                            onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
                           >
                             {inquiryUpdate.contactNumber}
                           </TableCell>
-                          <TableCell
-                            className="p-0"
-                          ><IconButton className="p-8">
-                              <Icon style={{ color: "#f44336" }}
-                                onClick={() => this.setReadModel("read", inquiryUpdate)}>
-                                more_vert</Icon>
+                          <TableCell className="p-0">
+                            <IconButton className="p-8">
+                              <Icon
+                                style={{ color: "#f44336" }}
+                                onClick={() =>
+                                  this.setReadModel("read", inquiryUpdate)
+                                }
+                              >
+                                more_vert
+                              </Icon>
                             </IconButton>
-                            <IconButton className="p-8" onClick={() => this.setReplyModel("read", inquiryUpdate)}>
+                            <IconButton
+                              className="p-8"
+                              onClick={() =>
+                                this.setReplyModel("read", inquiryUpdate)
+                              }
+                            >
                               <Icon color="primary">send</Icon>
                             </IconButton>
                           </TableCell>
@@ -387,76 +418,111 @@ class inquiry extends Component {
             />
           </Card>
         </div>
-        
+
         <div>
           <Dialog
             open={openReadModal}
             aria-labelledby="customized-dialog-title"
             fullWidth="true"
           >
-            <DialogTitle id="customized-dialog-title">User Inquiry
-            </DialogTitle>
+            <DialogTitle id="customized-dialog-title">User Inquiry</DialogTitle>
             <DialogContent dividers>
-              <table border="1">
-                <tr>
-                  <td >UserName </td>
-                  <td>{userName} </td>
-                  <td >Date </td>
-                  <td>23-01-21</td>
-                </tr>
-                  
-                <tr>
-                  <td>EmailId</td>
-                  <td><Chip
-                    avatar={<Avatar>D</Avatar>}
-                    label={emailId}
-                    color="primary"
-                    variant="outlined"
-                    size="small"
-                  /> </td>
-                  <td>contactNo</td>
-            <td>{contactNumber}</td>
-                </tr>
-                <tr>
-                  <td>Subject </td>
-                  <td colSpan="3">{subject} </td>
-                </tr>
-                <tr>
-                  <td >Message</td>
-                  <td colSpan="3">{message} </td>
-                </tr>
+              <TableContainer>
+                <TableBody>
+            <TableRow>
+            <TableCell className="px-0">UserName</TableCell>
+            <TableCell className="px-0" >{userName}</TableCell>
+          </TableRow>
+            <TableRow>
+            <TableCell className="px-0" >Date</TableCell>
+            <TableCell className="px-0" >{Date.now()}</TableCell>
+          </TableRow>
+            <TableRow>
+            <TableCell className="px-0" >EmailId</TableCell>
+            <TableCell className="px-0" >{emailId}</TableCell>
+          </TableRow>
+            <TableRow>
+            <TableCell className="px-0" >Contact No</TableCell>
+            <TableCell className="px-0" >{contactNumber}</TableCell>
+          </TableRow>
+            <TableRow>
+            <TableCell className="px-0" >Subject</TableCell>
+            <TableCell className="px-0" >{subject}</TableCell>
+          </TableRow>
+            <TableRow>
+            <TableCell className="px-0" >Message</TableCell>
+            <TableCell className="px-0" style={{ wordBreak: "break-word"}}>{message}</TableCell>
+            <TableCell></TableCell>
+          </TableRow>
 
-              </table>
-              
-             
+                </TableBody>
+              </TableContainer>
+              {/* <Card style={{ minWidth: 275 }}>
+                <CardContent>
+                  <List>
+                    <ListItem>
+                      <ListItemText
+                        primary="UserName"
+                        style={{ paddingRight: "5px" }}
+                      />
+                      <ListItemText primary={userName} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="Date" />
+                      <ListItemText primary="23-01-2021" />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="EmailId" />
+                      <ListItemText primary={emailId} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="Contact No" />
+                      <ListItemText primary={contactNumber} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="Subject" />
+                      <ListItemText primary={subject} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        primary="Message"
+                        style={{ paddingRight: "5px" }}
+                      />
+                      <p>{message}</p>
+                      <ListItemText primary={message} />
+                    </ListItem>
+                  </List>
+                </CardContent>
+              </Card> */}
             </DialogContent>
-            
+
             <DialogActions>
               <Button onClick={this.handleClose} color="primary">
                 Cancel
-                        </Button>
-                        <IconButton className="p-8" onClick={() => this.setReplyModel("read","")}>
-                              <Icon color="primary">send</Icon>
-                            </IconButton>
+              </Button>
+              <IconButton
+                className="p-8"
+                onClick={() => this.setReplyModel("read", "")}
+              >
+                <Icon color="primary">send</Icon>
+              </IconButton>
             </DialogActions>
-
           </Dialog>
           <Dialog
             open={openReplyModal}
             aria-labelledby="customized-dialog-title"
             fullWidth="true"
           >
-            <DialogTitle id="customized-dialog-title">Send Reply 
-            </DialogTitle>
+            <DialogTitle id="customized-dialog-title">Send Reply</DialogTitle>
             <DialogContent dividers>
-            same model ma send valu model thy to karvanu ..
-            <table border="1">
-              <tr>
-                <td>UserName </td>
-            <td>{userName}</td>
-            <td>To </td>
-  <td>{emailId}</td>
-              </tr>
+              same model ma send valu model thy to karvanu ..
+              <table border="1">
+                <tr>
+                  <td>UserName </td>
+                  <td>{userName}</td>
+                  <td>To </td>
+                  <td>{emailId}</td>
+                </tr>
               </table>
               avi rit na be value show karvani ...<br></br>
               1) subject text field.<br></br>
@@ -465,10 +531,8 @@ class inquiry extends Component {
             <DialogActions>
               <Button onClick={this.handleClose} color="primary">
                 Cancel
-                        </Button>
-
+              </Button>
             </DialogActions>
-
           </Dialog>
         </div>
       </div>

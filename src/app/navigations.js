@@ -105,26 +105,26 @@ export const navigations = [
         path: "/utilities/spacing",
         iconText: "A"
       },
-      {
-        name: "Contact US",
-        path: "/utilities/typography",
-        iconText: "C"
-      },
-      {
-        name: "Terms & Conditions",
-        path: "/utilities/display",
-        iconText: "T"
-      },
+      // {
+      //   name: "Contact US",
+      //   path: "/utilities/typography",
+      //   iconText: "C"
+      // },
+      // {
+      //   name: "Terms & Conditions",
+      //   path: "/utilities/display",
+      //   iconText: "T"
+      // },
       {
         name: "FAQ",
         path: "/forms/simple",
         iconText: "F"
       },
-      {
-        name: "Support",
-        path: "/utilities/display",
-        iconText: "S"
-      },
+      // {
+      //   name: "Support",
+      //   path: "/utilities/display",
+      //   iconText: "S"
+      // },
       {
         name: "Header",
         path: "/utilities/display",
