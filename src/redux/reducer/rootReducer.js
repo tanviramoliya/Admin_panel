@@ -15,6 +15,8 @@ import SubCategoryReducer from "./master/subCategory/subCategoryReducer";
 import NewsUpdateReducer from "./newsUpdate/newsUpdateReducer";
 import SubscriberReducer from "./subscriber/subcscriberReducer"
 import AdminUserReducer from "./adminUser/adminUserReducer";
+import AclRoleReducer from "./aclRole/aclRoleReducer";
+
 import SocialMediaReducer from "./settingModule/socialMedia/socialMediaReducer";
 import AboutUsReducer from "./settingModule/aboutUs/aboutUsReducer";
 import InquiryReducer from "./inquiry/inquiryReducer";
@@ -40,6 +42,7 @@ const RootReducer = combineReducers({
   socialMedia : SocialMediaReducer,
   aboutUs : AboutUsReducer,
   inquiry : InquiryReducer,
+  aclRole : AclRoleReducer,
 });
 
 export default RootReducer;

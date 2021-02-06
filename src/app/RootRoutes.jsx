@@ -14,6 +14,8 @@ import subscriberRoutes from "./views/subscriber/subscriberRoutes";
 import adminUserRoutes from "./views/adminUser/adminUserRoutes";
 import settingRoutes from "./views/settingModule/settingRoutes";
 import inquiryRoutes from "./views/inquiry/inquiryRoutes";
+import aclRoleRoutes from "./views/aclRole/aclRoleRoutes"
+
 const redirectRoute = [
   {
     path: "/",
@@ -31,6 +33,7 @@ const errorRoute = [
 const routes = [
   ...sessionRoutes,
   ...adminUserRoutes,
+  ...aclRoleRoutes,
   ...masterRoutes,
   ...settingRoutes,
   ...dashboardRoutes,
