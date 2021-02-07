@@ -11,12 +11,12 @@ import { Breadcrumb } from "../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment
+  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
-import {PhoneIphone, Email, Person,GroupAdd} from '@material-ui/icons';
+import { PhoneIphone, Email, Person, GroupAdd } from '@material-ui/icons';
 
 class AdminUser extends Component {
   state = {
@@ -36,26 +36,15 @@ class AdminUser extends Component {
     contactNumber: "",
     createdTime: "",
     updatedTime: "",
-    type: "new",
-    passWord : "",
-    confirmPassWord : ""
+    type: "new"
 
   };
 
   componentDidMount = async () => {
     await this.getAdminUserList();
-      // custom rule will have name 'isPasswordMatch'
-      ValidatorForm.addValidationRule("isPasswordMatch", value => {
-        if (value !== this.state.passWord) {
-          return false;
-        }
-        return true;
-      });
+    // custom rule will have name 'isPasswordMatch'
   };
-  componentWillUnmount() {
-    // remove rule when it is not needed
-    ValidatorForm.removeValidationRule("isPasswordMatch");
-  }
+
   getAdminUserList = async () => {
     await this.props.adminUserListApi();
     this.setState({ adminUserList: this.props.adminUserList });
@@ -137,14 +126,12 @@ class AdminUser extends Component {
       role: "",
       roleToken: "",
       email: "",
-      contactNumber: "",
-      passWord: "",
-      confirmPassWord : ""
+      contactNumber: ""
 
     });
   };
   AddAdminUser = async () => {
-    const { type, firstName, lastName, role, email, contactNumber, passWord, confirmPassWord } = this.state;
+    const { type, firstName, lastName, role, email, contactNumber } = this.state;
     if (type === "new") {
       if (!firstName) {
         toastr.error("firstName is required");
@@ -166,14 +153,6 @@ class AdminUser extends Component {
         toastr.error("contactNumber is required");
         return;
       }
-      if (!passWord) {
-        toastr.error("password is required");
-        return;
-      }
-      if (!confirmPassWord) {
-        toastr.error("confirmPassword is required");
-        return;
-      }
 
       // this.props.setLoader(true);
       // this.setState({
@@ -184,8 +163,7 @@ class AdminUser extends Component {
         lastName: lastName,
         role: role,
         email: email,
-        contactNumber: contactNumber,
-        passWord: passWord
+        contactNumber: contactNumber
       };
       const createAdminUser = await addAdminUserApi(data);
       if (createAdminUser) {
@@ -203,10 +181,8 @@ class AdminUser extends Component {
               role: "",
               roleToken: "",
               email: "",
-              contactNumber: "",
-              passWord: "",
-              confirmPassWord : ""
-      
+              contactNumber: ""
+
             });
           } else {
             toastr.warning(createAdminUser.data.message);
@@ -216,14 +192,13 @@ class AdminUser extends Component {
         }
       }
       // this.props.setLoader(false);
-      
+
     }
   };
   UpdateAdminUser = async () => {
     const {
       type,
-      adminToken, firstName, lastName, role, email, contactNumber, passWord, confirmPassWord
-    } = this.state;
+      adminToken, firstName, lastName, role, email, contactNumber } = this.state;
     if (type === "edit") {
       if (!firstName) {
         toastr.error("firstName is required");
@@ -263,7 +238,8 @@ class AdminUser extends Component {
         lastName: lastName,
         role: role,
         email: email,
-        contactNumber: contactNumber      };
+        contactNumber: contactNumber
+      };
       const updateAdminUser = await updateAdminUserApi(data);
       if (updateAdminUser) {
         if (updateAdminUser.status === status.success) {
@@ -280,9 +256,7 @@ class AdminUser extends Component {
               role: "",
               roleToken: "",
               email: "",
-              contactNumber: "",
-              passWord: "",
-              confirmPassWord : ""
+              contactNumber: ""
             });
           } else {
             toastr.warning(updateAdminUser.data.message);
@@ -292,10 +266,10 @@ class AdminUser extends Component {
         }
       }
       // this.props.setLoader(false);
-      
+
     }
   };
-  
+
   handleChange = (event) => {
     event.persist();
     this.setState({ [event.target.name]: event.target.value });
@@ -307,7 +281,7 @@ class AdminUser extends Component {
       page,
       rowsPerPage,
       adminUserList,
-      firstName, lastName, role, email, contactNumber, passWord, confirmPassWord,
+      firstName, lastName, role, email, contactNumber,
       type,
       openModal
 
@@ -323,7 +297,7 @@ class AdminUser extends Component {
           />
         </div>
         <div className="py-12">
-          <Card elevation={6} className="px-24 pt-20 h-100">
+          <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
               <div className="card-title">Admin User Infromation</div>
               <Button
@@ -340,9 +314,9 @@ class AdminUser extends Component {
                     <TableCell className="px-0" width="5%" >Sr.No</TableCell>
                     <TableCell className="px-0" width="15%" >UserName</TableCell>
                     <TableCell className="px-0" width="8%" >Role</TableCell>
-                    <TableCell className="px-0"  width="20%">Email</TableCell>
-                    <TableCell className="px-0"  width="15%" >ContactNumber</TableCell>
-                    <TableCell className="px-0"  width="15%">CreatedTime</TableCell>
+                    <TableCell className="px-0" width="20%">Email</TableCell>
+                    <TableCell className="px-0" width="15%" >ContactNumber</TableCell>
+                    <TableCell className="px-0" width="15%">CreatedTime</TableCell>
                     <TableCell className="px-0"  >Actions</TableCell>
 
                   </TableRow>
@@ -356,15 +330,15 @@ class AdminUser extends Component {
                           {index + 1}
                         </TableCell>
                         <TableCell className="p-0" >
-                          {AdminUser.firstName +" "+AdminUser.lastName}
+                          {AdminUser.firstName + " " + AdminUser.lastName}
                         </TableCell>
                         <TableCell className="p-0">
-                        <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
+                          <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
                             {AdminUser.role}
                           </small>
-                          
+
                         </TableCell>
-                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                           {AdminUser.email}
                         </TableCell>
                         <TableCell className="p-0" >
@@ -376,7 +350,7 @@ class AdminUser extends Component {
 
                         <TableCell className="p-0">
                           <IconButton className="p-8">
-                            <Icon 
+                            <Icon
                               color="primary"
                               onClick={() => this.setModel("edit", AdminUser)}
                             >
@@ -384,7 +358,7 @@ class AdminUser extends Component {
                                 </Icon>
                           </IconButton>
                           <IconButton className="p-8">
-                            <Icon 
+                            <Icon
                               color="error"
                               onClick={() =>
                                 this.deleteAdminUserClicked(AdminUser.adminToken)
@@ -434,11 +408,11 @@ class AdminUser extends Component {
         <div>
           <Dialog
             open={openModal}
-            aria-labelledby="form-dialog-title"
-            fullWidth={true}
+            aria-labelledby="max-width-dialog-title"
+            fullWidth={true} maxWidth="sm"
           >
-            <DialogTitle id="form-dialog-title">
-              {type === "new" ? <div style={{display : "contents"}}><GroupAdd fontSize="large"/>Add a Admin User</div> : "Edit Admin User"}
+            <DialogTitle id="form-dialog-title" >
+              {type === "new" ? <div style={{ display: "contents" }}><GroupAdd fontSize="large" />Add a Admin User</div> : "Edit Admin User"}
             </DialogTitle>
             <DialogContent>
               <ValidatorForm
@@ -448,53 +422,53 @@ class AdminUser extends Component {
                 }
                 onError={(errors) => null}
               >
-              <Grid container spacing={1} > 
-              <Grid item lg={6} md={6} sm={12} xs={12}>                 
-                <TextValidator
-                  className="mb-16 "
-                  label="first Name"
-                  onChange={this.handleChange}
-                  type="text"
-                  name="firstName"
-                  placeholder="Enter First Name"
-                  value={firstName}
-                  validators={["required", "minStringLength: 2"]}
-                  errorMessages={["this field is required"]}
-                  style={{ width: "-webkit-fill-available" }}
-                  variant="outlined"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Person />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                </Grid> 
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-                <TextValidator
-                  className="mb-16 "
-                  label="last Name"
-                  onChange={this.handleChange}
-                  placeholder="Enter Last Name"
-                  type="text"
-                  name="lastName"
-                  value={lastName}
-                  validators={["required"]}
-                  errorMessages={["this field is required"]}
-                  style={{ width: "-webkit-fill-available" }}
-                  variant="outlined"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Person />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                <Grid container spacing={1} >
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <TextValidator
+                      className="mb-16 "
+                      label="first Name"
+                      onChange={this.handleChange}
+                      type="text"
+                      name="firstName"
+                      placeholder="Enter First Name"
+                      value={firstName}
+                      validators={["required", "minStringLength: 2"]}
+                      errorMessages={["this field is required"]}
+                      style={{ width: "-webkit-fill-available" }}
+                      variant="outlined"
+                      size="medium"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Person />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <TextValidator
+                      className="mb-16 "
+                      label="last Name"
+                      onChange={this.handleChange}
+                      placeholder="Enter Last Name"
+                      type="text"
+                      name="lastName"
+                      value={lastName}
+                      validators={["required"]}
+                      errorMessages={["this field is required"]}
+                      style={{ width: "-webkit-fill-available" }}
+                      variant="outlined"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Person />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
                 </Grid>
-                 </Grid>
-                
                 <TextValidator
                   className="mb-16 "
                   label="role"
@@ -507,18 +481,19 @@ class AdminUser extends Component {
                   style={{ width: "-webkit-fill-available" }}
                   variant="outlined"
                 />
+
                 <TextValidator
-                className="mb-16 "
-                label="email"
-                placeholder="Enter Email"
-                onChange={this.handleChange}
-                type="email"
-                name="email"
-                value={email}
-                validators={["required","isEmail"]}
-                errorMessages={["this field is required", "Enter valid email"]}
-                style={{ width: "-webkit-fill-available" }}
-                variant="outlined"
+                  className="mb-16 "
+                  label="email"
+                  placeholder="Enter Email"
+                  onChange={this.handleChange}
+                  type="email"
+                  name="email"
+                  value={email}
+                  validators={["required", "isEmail"]}
+                  errorMessages={["this field is required", "Enter valid email"]}
+                  style={{ width: "-webkit-fill-available" }}
+                  variant="outlined"
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -528,18 +503,18 @@ class AdminUser extends Component {
                   }}
                 />
                 <TextValidator
-                className="mb-16 "
-                label="contact Number"
-                onChange={this.handleChange}
-                type="number"
-                name="contactNumber"
-                placeholder="Enter Contact Number"
-                value={contactNumber}
-                validators={["required","minStringLength:10",
-                "maxStringLength: 10"]}
-                errorMessages={["this field is required","Contact Number must contains 10 digits","Contact Number must contains 10 digits"]}
-                style={{ width: "-webkit-fill-available" }}
-                variant="outlined"
+                  className="mb-16 "
+                  label="contact Number"
+                  onChange={this.handleChange}
+                  type="number"
+                  name="contactNumber"
+                  placeholder="Enter Contact Number"
+                  value={contactNumber}
+                  validators={["required", "minStringLength:10",
+                    "maxStringLength: 10"]}
+                  errorMessages={["this field is required", "Contact Number must contains 10 digits", "Contact Number must contains 10 digits"]}
+                  style={{ width: "-webkit-fill-available" }}
+                  variant="outlined"
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -548,39 +523,16 @@ class AdminUser extends Component {
                     ),
                   }}
                 />
-                {
-                  type === 'new' ?
-                  <>
-                  <TextValidator
-                    className="mb-16 "
-                    label="password"
-                    onChange={this.handleChange}
-                    type="password"
-                    name="passWord"
-                    value={passWord}
-                    validators={["required"]}
-                    errorMessages={["this field is required"]}
-                    style={{ width: "-webkit-fill-available" }}
-                    variant="outlined"
-                    
-                  />
-                   <TextValidator
-                    className="mb-16 "
-                    label="confirm Password"
-                    onChange={this.handleChange}
-                    type="password"
-                    name="confirmPassWord"
-                    value={confirmPassWord}
-                    validators={["required","isPasswordMatch"]}
-                    errorMessages={["this field is required","password didn't match"]}
-                    style={{ width: "-webkit-fill-available" }}
-                    variant="outlined"
-                  />
-                  </>
-                  : null
-                }
 
                 <DialogActions className="p-0">
+                <div className="swiper-container-no-flexbox">
+                  <Tooltip title="Password will generated by The System" placement="right">
+                    
+                    <IconButton className="p-0">
+                      <Icon>info_outlined</Icon>
+                    </IconButton>
+                  </Tooltip>
+                  </div>
                   <Button onClick={this.handleClose} color="primary">
                     Cancel
                         </Button>
@@ -603,9 +555,9 @@ class AdminUser extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  const { adminUserList, firstName, lastName, role, email, contactNumber, passWord, confirmPassWord } = state.adminUser;
+  const { adminUserList, firstName, lastName, role, email, contactNumber } = state.adminUser;
   return {
-    adminUserList, firstName, lastName, role, email, contactNumber, passWord, confirmPassWord
+    adminUserList, firstName, lastName, role, email, contactNumber
 
   };
 };

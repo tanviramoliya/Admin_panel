@@ -16,3 +16,5 @@ export * from "./apiAction/socialMediaApiAction";
 export * from "./apiAction/aboutUsApiAction";
 export * from "./inquiry/index";
 export * from "./apiAction/inquiryApiAction";
+export * from "./aclRole/index";
+export * from "./apiAction/aclRoleApiAction";
