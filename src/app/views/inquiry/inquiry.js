@@ -237,7 +237,7 @@ class inquiry extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell>
+                    <TableCell className="p-0">
                       <Checkbox
                         indeterminate={
                           selected.length > 0 &&
