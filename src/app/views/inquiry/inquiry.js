@@ -297,6 +297,7 @@ class inquiry extends Component {
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
+                            className="p-0"
                           >
                             <Checkbox
                               checked={isItemSelected}
@@ -308,12 +309,13 @@ class inquiry extends Component {
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
+                            className="p-0"
                           >
                             {index + 1}
                           </TableCell>
                           <TableCell
                             id={labelId}
-                            className="ellipse"
+                            className="ellipse p-0"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
@@ -321,7 +323,7 @@ class inquiry extends Component {
                             {inquiryUpdate.userName}
                           </TableCell>
                           <TableCell
-                            className="ellipse"
+                            className="ellipse p-0"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
@@ -329,7 +331,7 @@ class inquiry extends Component {
                             {inquiryUpdate.subject}
                           </TableCell>
                           <TableCell
-                            className="ellipse"
+                            className="ellipse p-0"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
@@ -337,7 +339,7 @@ class inquiry extends Component {
                             {inquiryUpdate.message}
                           </TableCell>
                           <TableCell
-                            className="ellipse"
+                            className="ellipse p-0"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
@@ -345,14 +347,14 @@ class inquiry extends Component {
                             {inquiryUpdate.emailId}
                           </TableCell>
                           <TableCell
-                            className="ellipse"
+                            className="ellipse p-0"
                             onClick={(event) =>
                               this.handleClick(event, inquiryUpdate.token)
                             }
                           >
                             {inquiryUpdate.contactNumber}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="p-0">
                             <IconButton className="p-8">
                               <Icon
                                 onClick={() =>
