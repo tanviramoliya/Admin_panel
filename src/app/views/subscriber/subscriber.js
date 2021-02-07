@@ -6,7 +6,6 @@ import {
 import { status } from "../../../utility/config";
 import { toastr } from "react-redux-toastr";
 import { Breadcrumb } from "../../../components/matx/Breadcrumb";
-import { XGrid } from '@material-ui/x-grid';
 import {
   Card,
   Table,
