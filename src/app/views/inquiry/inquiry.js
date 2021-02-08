@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { inquiryListApi, deleteInquiryApi } from "../../../redux/actions/index";
+import { inquiryListApi, deleteInquiryApi, submitReplyApi } from "../../../redux/actions/index";
 import "../../../assets/styles/utilities/_tableCell.scss";
 import { status } from "../../../utility/config";
 import { toastr } from "react-redux-toastr";
@@ -25,13 +25,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField,
-  CardContent,
-  CardActions,
-  List,
-  ListItem,
-  ListItemText,
-  Avatar,
+  TextField
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ReplyIcon from "@material-ui/icons/Reply";
@@ -52,6 +46,13 @@ class inquiry extends Component {
     deleteModal: false,
     deleteInquiryToken: null,
     selected: [],
+    userName: "",
+    emailId: "",
+    token: "",
+    subject: "",
+    message: "",
+    contactNumber: "",
+    read: false,
     openReadModal: false,
     openReplyModal: false,
     replyMessage: undefined,
@@ -70,6 +71,10 @@ class inquiry extends Component {
   };
   handleChangeRowsPerPage = (event) => {
     this.setState({ rowsPerPage: event.target.value });
+  };
+  handleChange = (event) => {
+    event.persist();
+    this.setState({ [event.target.name]: event.target.value });
   };
 
   //to delete Category
@@ -110,27 +115,32 @@ class inquiry extends Component {
     });
   };
   setReadModel = (data) => {
+    console.log(data);
     this.setState({ openReadModal: true });
-      this.setState({
-        userName: data.userName,
-        emailId: data.emailId,
-        token: data.token,
-        subject: data.subject,
-        message: data.message,
-        contactNumber: data.contactNumber,
-      });
+    this.setState({
+      userName: data.userName,
+      emailId: data.emailId,
+      token: data.token,
+      subject: data.subject,
+      message: data.message,
+      contactNumber: data.contactNumber,
+      replyMessage : data.inquiryReply !== null ? data.inquiryReply.replyMessage : null,
+      replySubject : data.inquiryReply !== null ? data.inquiryReply.subject : null,
+      read :data.read
+    });
   };
-  setReplyModel = ( data) => {
+  setReplyModel = (data) => {
     console.log("DATA", data);
-    this.setState({ openReplyModal: true});
-      this.setState({
-        userName: data.userName,
-        emailId: data.emailId,
-        token: data.token,
-        subject: data.subject,
-        message: data.message,
-        contactNumber: data.contactNumber,
-      });
+    this.setState({ openReplyModal: true });
+    this.setState({
+      userName: data.userName,
+      emailId: data.emailId,
+      token: data.token,
+      subject: data.subject,
+      message: data.message,
+      contactNumber: data.contactNumber,
+      read :data.read
+    });
   };
   //for close a modal
   handleClose = () => {
@@ -143,8 +153,66 @@ class inquiry extends Component {
       subject: "",
       message: "",
       contactNumber: "",
+      read :false
     });
   };
+  replySubmit = async () => {
+    const { replyMessage, replySubject, token } = this.state;
+    if (!replyMessage) {
+      toastr.error("replyMessage is required");
+      return;
+    }
+    if (!replySubject) {
+      toastr.error("replySubject is required");
+      return;
+    }
+
+
+    // this.props.setLoader(true);
+    // this.setState({
+    //   addOrg: false,
+    // });
+    let data = {
+
+      replyMessage: replyMessage,
+      subject: replySubject,
+      inquiryToken: token
+    };
+    const submitReply = await submitReplyApi(data);
+    if (submitReply) {
+      if (submitReply.status === status.success) {
+        if (submitReply.data.code === status.success) {
+          toastr.success(submitReply.data.message);
+          this.getInquiryList();
+          this.setState({
+            openReadModal: false,
+            openReplyModal: false,
+            userName: "",
+            emailId: "",
+            token: "",
+            subject: "",
+            message: "",
+            replyMessage: undefined,
+            replySubject: undefined,
+            contactNumber: "",
+            read :false
+
+          });
+        } else {
+          toastr.warning(submitReply.data.message);
+        }
+      } else {
+        toastr.error(submitReply.data.message);
+      }
+
+      // this.props.setLoader(false);
+
+    }
+  };
+
+
+
+
   //all checked
   handleSelectAllClick = (event) => {
     console.log(" Called");
@@ -194,6 +262,7 @@ class inquiry extends Component {
       openReplyModal,
       replyMessage,
       replySubject,
+      read,
     } = this.state;
     return (
       <div className="m-sm-30">
@@ -209,10 +278,10 @@ class inquiry extends Component {
                     {selected.length} rows selected
                   </Typography>
                 ) : (
-                  <Typography variant="h6" id="tableTitle" component="div">
-                    Inquiry Information
+                    <Typography variant="h6" id="tableTitle" component="div">
+                      Inquiry Information
                   </Typography>
-                )}
+                  )}
                 {selected.length > 0 ? (
                   <Tooltip title="Delete">
                     <IconButton
@@ -223,14 +292,14 @@ class inquiry extends Component {
                     </IconButton>
                   </Tooltip>
                 ) : (
-                  <Tooltip title="Delete" style={{ padding: "12px" }}>
-                    <Chip
-                      variant="outlined"
-                      color="secondary"
-                      label={inquiryList.length + " Inquiries"}
-                    />
-                  </Tooltip>
-                )}
+                    <Tooltip title="Delete" style={{ padding: "12px" }}>
+                      <Chip
+                        variant="outlined"
+                        color="secondary"
+                        label={inquiryList.length + " Inquiries"}
+                      />
+                    </Tooltip>
+                  )}
               </Toolbar>
             </div>
             <TableContainer style={{ maxHeight: "405px" }}>
@@ -361,15 +430,16 @@ class inquiry extends Component {
                                   this.setReadModel(inquiryUpdate)
                                 }
                               >
-                               <VisibilityIcon/>
+                                <VisibilityIcon />
                               </Icon>
                             </IconButton>
                             <IconButton
                               className="p-0"
                               onClick={() => this.setReplyModel(inquiryUpdate)
                               }
+                              disabled={inquiryUpdate.read}
                             >
-                              <Icon color="primary">send</Icon>
+                              <Icon color={inquiryUpdate.read ? "" : "primary"}>send</Icon>
                             </IconButton>
                           </TableCell>
                         </TableRow>
@@ -403,6 +473,7 @@ class inquiry extends Component {
             open={openReadModal}
             aria-labelledby="customized-dialog-title"
             fullWidth="true"
+            onClose={this.handleClose}
           >
             <DialogTitle id="customized-dialog-title">User Inquiry</DialogTitle>
             <DialogContent dividers>
@@ -462,21 +533,46 @@ class inquiry extends Component {
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                   </TableRow>
+                  {(replySubject!==null && replyMessage !==null) ?
+                  <>
+                  <TableRow>
+                    <TableCell
+                      style={{ paddingRight: "10px", fontWeight: "bold" }}
+                    >
+                      Replied Subject
+                    </TableCell>
+                    <TableCell colSpan={3}>{replySubject}</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      style={{ paddingRight: "10px", fontWeight: "bold" }}
+                    >
+                      Replied Message
+                    </TableCell>
+                    <TableCell style={{ wordBreak: "break-word" }} colSpan={3}>
+                      {replyMessage}
+                    </TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                  </TableRow> </>: null}
                 </TableBody>
               </TableContainer>
             </DialogContent>
-
-            <DialogActions>
-              {/* <Button onClick={this.handleClose} color="primary">
-                Cancel
-              </Button> */}
+            {
+              read ? null  :
+              <DialogActions>
               <IconButton
                 className="p-8"
-                onClick={() => this.setState({ openReplyModal : true})}
+                onClick={() => this.setState({ openReplyModal: true })}
               >
                 <Icon color="primary">send</Icon>
               </IconButton>
             </DialogActions>
+              
+            }
+            
           </Dialog>
           <Dialog
             open={openReplyModal}
@@ -509,7 +605,7 @@ class inquiry extends Component {
               </TableRow>
               <ValidatorForm
                 ref="form"
-                onSubmit={this.handleSubmit}
+                onSubmit={this.replySubmit}
                 onError={(errors) => null}
               >
                 <TextField
@@ -523,7 +619,7 @@ class inquiry extends Component {
                   value={replySubject}
                   error={replySubject === ""}
                   helperText={
-                    replySubject === "" ? "this feild is required" : ""
+                    replySubject === "" ? "this field is required" : ""
                   }
                 />
                 <TextField
@@ -539,23 +635,26 @@ class inquiry extends Component {
                   name="replyMessage"
                   value={replyMessage}
                   helperText={
-                    replyMessage === "" ? "this feild is required" : ""
+                    replyMessage === "" ? "this field is required" : ""
                   }
                 />
+
+
+                <DialogActions style={{ paddingRight: "24px" }}>
+                  <Button onClick={this.handleClose} variant="outlined">
+                    Cancel
+              </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    endIcon={<Icon>send</Icon>}
+                  >
+                    Send
+              </Button>
+                </DialogActions>
               </ValidatorForm>
             </DialogContent>
-            <DialogActions style={{paddingRight : "24px"}}>
-              <Button onClick={this.handleClose} variant="outlined">
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"                
-                endIcon={<Icon>send</Icon>}
-              >
-                Send
-              </Button>
-            </DialogActions>
           </Dialog>
         </div>
       </div>
