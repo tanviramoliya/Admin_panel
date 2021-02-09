@@ -32,4 +32,14 @@ import {
       return createSubscriber;
     }
   };
+  export const submitReplyApi = async (data) => {
+    const submitReply = await api(
+      "inquiry/reply/addReply",
+      data,
+      "post"
+    );
+    if (submitReply) {
+      return submitReply;
+    }
+  };
   
