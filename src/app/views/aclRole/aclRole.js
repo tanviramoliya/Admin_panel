@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from "react"; import {
+import React, { Component, Fragment } from "react";
+import {
   aclRoleListApi,
   deleteAclRoleApi,
   addAclRoleApi,
@@ -7,27 +8,62 @@ import React, { Component, Fragment } from "react"; import {
 import { status } from "../../../utility/config";
 import { toastr } from "react-redux-toastr";
 import { Breadcrumb } from "../../../components/matx/Breadcrumb";
+import Paper from "@material-ui/core/Paper";
 import {
-  Card, Button, Table,
-  TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, CardActions, CardContent, Typography, createMuiTheme, MuiThemeProvider, Divider, Checkbox, FormGroup, FormHelperText
+  Card,
+  Button,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  IconButton,
+  Icon,
+  TablePagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TableContainer,
+  Grid,
+  InputAdornment,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormControl,
+  Chip,
+  Avatar,
+  Tooltip,
+  CardActions,
+  CardContent,
+  Typography,
+  createMuiTheme,
+  MuiThemeProvider,
+  Divider,
+  Checkbox,
+  FormGroup,
+  FormHelperText,
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
-import { PhoneIphone, Email, Person, GroupAdd, CheckBox } from '@material-ui/icons';
+import {
+  PhoneIphone,
+  Email,
+  Person,
+  GroupAdd,
+  CheckBox,
+} from "@material-ui/icons";
 
 import { withStyles } from "@material-ui/styles";
 import { purple, blue, red } from "@material-ui/core/colors";
 const theme = createMuiTheme({
-
   palette: {
     secondary: red,
   },
-
 });
 class AclRole extends Component {
-
   state = {
     aclRoleList: [],
     rowsPerPage: 8,
@@ -41,8 +77,7 @@ class AclRole extends Component {
     createdDate: "",
     updateDate: "",
     permission: "",
-    type: "new"
-
+    type: "new",
   };
 
   componentDidMount = async () => {
@@ -61,7 +96,6 @@ class AclRole extends Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-
   //to delete Category
   deleteAclRoleClicked = async (token) => {
     if (token) {
@@ -79,16 +113,11 @@ class AclRole extends Component {
       deleteAclRoleToken: null,
     });
     // this.props.setLoader(true);
-    const deleteAclRole = await deleteAclRoleApi(
-      this.state.deleteAclRoleToken
-    );
+    const deleteAclRole = await deleteAclRoleApi(this.state.deleteAclRoleToken);
     if (deleteAclRole && deleteAclRole.data.code === status.success) {
       await this.getAclRoleList();
       toastr.success(deleteAclRole.data.message);
-    } else if (
-      deleteAclRole &&
-      deleteAclRole.data.code === status.badRequest
-    ) {
+    } else if (deleteAclRole && deleteAclRole.data.code === status.badRequest) {
       toastr.warning(deleteAclRole.data.message);
     } else {
       toastr.error(deleteAclRole.data.message);
@@ -107,19 +136,17 @@ class AclRole extends Component {
     this.setState({ openModal: true, type: type });
     if (type === "edit") {
       this.setState({
-
         roleToken: data.roleToken,
         roleType: data.roleType,
         createdDate: data.createdDate,
         updateDate: data.updateDate,
-        permission: data.permission
-
+        permission: data.permission,
       });
     }
   };
   handleClick = () => {
-    this.setState({ openCard: !this.state.openCard })
-    console.log('click---' + this.state.openCard);
+    this.setState({ openCard: !this.state.openCard });
+    console.log("click---" + this.state.openCard);
   };
 
   //for close a modal
@@ -132,8 +159,6 @@ class AclRole extends Component {
       createdDate: "",
       updateDate: "",
       permission: "",
-
-
     });
   };
   AddAdminUser = async () => {
@@ -154,8 +179,7 @@ class AclRole extends Component {
       // });
       let data = {
         roleType: roleType,
-        permission: permission
-
+        permission: permission,
       };
       const createAclRole = await addAclRoleApi(data);
       if (createAclRole) {
@@ -173,8 +197,7 @@ class AclRole extends Component {
               createdDate: "",
               updateDate: "",
               permission: "",
-              type: "new"
-
+              type: "new",
             });
           } else {
             toastr.warning(createAclRole.data.message);
@@ -184,13 +207,10 @@ class AclRole extends Component {
         }
       }
       // this.props.setLoader(false);
-
     }
   };
   UpdateAclRole = async () => {
-    const {
-      type,
-      roleToken, roleType, permission } = this.state;
+    const { type, roleToken, roleType, permission } = this.state;
     if (type === "edit") {
       if (!roleType) {
         toastr.error("firstName is required");
@@ -206,11 +226,9 @@ class AclRole extends Component {
       //   addOrg: false,
       // });
       let data = {
-
         roleToken: roleToken,
         roleType: roleType,
         permission: permission,
-
       };
       const updateAclRole = await updateAclRoleApi(data);
       if (updateAclRole) {
@@ -235,7 +253,6 @@ class AclRole extends Component {
         }
       }
       // this.props.setLoader(false);
-
     }
   };
 
@@ -243,7 +260,6 @@ class AclRole extends Component {
     event.persist();
     this.setState({ [event.target.name]: event.target.value });
   };
-
 
   render() {
     const {
@@ -257,18 +273,12 @@ class AclRole extends Component {
       updateDate,
       permission,
       type,
-      openModal
-
+      openModal,
     } = this.state;
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
-          <Breadcrumb
-            routeSegments={[
-              { name: "User Role", path: "/" },
-
-            ]}
-          />
+          <Breadcrumb routeSegments={[{ name: "User Role", path: "/" }]} />
         </div>
         <div className="py-12">
           <Card elevation={6} className="px-20 pt-12 h-100">
@@ -279,343 +289,192 @@ class AclRole extends Component {
                 onClick={() => this.setModel("new")}
               >
                 Add New Role
-                  </Button>
+              </Button>
             </div>
           </Card>
           <Grid container className="pt-20">
+            {console.log(" ROle Data", aclRoleList)}
             {aclRoleList.map((AclRole, index) => (
-              <Grid item lg={4} md={4} sm={12} xs={12}>
+              <Grid item lg={4} md={4} sm={12} xs={12} style={{ paddingRight : "6px"}}>
                 <Card elevation={6}>
                   <CardContent>
-                    <Typography variant="h4" className="text-green">AclRole.roleType</Typography>
+                    <Typography variant="h4" className="text-green px-6">
+                      {AclRole.roleType}
+                      <MuiThemeProvider theme={theme}>
+                      <IconButton className="p-8">
+                            <Icon 
+                              color="primary"
+                              onClick={() => this.setModel("edit", AclRole)}
+                            >
+                              edit
+                          </Icon>
+                        </IconButton>
+                      <IconButton className="p-8">
+                            <Icon 
+                             color="secondary"
+                            onClick={() => this.deleteAdminUserClicked(AclRole.roleToken)}
+                            >
+                              delete
+                          </Icon>
+                        </IconButton>
+                        </MuiThemeProvider>
+                    </Typography>
                     <Divider />
-
+                    <Grid container className="pt-20">
+              <Grid item lg={12}>
+                <Card elevation={2}>
+                  <div>
+                    <TableContainer component={Paper}>
+                      <Table
+                        size="small"
+                        aria-label="a dense table"
+                      >
+                        <TableBody>
+                          <TableRow>
+                            {console.log(Object.values(JSON.parse(AclRole.permission)))}
+                            <TableCell align="center">Permissions Name</TableCell>
+                            <TableCell align="center">
+                              {" "}
+                              <Chip
+                                variant="outlined"
+                                color="primary"
+                                size="small"
+                                label="R/W"
+                                style={{marginRight: "6px"}}
+                              />
+                              <Chip
+                                variant="outlined"
+                                color="secondary"
+                                size="small"
+                                label="R/O"
+                              />
+                            </TableCell>
+                          </TableRow>
+  
+                          {/* {rows.map((row) => (
+                            <TableRow key={row.name}>
+                              <TableCell component="th" scope="row">
+                                {row.name}
+                              </TableCell>
+                              <TableCell align="right">
+                                {row.calories}
+                              </TableCell>
+                              <TableCell align="right">{row.fat}</TableCell>
+                              <TableCell align="right">{row.carbs}</TableCell>
+                              <TableCell align="right">{row.protein}</TableCell>
+                            </TableRow>
+                          ))} */}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </div>
+                  <CardActions></CardActions>
+                </Card>
+              </Grid>
+            </Grid>
                   </CardContent>
                   <CardActions>
-                    <Grid justify="space-between" container spacing={24}>
-                      <Grid item>
-                        <MuiThemeProvider theme={theme}>
-                          <Button size="small" variant="outlined" color="primary" onClick={() => this.setModel("edit", AclRole)} endIcon={<Icon>edit</Icon>}>Edit Role</Button>
-                        </MuiThemeProvider>
-                      </Grid>
-                      <Grid item >
-                        <Button size="small" name="openCard" onClick={this.handleClick}><Icon>expand_more</Icon></Button>
-                      </Grid>
-                      <Grid item>
-                        <MuiThemeProvider theme={theme}>
-                          <Button size="small" color="secondary"
-                            variant="outlined" onClick={() =>
-                              this.deleteAdminUserClicked(AclRole.roleToken)
-                            } endIcon={<Icon>delete</Icon>}>Delete Role</Button>
-                        </MuiThemeProvider>
-                      </Grid>
-                    </Grid>
                   </CardActions>
                 </Card>
               </Grid>
             ))}
           </Grid>
-
-          {openCard ?
-            <Grid container className="pt-20" >
-              <Grid item lg={4} md={4} sm={12} xs={12}>
-                <Card elevation={2}>
-                  <CardContent>
-                    <Typography style={{ textAlign: "center" }}>Permissions</Typography>
-                    <Divider />
-                  </CardContent>
-                  <div>
-
-
-
-                    <Grid container spacing={12} >
-                      <Grid item xl={12} spacing={6}>
-                        <Grid item container >
-                          <Grid item style={{ alignSelf: "center", paddingLeft: "20px" }} >
-                            <Typography  >Permissions
-                        </Typography>
-                          </Grid>
-                          <Grid item>
-                            <Typography  >RW</Typography>
-                          </Grid>
-                          <Grid item>
-                            <Typography  >RO</Typography>
-                          </Grid>
-
-                        </Grid>
-                      </Grid>
-
-                      <Grid item >
-
-                        <Grid item container>
-                          <Grid item style={{ alignSelf: "center" }} >
-                            <Typography >Permissions
-                        </Typography>
-                          </Grid>
-                          <Grid item>
-                            <Typography  >RW</Typography>
-                          </Grid>
-                          <Grid item>
-                            <Typography  >RO</Typography>
-                          </Grid>
-
-                        </Grid>
-                        </Grid>
-                        </Grid>
-
-                      <Grid container spacing={12} justify="center">
-                        <Grid item xl={12} spacing={6}>
-
-                          <Grid item container>
-                            <Grid item style={{ alignSelf: "center" }} >
-                              <Typography  >UserManagement
-                        </Typography>
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-                                defaultChecked
-                                color="primary"
-                                inputProps={{ 'aria-label': 'secondary checkbox' }}
-                              />
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-
-                                color="secondary"
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                              />
-                            </Grid>
-
-                          </Grid>
-                        </Grid>
-
-                        <Grid item xl={12} spacing={6}>
-
-                          <Grid item container >
-                            <Grid item style={{ alignSelf: "center" }} >
-                              <Typography  >UserManagement
-                        </Typography>
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-                                defaultChecked
-                                color="primary"
-                                inputProps={{ 'aria-label': 'secondary checkbox' }}
-                              />
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-
-                                color="secondary"
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                              />
-                            </Grid>
-
-                          </Grid>
-                        </Grid>
-
-                      </Grid>
-                      <Grid container spacing={12} justify="center">
-                        <Grid item xl={12} spacing={6}>
-
-                          <Grid item container >
-                            <Grid item style={{ alignSelf: "center" }} >
-                              <Typography  >UserManagement
-                        </Typography>
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-                                defaultChecked
-                                color="primary"
-                                inputProps={{ 'aria-label': 'secondary checkbox' }}
-                              />
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-
-                                color="secondary"
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                              />
-                            </Grid>
-
-                          </Grid>
-                        </Grid>
-
-                        <Grid item xl={12} spacing={6}>
-
-                          <Grid item container >
-                            <Grid item style={{ alignSelf: "center" }} >
-                              <Typography  >UserManagement
-                        </Typography>
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-                                defaultChecked
-                                color="primary"
-                                inputProps={{ 'aria-label': 'secondary checkbox' }}
-                              />
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-
-                                color="secondary"
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                              />
-                            </Grid>
-
-                          </Grid>
-                        </Grid>
-
-                      </Grid>
-                      <Grid container spacing={12} justify="center">
-                        <Grid item xl={12} spacing={6}>
-
-                          <Grid item container >
-                            <Grid item style={{ alignSelf: "center" }} >
-                              <Typography  >UserManagement
-                        </Typography>
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-                                defaultChecked
-                                color="primary"
-                                inputProps={{ 'aria-label': 'secondary checkbox' }}
-                              />
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-
-                                color="secondary"
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                              />
-                            </Grid>
-
-                          </Grid>
-                        </Grid>
-
-                        <Grid item xl={12} spacing={6}>
-
-                          <Grid item container>
-                            <Grid item style={{ alignSelf: "center" }} >
-                              <Typography  >UserManagement
-                        </Typography>
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-                                defaultChecked
-                                color="primary"
-                                inputProps={{ 'aria-label': 'secondary checkbox' }}
-
-                              />
-                            </Grid>
-                            <Grid item>
-                              <Checkbox
-
-                                color="secondary"
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                              />
-                            </Grid>
-
-                          </Grid>
-                        </Grid>
-
-                      </Grid>
-
-                  </div>
-                    <CardActions>
-                    </CardActions>
-                </Card>
-            </Grid>
-              </Grid>
-              : null}
-      
         </div>
-            <div>
-              <ConfirmationDialog
-                open={this.state.deleteModal}
-                title="Delete Confirmation"
-                message={"are you sure want to delete this Admin Role?"}
-                toggle={this.deleteAclRoleClicked}
-                onYesClick={() =>
-                  this.yesDeleteClicked(this.state.deleteAclRoleToken)
-                }
-                onNoClick={this.noDeleteClicked}
-              />
-            </div>
-            <div>
-              <Dialog
-                open={openModal}
-                aria-labelledby="max-width-dialog-title"
-                fullWidth={true} maxWidth="sm"
+        <div>
+          <ConfirmationDialog
+            open={this.state.deleteModal}
+            title="Delete Confirmation"
+            message={"are you sure want to delete this Admin Role?"}
+            toggle={this.deleteAclRoleClicked}
+            onYesClick={() =>
+              this.yesDeleteClicked(this.state.deleteAclRoleToken)
+            }
+            onNoClick={this.noDeleteClicked}
+          />
+        </div>
+        <div>
+          <Dialog
+            open={openModal}
+            aria-labelledby="max-width-dialog-title"
+            fullWidth={true}
+            maxWidth="sm"
+          >
+            <DialogTitle id="form-dialog-title">
+              {type === "new" ? (
+                <div style={{ display: "contents" }}>
+                  <GroupAdd fontSize="large" />
+                  Add a Admin Role
+                </div>
+              ) : (
+                "Edit Admin Role"
+              )}
+            </DialogTitle>
+            <DialogContent>
+              <ValidatorForm
+                ref="form"
+                onSubmit={type === "new" ? this.AddAclRole : this.UpdateAclRole}
+                onError={(errors) => null}
               >
-                <DialogTitle id="form-dialog-title" >
-                  {type === "new" ? <div style={{ display: "contents" }}><GroupAdd fontSize="large" />Add a Admin Role</div> : "Edit Admin Role"}
-                </DialogTitle>
-                <DialogContent>
-                  <ValidatorForm
-                    ref="form"
-                    onSubmit={
-                      type === "new" ? this.AddAclRole : this.UpdateAclRole
-                    }
-                    onError={(errors) => null}
-                  >
-                    <Grid container spacing={1} >
-                      <Grid item lg={6} md={6} sm={12} xs={12}>
-                        <TextValidator
-                          className="mb-16 "
-                          label="Role Type"
-                          onChange={this.handleChange}
-                          type="text"
-                          name="roleType"
-                          placeholder="Enter Role Type"
-                          value={roleType}
-                          validators={["required", "minStringLength: 2"]}
-                          errorMessages={["this field is required"]}
-                          style={{ width: "-webkit-fill-available" }}
-                          variant="outlined"
-                          size="medium"
-
-                        />
-                      </Grid>
-                    </Grid>
-                    <DialogActions className="p-0">
-                      <div className="swiper-container-no-flexbox">
-                        <Tooltip title="Password will generated by The System" placement="right">
-
-                          <IconButton className="p-0">
-                            <Icon>info_outlined</Icon>
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                      <Button onClick={this.handleClose} color="primary">
-                        Cancel
-                        </Button>
-                      {type === "new" ? (
-                        <Button color="primary" type="submit">
-                          Add
-                          </Button>
-                      ) : (
-                          <Button color="primary" type="submit">
-                            Save
-                          </Button>
-                        )}
-                    </DialogActions>
-                  </ValidatorForm>
-                </DialogContent>
-              </Dialog>
-            </div>
-      </div >
-        );
-      }
-    }
+                <Grid container spacing={1}>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <TextValidator
+                      className="mb-16 "
+                      label="Role Type"
+                      onChange={this.handleChange}
+                      type="text"
+                      name="roleType"
+                      placeholder="Enter Role Type"
+                      value={roleType}
+                      validators={["required", "minStringLength: 2"]}
+                      errorMessages={["this field is required"]}
+                      style={{ width: "-webkit-fill-available" }}
+                      variant="outlined"
+                      size="medium"
+                    />
+                  </Grid>
+                </Grid>
+                <DialogActions className="p-0">
+                  <div className="swiper-container-no-flexbox">
+                    <Tooltip
+                      title="Password will generated by The System"
+                      placement="right"
+                    >
+                      <IconButton className="p-0">
+                        <Icon>info_outlined</Icon>
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                  <Button onClick={this.handleClose} color="primary">
+                    Cancel
+                  </Button>
+                  {type === "new" ? (
+                    <Button color="primary" type="submit">
+                      Add
+                    </Button>
+                  ) : (
+                    <Button color="primary" type="submit">
+                      Save
+                    </Button>
+                  )}
+                </DialogActions>
+              </ValidatorForm>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+    );
+  }
+}
 const mapStateToProps = (state) => {
-  const {aclRoleList, roleType, createdDate, updateDate} = state.aclRole;
+  const { aclRoleList, roleType, createdDate, updateDate } = state.aclRole;
   return {
-          aclRoleList, roleType, createdDate, updateDate
+    aclRoleList,
+    roleType,
+    createdDate,
+    updateDate,
+  };
+};
 
-        };
-      };
-      
-export default connect(mapStateToProps, {aclRoleListApi, addAclRoleApi})(
-          AclRole
+export default connect(mapStateToProps, { aclRoleListApi, addAclRoleApi })(
+  AclRole
 );
