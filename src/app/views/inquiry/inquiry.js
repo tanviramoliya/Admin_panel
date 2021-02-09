@@ -467,7 +467,22 @@ class inquiry extends Component {
             />
           </Card>
         </div>
-
+        <div>
+          <ConfirmationDialog
+            open={this.state.deleteModal}
+            title="Delete Confirmation"
+            message={
+              "are you sure want to delete " +
+              selected.length +
+              " inquiries?"
+            }
+            toggle={this.deleteInquiryClicked}
+            onYesClick={() =>
+              this.yesDeleteClicked(this.state.deleteInquiryToken)
+            }
+            onNoClick={this.noDeleteClicked}
+          />
+        </div>
         <div>
           <Dialog
             open={openReadModal}
