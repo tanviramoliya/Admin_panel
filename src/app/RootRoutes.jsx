@@ -7,6 +7,7 @@ import sessionRoutes from "./views/sessions/SessionRoutes";
 
 
 import formsRoutes from "./views/forms/FormsRoutes";
+import newsRoutes from "./views/news/newsRoutes";
 
 import masterRoutes from "./views/master/masterRoutes";
 import newsUpdateRoutes from "./views/newsUpdate/newsUpdateRoutes";
@@ -14,7 +15,10 @@ import subscriberRoutes from "./views/subscriber/subscriberRoutes";
 import adminUserRoutes from "./views/adminUser/adminUserRoutes";
 import settingRoutes from "./views/settingModule/settingRoutes";
 import inquiryRoutes from "./views/inquiry/inquiryRoutes";
-import aclRoleRoutes from "./views/aclRole/aclRoleRoutes"
+import aclRoleRoutes from "./views/aclRole/aclRoleRoutes";
+
+
+
 
 const redirectRoute = [
   {
@@ -44,7 +48,7 @@ const routes = [
   ...formsRoutes,
   ...redirectRoute,
   ...errorRoute,
- 
+  ...newsRoutes
 ];
 
 export default routes;

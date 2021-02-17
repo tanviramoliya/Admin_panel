@@ -19,7 +19,7 @@ import {
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
 import { status } from "../../../../utility/config";
-import UploadService  from "./uploadService";
+import UploadService from "./uploadService";
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -47,7 +47,7 @@ class aboutUs extends Component {
     fileToken: "",
     aboutUsList: [],
     progress: 10,
-    selectedFiles : undefined,
+    selectedFile: null,
     isError: false,
     message: "",
   };
@@ -123,15 +123,14 @@ class aboutUs extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
   selectFile = (event) => {
-    this.setState({
-      selectedFiles: event.target.files,
-    });
-    console.log(event.target.files);
+    this.setState({ selectedFile: event.target.files[0] });
+    console.log(this.state.selectedFile);
   }
-  
-  upload() {
-    let currentFile = this.state.selectedFiles[0];
 
+  upload() {
+    console.log(this.state.selectedFile);
+    let currentFile = this.state.selectedFile[0];
+    
     this.setState({
       progress: 0,
       currentFile: currentFile,
@@ -164,7 +163,7 @@ class aboutUs extends Component {
       });
 
     this.setState({
-      selectedFiles: undefined,
+      selectedFile: undefined,
     });
   }
 
@@ -177,7 +176,7 @@ class aboutUs extends Component {
       heading,
       abstraction,
       progress,
-      selectedFiles,
+      selectedFile,
       isError,
       message
     } = this.state;
@@ -199,6 +198,62 @@ class aboutUs extends Component {
           >
             <Grid container spacing={6}>
               <Grid item lg={6} md={6} sm={12} xs={12}>
+                <Box  mb={8} >
+                  <Box mb={2} display="flex" alignItems="center">
+                    <Box width="100%">
+                      <BorderLinearProgress
+                        variant="determinate"
+                        value={progress}
+                      />
+                    </Box>
+                    <Box minWidth={20}>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                      >{`${progress}%`}</Typography>
+                    </Box>
+                  </Box>
+                  <Grid container justify="space-between">
+                    <Grid item>
+                      <label htmlFor="btn-upload">
+                        <input
+                          id="btn-upload"
+                          name="file"
+                          style={{ display: "none" }}
+                          type="file"
+                          onChange={this.selectFile}
+                        />
+                        <Button
+                          className="btn-choose"
+                          variant="outlined"
+                          component="span"
+                        >Choose Files</Button>
+                      </label>
+                      <div className="file-name">
+                        {selectedFile
+                          ? selectedFile.name
+                          : null}
+                      </div>
+                    </Grid>
+                    <Grid item>
+                      <Button
+                        className="btn-upload"
+                        color="primary"
+                        variant="contained"
+                        component="span"
+                        disabled={!selectedFile}
+                        onClick={this.upload}
+                      >Upload</Button>
+
+                      <Typography
+                        variant="subtitle2"
+                        className={`upload-message ${isError ? "error" : ""}`}>
+                        {message}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+
                 <TextField
                   error={goal === ""}
                   id="outlined-basic"
@@ -228,58 +283,6 @@ class aboutUs extends Component {
                   error={vision === ""}
                   helperText={vision === "" ? "this feild is required" : ""}
                 />
-                <Box className="mb25" display="flex" alignItems="center">
-                  <Box width="100%" mr={1}>
-                    <BorderLinearProgress
-                      variant="determinate"
-                      value={progress}
-                    />
-                  </Box>
-                  <Box minWidth={35}>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                    >{`${progress}%`}</Typography>
-                  </Box>
-                </Box>
-                <label htmlFor="btn-upload">
-                  <input
-                    id="btn-upload"
-                    name="btn-upload"
-                    style={{ display: "none" }}
-                    type="file"
-                    onChange={this.selectFile}
-                  />
-                  <Button
-                    className="btn-choose"
-                    variant="outlined"
-                    component="span"
-                  >
-                    Choose Files
-                  </Button>
-                </label>
-                <div className="file-name">
-                  {selectedFiles && selectedFiles.length > 0
-                    ? selectedFiles[0].name
-                    : null}
-                </div>
-                <Button
-                  className="btn-upload"
-                  color="primary"
-                  variant="contained"
-                  component="span"
-                  disabled={!selectedFiles}
-                  onClick={this.upload}
-                >
-                  Upload
-                </Button>
-
-                <Typography
-                  variant="subtitle2"
-                  className={`upload-message ${isError ? "error" : ""}`}
-                >
-                  {message}
-                </Typography>
               </Grid>
 
               <Grid item lg={6} md={6} sm={12} xs={12}>

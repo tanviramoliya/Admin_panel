@@ -7,6 +7,9 @@ const socialMedia = MatxLoadable({
 const aboutUs = MatxLoadable({
     loader: () => import("./aboutUs/aboutUs")
 });
+const footer = MatxLoadable({
+    loader: () => import("./footer/footer")
+});
 const settingRoutes = [
     {
         path: "/setting/socialMedia",
@@ -15,6 +18,10 @@ const settingRoutes = [
     {
         path: "/setting/aboutUs",
         component: aboutUs
+    },
+    {
+        path: "/setting/footer",
+        component: footer
     }
 ]
 

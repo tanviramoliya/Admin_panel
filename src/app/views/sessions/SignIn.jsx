@@ -48,17 +48,15 @@ class SignIn extends Component {
     let { email, password } = this.state;
     let { classes } = this.props;
     return (
-      <div className="signup flex flex-center w-100 h-100vh">
-        <div className="p-8">
-          <Card className="signup-card position-relative y-center">
-            <Grid container>
+      <div className="flex">
+            <Grid container justify="center" direction="column"  alignItems="center" spacing={2}>
               <Grid item lg={5} md={5} sm={5} xs={12}>
-                <div className="p-32 flex flex-center flex-middle h-100">
-                  <img src="/assets/images/illustrations/dreamer.svg" alt="" />
+                <div className="p-32 flex flex-center flex-middle">
+                <img src="/assets/images/sidebar/gntv.png" alt="" width="70%" />
                 </div>
               </Grid>
-              <Grid item lg={7} md={7} sm={7} xs={12}>
-                <div className="p-36 h-100 bg-light-gray position-relative">
+              <Grid item lg={5} md={6} sm={6} xs={12}>
+                <div className="p-36 bg-light-gray">
                   <ValidatorForm ref="form" onSubmit={this.handleFormSubmit}>
                     <TextValidator
                       className="mb-24 w-100"
@@ -131,8 +129,6 @@ class SignIn extends Component {
                 </div>
               </Grid>
             </Grid>
-          </Card>
-        </div>
       </div>
     );
   }

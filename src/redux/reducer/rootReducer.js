@@ -16,10 +16,11 @@ import NewsUpdateReducer from "./newsUpdate/newsUpdateReducer";
 import SubscriberReducer from "./subscriber/subcscriberReducer"
 import AdminUserReducer from "./adminUser/adminUserReducer";
 import AclRoleReducer from "./aclRole/aclRoleReducer";
-
+import VideoNewsReducer from "./news/videoNews/videoNewsReducer";
 import SocialMediaReducer from "./settingModule/socialMedia/socialMediaReducer";
 import AboutUsReducer from "./settingModule/aboutUs/aboutUsReducer";
 import InquiryReducer from "./inquiry/inquiryReducer";
+import footerReducer from "./settingModule/footer/footerReducer";
 
 
 const RootReducer = combineReducers({
@@ -30,6 +31,7 @@ const RootReducer = combineReducers({
   scrumboard: ScrumBoardReducer,
   notification: NotificationReducer,
   ecommerce: EcommerceReducer,
+  videoNews : VideoNewsReducer,
   country : CountryReducer,
   state : StateReducer,
   city : CityReducer,
@@ -43,6 +45,7 @@ const RootReducer = combineReducers({
   aboutUs : AboutUsReducer,
   inquiry : InquiryReducer,
   aclRole : AclRoleReducer,
+  footer : footerReducer
 });
 
 export default RootReducer;

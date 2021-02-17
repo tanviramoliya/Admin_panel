@@ -15,7 +15,8 @@ export const navigations = [
       },
       {
         name: "Video",
-        path: "/forms/editor",
+        //path: "/forms/editor",
+        path : "/news/videoNews",
         icon: "video_library"
       }
     ]
@@ -132,7 +133,7 @@ export const navigations = [
       },
       {
         name: "Footer",
-        path: "/utilities/display",
+        path: "/setting/footer",
         iconText: "F"
       }
     ]

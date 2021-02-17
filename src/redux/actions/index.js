@@ -18,3 +18,7 @@ export * from "./inquiry/index";
 export * from "./apiAction/inquiryApiAction";
 export * from "./aclRole/index";
 export * from "./apiAction/aclRoleApiAction";
+export * from "./apiAction/footerApiAction";
+export * from "./news/index";
+export * from "./apiAction/videoNewsApiAction";
+

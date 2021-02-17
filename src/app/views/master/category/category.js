@@ -386,7 +386,7 @@ class category extends Component {
                     name="categoryName"
                     value={categoryName}
                     validators={["required", "minStringLength: 2"]}
-                    errorMessages={["this field is required"]}
+                    errorMessages={["this field is required","category name more then 2 character"]}
                     style={{ width: "-webkit-fill-available" }}
                     variant="outlined"
                   />

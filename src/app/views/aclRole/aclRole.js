@@ -331,24 +331,31 @@ class AclRole extends Component {
                       >
                         <TableBody>
                           <TableRow>
-                            {console.log(Object.values(JSON.parse(AclRole.permission)))}
-                            <TableCell align="center">Permissions Name</TableCell>
-                            <TableCell align="center">
-                              {" "}
-                              <Chip
-                                variant="outlined"
-                                color="primary"
-                                size="small"
-                                label="R/W"
-                                style={{marginRight: "6px"}}
-                              />
-                              <Chip
-                                variant="outlined"
-                                color="secondary"
-                                size="small"
-                                label="R/O"
-                              />
-                            </TableCell>
+                            {console.log("Key",Object.keys(JSON.parse(AclRole.permission)))}
+                            {console.log("Values",Object.values(JSON.parse(AclRole.permission)))}
+                            {
+                              Object.keys(JSON.parse(AclRole.permission)).map(name => {
+                                return <TableCell align="center">{name}</TableCell>
+                              })
+                            }
+                            {
+                              Object.values(JSON.parse(AclRole.permission)).map(p => {
+                               return  <TableCell align="center"> {p === "RW" ?  <Chip
+                               variant="outlined"
+                               color="primary"
+                               size="small"
+                               label="R/W"
+                               style={{marginRight: "6px"}}
+                             /> :  <Chip
+                             variant="outlined"
+                             color="secondary"
+                             size="small"
+                             label="R/O"
+                           />
+                        } </TableCell>
+                              })
+                            }
+                            
                           </TableRow>
   
                           {/* {rows.map((row) => (

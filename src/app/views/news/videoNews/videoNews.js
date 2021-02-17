@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import {
-  adminUserListApi,
-  deleteAdminUserApi,
-  addAdminUserApi,
-  updateAdminUserApi,
-} from "../../../redux/actions/index";
-import { status } from "../../../utility/config";
+  videoNewsListApi,
+  deleteVideoNewsApi,
+  addVideoNewsApi,
+  updateVideoNewsApi,
+} from "../../../../redux/actions/index";
+import { status } from "../../../../utility/config";
 import { toastr } from "react-redux-toastr";
-import { Breadcrumb } from "../../../components/matx/Breadcrumb";
+import { Breadcrumb } from "../../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
@@ -19,36 +19,39 @@ import { connect } from "react-redux";
 import { PhoneIphone, Email, Person, GroupAdd } from '@material-ui/icons';
 
 
-class AdminUser extends Component {
+class videoNews extends Component {
   state = {
-    adminUserList: [],
+    videoNewsList: [],
     rowsPerPage: 8,
     page: 0,
     deleteModal: false,
-    deleteAdminUserToken: null,
+    deleteVideoNewsId: null,
     openModal: false,
-    adminId: "",
-    adminToken: "",
-    firstName: "",
-    lastName: "",
-    role: "",
-    roleToken: "",
-    email: "",
-    contactNumber: "",
+    videoNewsId: "",
+    videoLink: "",
+    title: "",
+    description: "",
+    publishedBy: "",
+    city: "",
+    state: "",
+    country: "",
     createdTime: "",
     updatedTime: "",
+    publishedTime: "",
+    publish: "",
+    critical: "",
+    tags: "",
     type: "new"
-
   };
 
   componentDidMount = async () => {
-    await this.getAdminUserList();
+    await this.getVideoNewsList();
     // custom rule will have name 'isPasswordMatch'
   };
 
-  getAdminUserList = async () => {
-    await this.props.adminUserListApi();
-    this.setState({ adminUserList: this.props.adminUserList });
+  getVideoNewsList = async () => {
+    await this.props.videoNewsListApi();
+    this.setState({ videoNewsList: this.props.videoNewsList });
   };
   handleChangePage = (event, newPage) => {
     this.setState({ page: newPage });
@@ -59,9 +62,9 @@ class AdminUser extends Component {
 
 
   //to delete Category
-  deleteAdminUserClicked = async (token) => {
-    if (token) {
-      this.setState({ deleteAdminUserToken: token });
+  deletvideoNewsClicked = async (vId) => {
+    if (vId) {
+      this.setState({ deleteVideoNewsId: vId });
     }
     this.setState({
       deleteModal: !this.state.deleteModal,
@@ -72,22 +75,22 @@ class AdminUser extends Component {
     //call delete Api
     this.setState({
       deleteModal: !this.state.deleteModal,
-      deleteAdminUserToken: null,
+      deleteVideoNewsId: null,
     });
     // this.props.setLoader(true);
-    const deleteAdminUser = await deleteAdminUserApi(
-      this.state.deleteAdminUserToken
+    const deleteVideoNews = await deleteVideoNewsApi(
+      this.state.deleteVideoNewsId
     );
-    if (deleteAdminUser && deleteAdminUser.data.code === status.success) {
-      await this.getAdminUserList();
-      toastr.success(deleteAdminUser.data.message);
+    if (deleteVideoNews && deleteVideoNews.data.code === status.success) {
+      await this.getVideoNewsList();
+      toastr.success(deleteVideoNews.data.message);
     } else if (
-      deleteAdminUser &&
-      deleteAdminUser.data.code === status.badRequest
+      deleteVideoNews &&
+      deleteVideoNews.data.code === status.badRequest
     ) {
-      toastr.warning(deleteAdminUser.data.message);
+      toastr.warning(deleteVideoNews.data.message);
     } else {
-      toastr.error(deleteAdminUser.data.message);
+      toastr.error(deleteVideoNews.data.message);
     }
     // this.props.setLoader(false);
   };
@@ -95,7 +98,7 @@ class AdminUser extends Component {
   noDeleteClicked = () => {
     this.setState({
       deleteModal: !this.state.deleteModal,
-      deleteAdminUserToken: null,
+      deleteVideoNewsId: null,
     });
   };
   // for open a modal
@@ -103,14 +106,17 @@ class AdminUser extends Component {
     this.setState({ openModal: true, type: type });
     if (type === "edit") {
       this.setState({
-        adminId: data.adminId,
-        adminToken: data.adminToken,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        role: data.role,
-        roleToken: data.roleToken,
-        email: data.email,
-        contactNumber: data.contactNumber
+        videoNewsId: data.videoNewsId,
+        videoLink: data.videoLink,
+        title: data.title,
+        description: data.description,
+        publishedBy: data.publishedBy,
+        city: data.city,
+        state: data.state,
+        country: data.country,
+        publish: data.publish,
+        critical: data.critical,
+        tags: data.tags,
 
       });
     }
@@ -120,18 +126,24 @@ class AdminUser extends Component {
     this.setState({
       openModal: false,
       type: "new",
-      adminId: "",
-      adminToken: "",
-      firstName: "",
-      lastName: "",
-      role: "",
-      roleToken: "",
-      email: "",
-      contactNumber: ""
+      videoNewsId: "",
+      videoLink: "",
+      title: "",
+      description: "",
+      publishedBy: "",
+      city: "",
+      state: "",
+      country: "",
+      createdTime: "",
+      updatedTime: "",
+      publishedTime: "",
+      publish: "",
+      critical: "",
+      tags: "",
 
     });
   };
-  AddAdminUser = async () => {
+  AddVideoNews = async () => {
     const { type, firstName, lastName, role, email, contactNumber } = this.state;
     if (type === "new") {
       if (!firstName) {
@@ -166,12 +178,12 @@ class AdminUser extends Component {
         email: email,
         contactNumber: contactNumber
       };
-      const createAdminUser = await addAdminUserApi(data);
-      if (createAdminUser) {
-        if (createAdminUser.status === status.success) {
-          if (createAdminUser.data.code === status.success) {
-            toastr.success(createAdminUser.data.message);
-            this.getAdminUserList();
+      const createVideoNews = await addVideoNewsApi(data);
+      if (createVideoNews) {
+        if (createVideoNews.status === status.success) {
+          if (createVideoNews.data.code === status.success) {
+            toastr.success(createVideoNews.data.message);
+            this.getVideoNewsList();
             this.setState({
               openModal: false,
               type: "new",
@@ -186,17 +198,17 @@ class AdminUser extends Component {
 
             });
           } else {
-            toastr.warning(createAdminUser.data.message);
+            toastr.warning(createVideoNews.data.message);
           }
         } else {
-          toastr.error(createAdminUser.data.message);
+          toastr.error(createVideoNews.data.message);
         }
       }
       // this.props.setLoader(false);
 
     }
   };
-  UpdateAdminUser = async () => {
+  UpdateVideoNews = async () => {
     const {
       type,
       adminToken, firstName, lastName, role, email, contactNumber } = this.state;
@@ -241,12 +253,12 @@ class AdminUser extends Component {
         email: email,
         contactNumber: contactNumber
       };
-      const updateAdminUser = await updateAdminUserApi(data);
-      if (updateAdminUser) {
-        if (updateAdminUser.status === status.success) {
-          if (updateAdminUser.data.code === status.success) {
-            toastr.success(updateAdminUser.data.message);
-            this.getAdminUserList();
+      const updateVideoNews = await updateVideoNewsApi(data);
+      if (updateVideoNews) {
+        if (updateVideoNews.status === status.success) {
+          if (updateVideoNews.data.code === status.success) {
+            toastr.success(updateVideoNews.data.message);
+            this.getVideoNewsList();
             this.setState({
               openModal: false,
               newsText: "",
@@ -260,10 +272,10 @@ class AdminUser extends Component {
               contactNumber: ""
             });
           } else {
-            toastr.warning(updateAdminUser.data.message);
+            toastr.warning(updateVideoNews.data.message);
           }
         } else {
-          toastr.error(updateAdminUser.data.message);
+          toastr.error(updateVideoNews.data.message);
         }
       }
       // this.props.setLoader(false);
@@ -280,9 +292,8 @@ class AdminUser extends Component {
   render() {
     const {
       page,
-      rowsPerPage,
-      adminUserList,
-      firstName, lastName, role, email, contactNumber,
+      rowsPerPage, videoNewsList,
+      videoNewsId, videoLink, title, description, publishedBy, city, state, country, createdTime, updatedTime, publishedTime, publish, critical, tags,
       type,
       openModal
 
@@ -290,70 +301,71 @@ class AdminUser extends Component {
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
-          <Breadcrumb
+        <Breadcrumb
             routeSegments={[
-              { name: "Admin User", path: "/adminUser" },
-
+              { name: "News", path: "/news/videoNews" },
+              { name: "Video News" },
             ]}
           />
         </div>
-        <div className="py-12">
+          <div className="py-12">
           <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
-              <div className="card-title">Admin User Infromation</div>
+              <div className="card-title">Vidoe News Infromation</div>
               <Button
                 className="capitalize text-white bg-circle-primary"
                 onClick={() => this.setModel("new")}
               >
-                Add New Admin
+                Add Video News
                   </Button>
             </div>
             <TableContainer style={{ maxHeight: "405px" }}>
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="5%" >Sr.No</TableCell>
-                    <TableCell className="px-0" width="15%" >UserName</TableCell>
-                    <TableCell className="px-0" width="8%" >Role</TableCell>
-                    <TableCell className="px-0" width="20%">Email</TableCell>
-                    <TableCell className="px-0" width="15%" >ContactNumber</TableCell>
+                    <TableCell className="px-0" width="5%" >VidoeNewsId</TableCell>
+                    <TableCell className="px-0" width="15%" >title</TableCell>
+                    <TableCell className="px-0" width="8%" >Location</TableCell>
+                    <TableCell className="px-0" width="10%">publish</TableCell>
+                    <TableCell className="px-0" width="10%">critical</TableCell>
+                    <TableCell className="px-0" width="15%" >publishedBy</TableCell>
                     <TableCell className="px-0" width="15%">CreatedTime</TableCell>
                     <TableCell className="px-0"  >Actions</TableCell>
 
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {adminUserList
+                  {videoNewsList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((AdminUser, index) => (
+                    .map((VideoNews, index) => (
                       <TableRow key={index}>
                         <TableCell className="p-0" >
-                          {index + 1}
-                        </TableCell>
-                        <TableCell className="p-0" >
-                          {AdminUser.firstName + " " + AdminUser.lastName}
-                        </TableCell>
-                        <TableCell className="p-0">
-                          <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
-                            {AdminUser.role}
-                          </small>
-
+                          {VideoNews.videoNewsId}
                         </TableCell>
                         <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-                          {AdminUser.email}
+                          {VideoNews.title}
+                        </TableCell>
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                          {VideoNews.city + "," + VideoNews.state + "," + VideoNews.country}
                         </TableCell>
                         <TableCell className="p-0" >
-                          {AdminUser.contactNumber}
+                          {VideoNews.publish}
                         </TableCell>
                         <TableCell className="p-0" >
-                          {AdminUser.createdTime}
+                          {VideoNews.critical}
+                        </TableCell>
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                          {VideoNews.publishedBy}
+                        </TableCell>
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                          {VideoNews.CreatedTime}
                         </TableCell>
 
                         <TableCell className="p-0">
                           <IconButton className="p-8">
                             <Icon
                               color="primary"
-                              onClick={() => this.setModel("edit", AdminUser)}
+                              onClick={() => this.setModel("edit", VideoNews)}
                             >
                               edit
                                 </Icon>
@@ -362,7 +374,7 @@ class AdminUser extends Component {
                             <Icon
                               color="error"
                               onClick={() =>
-                                this.deleteAdminUserClicked(AdminUser.adminToken)
+                                this.deleteAdminUserClicked(VideoNews.videoNewsId)
                               }
                             >
                               delete
@@ -379,7 +391,7 @@ class AdminUser extends Component {
               className="px-16"
               rowsPerPageOptions={[8, 16, 24]}
               component="div"
-              count={adminUserList.length}
+              count={videoNewsList.length}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{
@@ -393,29 +405,29 @@ class AdminUser extends Component {
             />
 
           </Card>
-        </div>
-        <div>
+          </div>
+          <div>
           <ConfirmationDialog
             open={this.state.deleteModal}
             title="Delete Confirmation"
             message={"are you sure want to delete this Admin User?"}
-            toggle={this.deleteAdminUserClicked}
+            toggle={this.deletvideoNewsClicked}
             onYesClick={() =>
-              this.yesDeleteClicked(this.state.deleteAdminUserToken)
+              this.yesDeleteClicked(this.state.deleteVideoNewsId)
             }
             onNoClick={this.noDeleteClicked}
           />
-        </div>
-        <div>
+          </div>
+          <div>
           <Dialog
             open={openModal}
             aria-labelledby="max-width-dialog-title"
             fullWidth={true} maxWidth="sm"
           >
             <DialogTitle id="form-dialog-title" >
-              {type === "new" ? <div style={{ display: "contents" }}><GroupAdd fontSize="large" />Add a Admin User</div> : "Edit Admin User"}
+              {type === "new" ? <div style={{ display: "contents" }}><GroupAdd fontSize="large" />Add a Video News</div> : "Edit Video News"}
             </DialogTitle>
-            <DialogContent>
+            {/* <DialogContent>
               <ValidatorForm
                 ref="form"
                 onSubmit={
@@ -430,7 +442,7 @@ class AdminUser extends Component {
                       label="first Name"
 
                       onChange={this.handleChange}
-                     
+
                       name="firstName"
                       placeholder="Enter First Name"
                       value={firstName}
@@ -527,13 +539,13 @@ class AdminUser extends Component {
                 />
 
                 <DialogActions className="p-0">
-                <div className="swiper-container-no-flexbox">
-                  <Tooltip title="Password will generated by The System" placement="right">
-                    
-                    <IconButton className="p-0">
-                      <Icon>info_outlined</Icon>
-                    </IconButton>
-                  </Tooltip>
+                  <div className="swiper-container-no-flexbox">
+                    <Tooltip title="Password will generated by The System" placement="right">
+
+                      <IconButton className="p-0">
+                        <Icon>info_outlined</Icon>
+                      </IconButton>
+                    </Tooltip>
                   </div>
                   <Button onClick={this.handleClose} color="primary">
                     Cancel
@@ -549,21 +561,22 @@ class AdminUser extends Component {
                     )}
                 </DialogActions>
               </ValidatorForm>
-            </DialogContent>
+            </DialogContent> */}
           </Dialog>
+          </div>
         </div>
-      </div>
+      
     );
   }
 }
 const mapStateToProps = (state) => {
-  const { adminUserList, firstName, lastName, role, email, contactNumber } = state.adminUser;
+  const { videoNewsList } = state.videoNews;
   return {
-    adminUserList, firstName, lastName, role, email, contactNumber
+    videoNewsList
 
   };
 };
 
-export default connect(mapStateToProps, { adminUserListApi, addAdminUserApi })(
-  AdminUser
+export default connect(mapStateToProps, { videoNewsListApi, addVideoNewsApi })(
+  videoNews
 );
