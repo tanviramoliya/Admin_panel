@@ -50,14 +50,24 @@ class aboutUs extends Component { constructor(props) {
     token: "",
     fileToken: "",
     aboutUsList: [],
-    progress: 10,
-    selectedFile: null,
+    progress: 0,
+    selectedFile: undefined,
     isError: false,
     message: "",
+    fileInfos: null
   };
   componentDidMount = async () => {
     await this.getAboutUsList();
+    UploadService.getFiles(this.state.fileToken).then((response) => {
+      this.setState({
+        progress : (response.data.data)?100:0,
+        fileInfos: response.data.data,
+      });
+    });
+
+
   };
+ 
   getAboutUsList = async () => {
     await this.props.aboutUsListApi();
     this.setState({ aboutUsList: this.props.aboutUsList });
@@ -129,15 +139,16 @@ class aboutUs extends Component { constructor(props) {
     event.persist();
     this.setState({ [event.target.name]: event.target.value });
   };
-  selectFile = (event) => {
-    this.setState({ selectedFile: event.target.files[0] });
+  onFileChange = (event) => {
+    console.log(event.target.files[0]);
+    this.setState({ progress: 0, selectedFile: event.target.files[0] });
     console.log(this.state.selectedFile);
   }
 
-  upload() {
+  upload = () => {
     console.log(this.state.selectedFile);
-    let currentFile = this.state.selectedFile[0];
-    
+    let currentFile = this.state.selectedFile;
+
     this.setState({
       progress: 0,
       currentFile: currentFile,
@@ -150,14 +161,16 @@ class aboutUs extends Component { constructor(props) {
     })
       .then((response) => {
         this.setState({
+          fileToken: response.data.data,
           message: response.data.message,
           isError: false
         });
-        return UploadService.getFiles();
+        console.log(this.state.fileToken)
+        return UploadService.getFiles(this.state.fileToken);
       })
-      .then((files) => {
+      .then((response) => {
         this.setState({
-          fileInfos: files.data,
+          fileInfos: response.data.data,
         });
       })
       .catch(() => {
@@ -185,7 +198,8 @@ class aboutUs extends Component { constructor(props) {
       progress,
       selectedFile,
       isError,
-      message
+      message,
+      fileInfos
     } = this.state;
     return (
       <>
@@ -205,7 +219,7 @@ class aboutUs extends Component { constructor(props) {
           >
             <Grid container spacing={6}>
               <Grid item lg={6} md={6} sm={12} xs={12}>
-                <Box  mb={8} >
+                <Box mb={8} >
                   <Box mb={2} display="flex" alignItems="center">
                     <Box width="100%">
                       <BorderLinearProgress
@@ -226,9 +240,10 @@ class aboutUs extends Component { constructor(props) {
                         <input
                           id="btn-upload"
                           name="file"
+
                           style={{ display: "none" }}
                           type="file"
-                          onChange={this.selectFile}
+                          onChange={this.onFileChange}
                         />
                         <Button
                           className="btn-choose"
@@ -236,11 +251,7 @@ class aboutUs extends Component { constructor(props) {
                           component="span"
                         >Choose Files</Button>
                       </label>
-                      <div className="file-name">
-                        {selectedFile
-                          ? selectedFile.name
-                          : null}
-                      </div>
+
                     </Grid>
                     <Grid item>
                       <Button
@@ -252,11 +263,28 @@ class aboutUs extends Component { constructor(props) {
                         onClick={this.upload}
                       >Upload</Button>
 
-                      <Typography
-                        variant="subtitle2"
-                        className={`upload-message ${isError ? "error" : ""}`}>
-                        {message}
-                      </Typography>
+
+                    </Grid>
+                    <Grid container justify="space-between">
+                      <Grid item>
+
+                        <Typography
+                          variant="subtitle2" >
+                          {(selectedFile)
+                            ? 'selected file is : ' + selectedFile.name
+                            : (fileInfos)
+                              ? 'uploaded file is : ' + fileInfos.fileName
+                              : null
+                          }
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography
+                          variant="subtitle2"
+                          className={`upload-message ${isError ? "error" : ""}`}>
+                          {message}
+                        </Typography>
+                      </Grid>
                     </Grid>
                   </Grid>
                 </Box>

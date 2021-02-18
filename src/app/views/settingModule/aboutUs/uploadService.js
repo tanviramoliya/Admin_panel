@@ -6,7 +6,7 @@ class UploadFilesService {
 
     formData.append("file", file);
 
-    return axios.post("/upload", formData, {
+    return axios.post("http://localhost:9090/aboutUs/uploadAboutUsMedia", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -14,8 +14,12 @@ class UploadFilesService {
     });
   }
 
-  getFiles() {
-    return axios.get("/files");
+  getFiles(fileToken) {
+    console.log(fileToken)
+    return axios.get("http://localhost:9090/aboutUs/getAboutUsFile", { params: {
+      fileToken: fileToken
+    }
+  });
   }
 }
 
