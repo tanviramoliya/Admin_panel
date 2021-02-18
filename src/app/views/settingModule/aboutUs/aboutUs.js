@@ -20,6 +20,7 @@ import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
 import { status } from "../../../../utility/config";
 import UploadService from "./uploadService";
+import SimpleReactValidator from "simple-react-validator";
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -35,7 +36,10 @@ const BorderLinearProgress = withStyles((theme) => ({
   },
 }))(LinearProgress);
 
-class aboutUs extends Component {
+class aboutUs extends Component { constructor(props) {
+  super(props);
+  this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+}
   state = {
     goal: "",
     mission: "",
@@ -72,50 +76,53 @@ class aboutUs extends Component {
     });
   };
   handleSubmit = async () => {
-    console.log("submitted");
-    const {
-      goal,
-      mission,
-      vision,
-      objective,
-      heading,
-      abstraction,
-      token,
-      fileToken,
-    } = this.state;
-    let data = {
-      goal: goal,
-      mission: mission,
-      vision: vision,
-      objective: objective,
-      heading: heading,
-      abstraction: abstraction,
-      token: token,
-      fileToken: fileToken,
-    };
-    const updateAboutUs = await updateAboutUsApi(data);
-    if (updateAboutUs) {
-      if (updateAboutUs.status === status.success) {
-        if (updateAboutUs.data.code === status.success) {
-          toastr.success(updateAboutUs.data.message);
-          this.getAboutUsList();
+    if (this.validator.fieldValid("goal") &&
+    this.validator.fieldValid('mission') &&
+    this.validator.fieldValid('vision') &&
+    this.validator.fieldValid('objective') &&
+    this.validator.fieldValid('heading') &&
+    this.validator.fieldValid('abstraction') 
+    ){
+      const {
+        goal,
+        mission,
+        vision,
+        objective,
+        heading,
+        abstraction,
+        token,
+        fileToken,
+      } = this.state;
+      let data = {
+        goal: goal,
+        mission: mission,
+        vision: vision,
+        objective: objective,
+        heading: heading,
+        abstraction: abstraction,
+        token: token,
+        fileToken: fileToken,
+      };
+      // this.props.setLoader(false); 
+      const updateAboutUs = await updateAboutUsApi(data);
+      if (updateAboutUs) {
+        if (updateAboutUs.status === status.success) {
+          if (updateAboutUs.data.code === status.success) {
+            toastr.success(updateAboutUs.data.message);
+            this.getAboutUsList();
+          } else {
+            toastr.warning(updateAboutUs.data.message);
+          }
         } else {
-          toastr.warning(updateAboutUs.data.message);
+          toastr.error(updateAboutUs.data.message);
         }
-      } else {
-        toastr.error(updateAboutUs.data.message);
       }
+      // this.props.setLoader(false);     
     }
-    // this.props.setLoader(false);
-    this.setState({
-      goal: "",
-      mission: "",
-      vision: "",
-      objective: "",
-      heading: "",
-      abstraction: "",
-      token: "",
-    });
+    else {
+      this.validator.showMessages();
+    }
+    
   };
 
   handleChange = (event) => {
@@ -255,7 +262,11 @@ class aboutUs extends Component {
                 </Box>
 
                 <TextField
-                  error={goal === ""}
+                  error={this.validator.message(
+                    "goal",
+                    this.state.goal,
+                    "required|alpha"
+                  )}
                   id="outlined-basic"
                   multiline
                   rows={4}
@@ -266,9 +277,15 @@ class aboutUs extends Component {
                   type="textarea"
                   name="goal"
                   value={goal}
-                  helperText={goal === "" ? "this feild is required" : ""}
+                  onBlur={() =>
+                    this.validator.showMessageFor("goal")
+                  }                  
+                  helperText={this.validator.message(
+                    "goal",
+                    this.state.goal,
+                    "required|alpha"
+                  )}
                 />
-
                 <TextField
                   id="outlined-basic"
                   multiline
@@ -280,8 +297,19 @@ class aboutUs extends Component {
                   type="textarea"
                   name="vision"
                   value={vision}
-                  error={vision === ""}
-                  helperText={vision === "" ? "this feild is required" : ""}
+                  error={this.validator.message(
+                    "vision",
+                    this.state.vision,
+                    "required|alpha"
+                  )}
+                  helperText={this.validator.message(
+                    "vision",
+                    this.state.vision,
+                    "required|alpha"
+                  )}
+                  onBlur={() =>
+                    this.validator.showMessageFor("vision")
+                  } 
                 />
               </Grid>
 
@@ -295,8 +323,19 @@ class aboutUs extends Component {
                   type="text"
                   name="heading"
                   value={heading}
-                  error={heading === ""}
-                  helperText={heading === "" ? "this feild is required" : ""}
+                  error={this.validator.message(
+                    "heading",
+                    this.state.heading,
+                    "required|alpha"
+                  )}
+                  helperText={this.validator.message(
+                    "heading",
+                    this.state.heading,
+                    "required|alpha"
+                  )}
+                  onBlur={() =>
+                    this.validator.showMessageFor("heading")
+                  } 
                 />
                 <TextField
                   id="outlined-basic"
@@ -307,10 +346,19 @@ class aboutUs extends Component {
                   type="text"
                   name="abstraction"
                   value={abstraction}
-                  error={abstraction === ""}
-                  helperText={
-                    abstraction === "" ? "this feild is required" : ""
-                  }
+                  error={this.validator.message(
+                    "abstraction",
+                    this.state.abstraction,
+                    "required|alpha"
+                  )}
+                  helperText={this.validator.message(
+                    "abstraction",
+                    this.state.abstraction,
+                    "required|alpha"
+                  )}
+                  onBlur={() =>
+                    this.validator.showMessageFor("abstraction")
+                  } 
                 />
                 <TextField
                   id="outlined-basic"
@@ -323,8 +371,19 @@ class aboutUs extends Component {
                   type="textarea"
                   name="mission"
                   value={mission}
-                  error={mission === ""}
-                  helperText={mission === "" ? "this feild is required" : ""}
+                  error={this.validator.message(
+                    "mission",
+                    this.state.mission,
+                    "required|alpha"
+                  )}
+                  helperText={this.validator.message(
+                    "mission",
+                    this.state.mission,
+                    "required|alpha"
+                  )}
+                  onBlur={() =>
+                    this.validator.showMessageFor("mission")
+                  } 
                 />
                 <TextField
                   id="outlined-basic"
@@ -337,8 +396,19 @@ class aboutUs extends Component {
                   type="textarea"
                   name="objective"
                   value={objective}
-                  error={objective === ""}
-                  helperText={objective === "" ? "this feild is required" : ""}
+                  error={this.validator.message(
+                    "objective",
+                    this.state.objective,
+                    "required|alpha"
+                  )}
+                  helperText={this.validator.message(
+                    "objective",
+                    this.state.objective,
+                    "required|alpha"
+                  )}
+                  onBlur={() =>
+                    this.validator.showMessageFor("objective")
+                  } 
                 />
               </Grid>
             </Grid>
