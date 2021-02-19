@@ -15,7 +15,6 @@ export const navigations = [
       },
       {
         name: "Video",
-        //path: "/forms/editor",
         path : "/news/videoNews",
         icon: "video_library"
       }

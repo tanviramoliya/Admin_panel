@@ -47,8 +47,8 @@ const routes = [
   ...utilitiesRoutes,
   ...formsRoutes,
   ...redirectRoute,
+  ...newsRoutes,
   ...errorRoute,
-  ...newsRoutes
 ];
 
 export default routes;
