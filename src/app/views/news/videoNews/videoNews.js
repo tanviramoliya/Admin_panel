@@ -11,12 +11,16 @@ import { Breadcrumb } from "../../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip
+  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, Slide, Toolbar, AppBar, Typography
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import { PhoneIphone, Email, Person, GroupAdd } from '@material-ui/icons';
+import CloseIcon from '@material-ui/icons/Close';
+import  history  from "../../../../history";
+
+
 
 
 class videoNews extends Component {
@@ -43,6 +47,9 @@ class videoNews extends Component {
     tags: "",
     type: "new"
   };
+  Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="left" ref={ref} {...props} />;
+  });
 
   componentDidMount = async () => {
     await this.getVideoNewsList();
@@ -282,6 +289,7 @@ class videoNews extends Component {
 
     }
   };
+  
 
   handleChange = (event) => {
     event.persist();
@@ -314,7 +322,7 @@ class videoNews extends Component {
               <div className="card-title">Vidoe News Infromation</div>
               <Button
                 className="capitalize text-white bg-circle-primary"
-                onClick={() => this.setModel("new")}
+                onClick={() => this.props.history.push('/news/videoNews/edit')}
               >
                 Add Video News
                   </Button>
@@ -323,13 +331,13 @@ class videoNews extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="5%" >VidoeNewsId</TableCell>
-                    <TableCell className="px-0" width="15%" >title</TableCell>
-                    <TableCell className="px-0" width="8%" >Location</TableCell>
-                    <TableCell className="px-0" width="10%">publish</TableCell>
-                    <TableCell className="px-0" width="10%">critical</TableCell>
-                    <TableCell className="px-0" width="15%" >publishedBy</TableCell>
-                    <TableCell className="px-0" width="15%">CreatedTime</TableCell>
+                    <TableCell className="px-0"  >VidoeNewsId</TableCell>
+                    <TableCell className="px-0" >title</TableCell>
+                    <TableCell className="px-0"  >Location</TableCell>
+                    <TableCell className="px-0" >publish</TableCell>
+                    <TableCell className="px-0" >critical</TableCell>
+                    <TableCell className="px-0" >publishedBy</TableCell>
+                    <TableCell className="px-0" >CreatedTime</TableCell>
                     <TableCell className="px-0"  >Actions</TableCell>
 
                   </TableRow>
@@ -339,25 +347,25 @@ class videoNews extends Component {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((VideoNews, index) => (
                       <TableRow key={index}>
-                        <TableCell className="p-0" >
+                        <TableCell className="ellipse p-0" >
                           {VideoNews.videoNewsId}
                         </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                        <TableCell className="ellipse p-0" >
                           {VideoNews.title}
                         </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                        <TableCell className="ellipse p-0">
                           {VideoNews.city + "," + VideoNews.state + "," + VideoNews.country}
                         </TableCell>
-                        <TableCell className="p-0" >
+                        <TableCell className="ellipse p-0" >
                           {VideoNews.publish}
                         </TableCell>
-                        <TableCell className="p-0" >
+                        <TableCell className="ellipse p-0" >
                           {VideoNews.critical}
                         </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                        <TableCell className="ellipse p-0">
                           {VideoNews.publishedBy}
                         </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                        <TableCell className="ellipse p-0" >
                           {VideoNews.CreatedTime}
                         </TableCell>
 
@@ -419,13 +427,23 @@ class videoNews extends Component {
           />
           </div>
           <div>
-          <Dialog
-            open={openModal}
-            aria-labelledby="max-width-dialog-title"
-            fullWidth={true} maxWidth="sm"
-          >
+          <Dialog fullScreen open={openModal} onClose={this.handleClose} TransitionComponent={this.Transition}>
+          <AppBar position="relative">
+          <Toolbar variant="dense">
+            <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" className="capitalize text-white"
+ >
+              Sound
+            </Typography>
+            <Button autoFocus color="secondary" onClick={this.handleClose}>
+              save
+            </Button>
+          </Toolbar>
+        </AppBar>
             <DialogTitle id="form-dialog-title" >
-              {type === "new" ? <div style={{ display: "contents" }}><GroupAdd fontSize="large" />Add a Video News</div> : "Edit Video News"}
+              {type === "new" ? <div style={{ display: "contents" }}>Add a Video News</div> : "Edit Video News"}
             </DialogTitle>
             {/* <DialogContent>
               <ValidatorForm

@@ -54,6 +54,7 @@
     "redux-thunk": "^2.3.0",
     "sass": "^1.30.0",
     "shortid": "^2.2.14",
+    "simple-react-validator": "^1.6.0",
     "swiper": "^4.5.0",
     "victory": "^32.3.3"
   },

@@ -15,11 +15,8 @@ class UploadFilesService {
   }
 
   getFiles(fileToken) {
-    console.log(fileToken)
-    return axios.get("http://localhost:9090/aboutUs/getAboutUsFile", { params: {
-      fileToken: fileToken
-    }
-  });
+    console.log()
+    return axios.get("http://localhost:9090/aboutUs/getAboutUsFile")
   }
 }
 

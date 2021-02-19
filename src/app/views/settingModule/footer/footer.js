@@ -9,6 +9,7 @@ import {
   withStyles,
   LinearProgress,
   Typography,
+  InputAdornment,
 } from "@material-ui/core";
 import { Breadcrumb } from "../../../../components/matx/index";
 
@@ -19,9 +20,15 @@ import {
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
 import { status } from "../../../../utility/config";
-import FileValidator from "./FileValidator";
+import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
+import { PhoneIphone, Email } from "@material-ui/icons";
+import SimpleReactValidator from "simple-react-validator";
 
 class footer extends Component {
+  constructor(props) {
+    super(props);
+    this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+  }
   state = {
     aboutUs: "",
     address: "",
@@ -53,7 +60,10 @@ class footer extends Component {
     });
   };
   handleSubmit = async () => {
-    console.log("submitted");
+    if (
+      this.validator.fieldValid("aboutUs") &&
+      this.validator.fieldValid("address")
+    ) {
     const {
       aboutUs,
       address,
@@ -76,14 +86,6 @@ class footer extends Component {
         if (updateFooter.data.code === status.success) {
           toastr.success(updateFooter.data.message);
           this.getFooterList();
-          this.setState({
-            aboutUs: "",
-            address: "",
-            contactNumber: "",
-            email: "",
-            optionalContact: "",
-            token: ""
-          });
         } else {
           toastr.warning(updateFooter.data.message);
         }
@@ -92,6 +94,9 @@ class footer extends Component {
       }
     }
     // this.props.setLoader(false);
+  } else {
+    this.validator.showMessages();
+  }
 
   };
 
@@ -99,7 +104,6 @@ class footer extends Component {
     event.persist();
 
     this.setState({ [event.target.name]: event.target.value });
-    this.setState({ emailTouched: true });
   };
 
 
@@ -113,7 +117,6 @@ class footer extends Component {
       footerList: [],
       token,
       isError,
-      emailTouched,
       message
     } = this.state;
     return (
@@ -134,10 +137,9 @@ class footer extends Component {
           <Grid container spacing={6}>
             <Grid item lg={6} md={6} sm={12} xs={12}>
               <TextField
-                error={aboutUs === ""}
                 id="outlined-basic"
                 multiline
-                rows={4}
+                rows={3}
                 variant="outlined"
                 className="mb-16 w-100"
                 label="aboutUs"
@@ -145,32 +147,59 @@ class footer extends Component {
                 type="textarea"
                 name="aboutUs"
                 value={aboutUs}
-                helperText={aboutUs === "" ? "this feild is required" : ""}
+                error={this.validator.message(
+                  "aboutUs",
+                  this.state.aboutUs,
+                  "required|alpha"
+                )}
+                helperText={this.validator.message(
+                  "aboutUs",
+                  this.state.aboutUs,
+                  "required|alpha"
+                )}
+                onBlur={() => this.validator.showMessageFor("aboutUs")}
               />
-              <TextField
-                id="outlined-basic"
-                variant="outlined"
-                className="mb-16 w-100"
-                label="contactNumber"
-                onChange={this.handleChange}
-                type="number"
-                name="contactNumber"
-                value={contactNumber}
-                error={contactNumber === ""}
-                helperText={contactNumber === "" ? "this feild is required" : ""}
-              />
-              <TextField
-                id="outlined-basic"
-                variant="outlined"
-                className="mb-16 w-100"
-                label="email"
-                onChange={this.handleChange}
-                type="email"
-                name="email"
-                value={email}
-                error={email === ""}
-                helperText={emailTouched ? "this feild is required" : ""}
-              />
+               <TextField
+                  className="mb-16 "
+                  label="contact Number"
+                  onChange={this.handleChange}
+                  type="number"
+                  name="contactNumber"
+                  placeholder="Enter Contact Number"
+                  value={contactNumber}
+                  validators={["required", "minStringLength:10",
+                    "maxStringLength: 10"]}
+                  errorMessages={["this field is required", "Contact Number must contains 10 digits", "Contact Number must contains 10 digits"]}
+                  style={{ width: "-webkit-fill-available" }}
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PhoneIphone />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              <TextValidator
+                  className="mb-16 "
+                  label="email"
+                  placeholder="Enter Email"
+                  onChange={this.handleChange}
+                  type="email"
+                  name="email"
+                  value={email}
+                  validators={["required", "isEmail"]}
+                  errorMessages={["this field is required", "Enter valid email"]}
+                  style={{ width: "-webkit-fill-available" }}
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Email />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
 
             </Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>
@@ -187,36 +216,45 @@ class footer extends Component {
                 type="textarea"
                 name="address"
                 value={address}
-                error={address === ""}
-                helperText={address === "" ? "this feild is required" : ""}
+                error={this.validator.message(
+                  "address",
+                  this.state.address,
+                  "required|alpha"
+                )}
+                helperText={this.validator.message(
+                  "address",
+                  this.state.address,
+                  "required|alpha"
+                )}
+                onBlur={() => this.validator.showMessageFor("address")}
               />
-              <TextField
-                id="outlined-basic"
-                variant="outlined"
-                className="mb-16 w-100"
-                label="optionalContact"
-                onChange={this.handleChange}
-                type="number"
-                name="optionalContact"
-                value={optionalContact}
-                error={optionalContact === ""}
-                helperText={
-                  optionalContact === "" ? "this feild is required" : ""
-                }
-              />
+              
+              <TextValidator
+                  className="mb-16 "
+                  label="contact Number"
+                  onChange={this.handleChange}
+                  type="number"
+                  name="optionalContact"
+                  placeholder="Enter Contact Number"
+                  value={optionalContact}
+                  validators={["required", "minStringLength:10",
+                    "maxStringLength: 10"]}
+                  errorMessages={["this field is required", "Contact Number must contains 10 digits", "Contact Number must contains 10 digits"]}
+                  style={{ width: "-webkit-fill-available" }}
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PhoneIphone />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
              <ValidatorForm
             ref="form"
             onSubmit={this.handleSubmit}
         >
-            <FileValidator
-                onChange={this.handleChange}
-                name="file"
-                type="file"
-                //value={file}
-                validators={['isFile', 'maxFileSize:' + 1 * 1024 * 1024, 'allowedExtensions:image/png,image/jpeg']}
-                errorMessages={['File is not valid', 'Size must not exceed 1MB', 'Only png and jpeg']}
-            />
-            <button type="submit">submit</button>
+            
         </ValidatorForm>
 
             </Grid>
