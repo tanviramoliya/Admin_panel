@@ -61,6 +61,7 @@ class aboutUs extends Component {
     await this.getAboutUsList();
     UploadService.getFiles(this.state.fileToken).then((response) => {
       this.setState({
+        fileToken:response.data.data ? response.data.data.fileToken : "",
         progress: response.data.data ? 100 : 0,
         fileInfos: response.data.data,
       });

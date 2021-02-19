@@ -56,14 +56,9 @@ class footer extends Component {
         optionalContact: a.optionalContact,
         token: a.token,
       });
-      //console.log(a.socialMediaName, a.socialMediaLink);
     });
   };
   handleSubmit = async () => {
-    if (
-      this.validator.fieldValid("aboutUs") &&
-      this.validator.fieldValid("address")
-    ) {
     const {
       aboutUs,
       address,
@@ -72,6 +67,13 @@ class footer extends Component {
       email,
       token,
     } = this.state;
+    if (
+      this.validator.fieldValid("aboutUs") &&
+      this.validator.fieldValid("address") &&
+      this.validator.fieldValid("email") && 
+      this.validator.fieldValid("contactNumber") &&
+      this.validator.fieldValid("optionalContact")
+    ) {  
     let data = {
       aboutUs: aboutUs,
       address: address,
@@ -87,7 +89,7 @@ class footer extends Component {
           toastr.success(updateFooter.data.message);
           this.getFooterList();
         } else {
-          toastr.warning(updateFooter.data.message);
+          toastr.warning("something went wrong!");
         }
       } else {
         toastr.error(updateFooter.data.message);
@@ -150,27 +152,23 @@ class footer extends Component {
                 error={this.validator.message(
                   "aboutUs",
                   this.state.aboutUs,
-                  "required|alpha"
+                  "required|min:30|max:300"
                 )}
                 helperText={this.validator.message(
                   "aboutUs",
                   this.state.aboutUs,
-                  "required|alpha"
+                  "required|min:30|max:300"
                 )}
                 onBlur={() => this.validator.showMessageFor("aboutUs")}
               />
                <TextField
-                  className="mb-16 "
+                 className="mb-16 w-100"
                   label="contact Number"
                   onChange={this.handleChange}
                   type="number"
                   name="contactNumber"
                   placeholder="Enter Contact Number"
                   value={contactNumber}
-                  validators={["required", "minStringLength:10",
-                    "maxStringLength: 10"]}
-                  errorMessages={["this field is required", "Contact Number must contains 10 digits", "Contact Number must contains 10 digits"]}
-                  style={{ width: "-webkit-fill-available" }}
                   variant="outlined"
                   InputProps={{
                     startAdornment: (
@@ -179,28 +177,47 @@ class footer extends Component {
                       </InputAdornment>
                     ),
                   }}
+                  error={this.validator.message(
+                    "contactNumber",
+                    this.state.contactNumber,
+                    "required|min:10|max:10"
+                  )}
+                  helperText={this.validator.message(
+                    "contactNumber",
+                    this.state.contactNumber,
+                    "required|min:10|max:10"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("contactNumber")}
                 />
-              <TextValidator
-                  className="mb-16 "
-                  label="email"
-                  placeholder="Enter Email"
-                  onChange={this.handleChange}
-                  type="email"
-                  name="email"
-                  value={email}
-                  validators={["required", "isEmail"]}
-                  errorMessages={["this field is required", "Enter valid email"]}
-                  style={{ width: "-webkit-fill-available" }}
-                  variant="outlined"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Email />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-
+                 <TextField
+                id="outlined-basic"
+                variant="outlined"
+                className="mb-16 w-100"
+                label="email"
+                onChange={this.handleChange}
+                type="email"
+                name="email"
+                value={email}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Email />
+                    </InputAdornment>
+                  ),
+                }}
+                error={this.validator.message(
+                  "email",
+                  this.state.email,
+                  "required|email"
+                )}
+                helperText={this.validator.message(
+                  "email",
+                  this.state.email,
+                  "required|email"
+                )}
+                onBlur={() => this.validator.showMessageFor("email")}
+              />
+             
             </Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>
 
@@ -208,7 +225,7 @@ class footer extends Component {
               <TextField
                 id="outlined-basic"
                 multiline
-                rows={4}
+                rows={3}
                 variant="outlined"
                 className="mb-16 w-100"
                 label="address"
@@ -219,28 +236,23 @@ class footer extends Component {
                 error={this.validator.message(
                   "address",
                   this.state.address,
-                  "required|alpha"
+                  "required"
                 )}
                 helperText={this.validator.message(
                   "address",
                   this.state.address,
-                  "required|alpha"
+                  "required"
                 )}
                 onBlur={() => this.validator.showMessageFor("address")}
-              />
-              
-              <TextValidator
-                  className="mb-16 "
-                  label="contact Number"
+              />    
+              <TextField
+                  className="mb-16 w-100"
+                  label="Optional Contact"
                   onChange={this.handleChange}
                   type="number"
                   name="optionalContact"
-                  placeholder="Enter Contact Number"
+                  placeholder="Enter Optional Contact"
                   value={optionalContact}
-                  validators={["required", "minStringLength:10",
-                    "maxStringLength: 10"]}
-                  errorMessages={["this field is required", "Contact Number must contains 10 digits", "Contact Number must contains 10 digits"]}
-                  style={{ width: "-webkit-fill-available" }}
                   variant="outlined"
                   InputProps={{
                     startAdornment: (
@@ -249,13 +261,18 @@ class footer extends Component {
                       </InputAdornment>
                     ),
                   }}
+                  error={this.validator.message(
+                    "optionalContact",
+                    this.state.optionalContact,
+                    "min:10|max:10"
+                  )}
+                  helperText={this.validator.message(
+                    "optionalContact",
+                    this.state.optionalContact,
+                    "min:10|max:10"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("optionalContact")}
                 />
-             <ValidatorForm
-            ref="form"
-            onSubmit={this.handleSubmit}
-        >
-            
-        </ValidatorForm>
 
             </Grid>
           </Grid>
