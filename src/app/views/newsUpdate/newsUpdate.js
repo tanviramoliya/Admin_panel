@@ -213,8 +213,7 @@ class newsUpdate extends Component {
 
   changeStatus = async (token, newStatus) => {
     let data  = new FormData();
-    data.append('headLineToken', token);
-    data.append('status', !newStatus); ///a to flase hase ne ?wait
+   
     const changeStatus = await changeStatusApi(data
     );
     if (changeStatus && changeStatus.data.code === status.success) {

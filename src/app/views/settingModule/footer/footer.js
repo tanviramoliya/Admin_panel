@@ -89,7 +89,7 @@ class footer extends Component {
           toastr.success(updateFooter.data.message);
           this.getFooterList();
         } else {
-          toastr.warning("something went wrong!");
+          toastr.warning(updateFooter.data.message);
         }
       } else {
         toastr.error(updateFooter.data.message);
