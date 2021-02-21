@@ -11,6 +11,7 @@
     "@material-ui/lab": "^4.0.0-alpha.22",
     "@material-ui/pickers": "^3.2.2",
     "@material-ui/x-grid": "^4.0.0-alpha.18",
+    "@pathofdev/react-tag-input": "^1.0.7",
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.19.0",
     "clsx": "^1.0.4",
