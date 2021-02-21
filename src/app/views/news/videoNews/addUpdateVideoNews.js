@@ -6,6 +6,7 @@ import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import RichTextEditor from "components/matx/RichTextEditor";
 import { Publish } from "@material-ui/icons";
+import themeColors from "./../../../../app/MatxLayout/MatxTheme/themeColors"
 
 class addUpdateVideoNews extends Component {
   state = {
@@ -143,7 +144,7 @@ class addUpdateVideoNews extends Component {
             <Grid item lg={6} md={6} sm={12} xs={12}>
 
               <FormControlLabel className="mt-16"
-                control={<Switch onChange={this.handleChange} name="isPublish" />}
+                control={<Switch onChange={this.handleChange}  name="isPublish" />}
                 label="Publish This News"
 
               />
