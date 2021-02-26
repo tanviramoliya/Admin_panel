@@ -272,20 +272,22 @@ class inquiry extends Component {
         <div className="py-12">
           <Card elevation={6} className="px-24 pt-20 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
-              <Toolbar>
+            <div className="card-title">
+
                 {selected.length > 0 ? (
-                  <Typography color="error" variant="h6" component="div">
+                  <Typography color="error" variant="h6" >
                     {selected.length} rows selected
                   </Typography>
                 ) : (
-                    <Typography variant="h6" id="tableTitle" component="div">
+                    <Typography variant="h6">
                       Inquiry Information
                   </Typography>
                   )}
+                  </div>
                 {selected.length > 0 ? (
-                  <Tooltip title="Delete">
+                  <Tooltip title="Delete" >
                     <IconButton
-                      aria-label="delete"
+                      aria-label="delete" className="p-0"
                       onClick={() => this.deleteInquiryClicked(selected)}
                     >
                       <DeleteIcon color="error" />
@@ -300,7 +302,6 @@ class inquiry extends Component {
                       />
                     </Tooltip>
                   )}
-              </Toolbar>
             </div>
             <TableContainer style={{ maxHeight: "405px" }}>
               <Table style={{ whiteSpace: "pre" }} stickyHeader>

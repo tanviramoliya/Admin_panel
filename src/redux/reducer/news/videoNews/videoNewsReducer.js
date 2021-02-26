@@ -15,31 +15,31 @@ import {
       case GET_VIDEO_NEWS_LIST : {
         return {
           ...state,
-          adminUserList: action.payload
+          videoNewsList: action.payload
         };
       }
       case GET_VIDEO_NEWS : {
         return {
           ...state,
-          adminUserList: [...action.payload]
+          videoNewsList: [...action.payload]
         };
       }
       case ADD_VIDEO_NEWS: {
         return {
           ...state,
-          adminUserList: [...action.payload]
+          videoNewsList: [...action.payload]
         };
       }
       case DELETE_VIDEO_NEWS: {
         return {
           ...state,
-          adminUserList: [...action.payload]
+          videoNewsList: [...action.payload]
         };
       }
       case UPDATE_VIDEO_NEWS: {
         return {
           ...state,
-          adminUserList: [...action.payload]
+          videoNewsList: [...action.payload]
         };
       }
       default: {

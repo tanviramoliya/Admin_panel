@@ -1,5 +1,5 @@
 import {
-    getStateList,
+    getStateList,getStateListByCountry
   } from "../index";
   import { api } from '../../../api/api';
 
@@ -42,4 +42,17 @@ import {
     if (updateState) {
       return updateState;
     }
+  };
+  export const getStateByCountryApi = (country) => {
+    return async (dispatch) => {
+      await api(`state/getByCountry?countryToken=${country}`,{},
+      "get")
+        .then((res) => {
+          dispatch(getStateListByCountry(res.data.data));
+        })
+        .catch((error) => {
+          console.log(error)
+          // toastr.error('Can not able to get lesson list');
+        });
+    };
   };

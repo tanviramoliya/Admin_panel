@@ -3,10 +3,18 @@ export const GET_STATE = "GET_STATE";
 export const ADD_STATE = "ADD_STATE";
 export const DELETE_STATE = "DELETE_STATE";
 export const UPDATE_STATE = "UPDATE_STATE";
+export const GET_STATE_LIST_BY_COUNTRY = "GET_STATE_LIST_BY_COUNTRY";
 
 export const getStateList = (value) => {
   return {
     type: GET_STATE_LIST,
+    payload: value,
+  };
+};
+
+export const getStateListByCountry = (value) => {
+  return {
+    type: GET_STATE_LIST_BY_COUNTRY,
     payload: value,
   };
 };

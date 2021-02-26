@@ -3,7 +3,7 @@ import {
     GET_STATE,
     ADD_STATE,
     DELETE_STATE,
-    UPDATE_STATE,
+    UPDATE_STATE,GET_STATE_LIST_BY_COUNTRY
   } from "../../../actions/master/state/stateAction";
   
   const initialState = {
@@ -13,6 +13,12 @@ import {
   const StateReducer = function(state = initialState, action) {
     switch (action.type) {
       case GET_STATE_LIST : {
+        return {
+          ...state,
+          stateList: action.payload
+        };
+      }
+      case GET_STATE_LIST_BY_COUNTRY : {
         return {
           ...state,
           stateList: action.payload

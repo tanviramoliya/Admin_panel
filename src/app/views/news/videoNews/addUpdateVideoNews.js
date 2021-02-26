@@ -24,7 +24,7 @@ import RichTextEditor from "components/matx/RichTextEditor";
 import { connect } from "react-redux";
 import { status } from "../../../../utility/config";
 import { toastr } from "react-redux-toastr";
-import  history  from "../../../../history";
+import history from "../../../../history";
 import SimpleReactValidator from "simple-react-validator";
 import PublishIcon from '@material-ui/icons/Face';
 import DoneIcon from '@material-ui/icons/Done';
@@ -33,6 +33,10 @@ import {
   deleteVideoNewsApi,
   addVideoNewsApi,
   updateVideoNewsApi,
+  getSingleVideoNewsApi,
+  countryListApi,
+  getAdminNameListApi,
+  getStateByCountryApi
 } from "../../../../redux/actions/index";
 
 const names = [
@@ -56,12 +60,14 @@ const MenuProps = {
   },
 };
 
+
 class addUpdateVideoNews extends Component {
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator({ autoForceUpdate: this });
   }
   state = {
+    videoNewsId: this.props.location.state.id,
     videoLink: "",
     title: "",
     newsType: "",
@@ -74,19 +80,80 @@ class addUpdateVideoNews extends Component {
     publish: false,
     critical: false,
     tags: [],
-    content: ""
+    content: "",
+    type: this.props.location.state.type,
+    countryList : [],
+    stateList : [],
+    adminUserList : [],
+    countryToken :"",
+    stateToken : "",
+    categoryToken:""
     //content: `<h1>Matx | Angular material admin</h1><p><a href="http://devegret.com/" target="_blank"><strong>DevEgret</strong></a></p><p><br></p><p><strong>Lorem Ipsum</strong>&nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries</p>`,
   };
 
-  componentDidMount() { }
+  componentDidMount = async () => {
+    await this.getVideoNewsData();
+    await  this.getCountryList();
+    await  this.getAdminUserList();
+    //await this.getStateListByCountry(this.state.countryToken);
+  }
+  
+  getCountryList = async () => {
+    await this.props.countryListApi();
+    this.setState({ countryList: this.props.countryList });
+  };
+
+  getStateListByCountry = async (countrytoken) => {
+    await this.props.getStateByCountryApi(countrytoken);
+    this.setState({ stateList: this.props.stateList });
+  };
+  handleChangeCountry = (countryData) => {
+    this.setState({ countryToken: countryData.countryToken })
+    this.getStateListByCountry(this.state.countryToken);
+  }
+  handleChangeState = (stateData) => {
+    this.setState({ stateToken: stateData.stateToken })
+  }
+
+  getAdminUserList = async () => {
+    await this.props.getAdminNameListApi();
+    this.setState({ adminUserList: this.props.adminUserList });
+  };
 
   componentWillUnmount() { }
+  getVideoNewsData = async () => {
+    const { type, videoNewsId } = this.state;
+    if (type === 'edit') {
+      const videoNewsData = await getSingleVideoNewsApi(videoNewsId);
+      if (videoNewsData) {
+        const data = videoNewsData.data.data;
+        this.setState({
+          videoNewsId: data.videoNewsId,
+          videoLink: data.videoLink,
+          title: data.title,
+          newsType: data.newsType,
+          category: data.category,
+          subCategory: data.subCategory,
+          publishedBy: data.publishedBy,
+          city: data.city,
+          state: data.state,
+          country: data.country,
+          publish: data.publish,
+          critical: data.critical,
+          tags: data.tags,
+          content: data.content
+        })
+      }
+    }
+  }
 
   handleTags = (e) => {
     this.setState({ tags: e })
   }
   handleSubmit = async (event) => {
-    const { videoLink,
+    const {
+      videoNewsId,
+      videoLink,
       title,
       newsType,
       category,
@@ -98,7 +165,7 @@ class addUpdateVideoNews extends Component {
       publish,
       critical,
       tags,
-      content } = this.state
+      content, type } = this.state
     if (
       this.validator.fieldValid("videoLink") &&
       this.validator.fieldValid("title") &&
@@ -110,39 +177,54 @@ class addUpdateVideoNews extends Component {
       this.validator.fieldValid("state") &&
       this.validator.fieldValid("publishedBy")
     ) {
-      console.log(event);
+      console.log('add-----' + type);
       let data = {
-        videoLink : videoLink,
-        title : title,
-        newsType : newsType,
-        category : category,
-        subCategory : subCategory,
-        publishedBy : publishedBy,
-        city : city,
-        state : state,
-        country : country,
-        publish : publish,
-        critical : critical,
-        tags : tags,
-        content : content
+        videoNewsId: videoNewsId,
+        videoLink: videoLink,
+        title: title,
+        newsType: newsType,
+        category: category,
+        subCategory: subCategory,
+        publishedBy: publishedBy,
+        city: city,
+        state: state,
+        country: country,
+        publish: publish,
+        critical: critical,
+        tags: tags,
+        content: content
       };
-      const createVideoNews = await addVideoNewsApi(data);
-      if (createVideoNews) {
-        if (createVideoNews.status === status.success) {
-          if (createVideoNews.data.code === status.success) {
-            toastr.success(createVideoNews.data.message);
-            this.props.history.push('/news/videoNews')
+      if (type === 'add') {
+        const createVideoNews = await addVideoNewsApi(data);
+        if (createVideoNews) {
+          if (createVideoNews.status === status.success) {
+            if (createVideoNews.data.code === status.success) {
+              toastr.success(createVideoNews.data.message);
+              this.props.history.push('/news/videoNews')
+            } else {
+              toastr.warning(createVideoNews.data.message);
+            }
           } else {
-            toastr.warning(createVideoNews.data.message);
+            toastr.error(createVideoNews.data.message);
           }
-        } else {
-          toastr.error(createVideoNews.data.message);
+        }
+        // this.props.setLoader(false);
+      }
+      else if (type === 'edit') {
+        const updateVideoNews = await updateVideoNewsApi(data);
+        if (updateVideoNews) {
+          if (updateVideoNews.status === status.success) {
+            if (updateVideoNews.data.code === status.success) {
+              toastr.success(updateVideoNews.data.message);
+              this.props.history.push('/news/videoNews')
+            } else {
+              toastr.warning(updateVideoNews.data.message);
+            }
+          } else {
+            toastr.error(updateVideoNews.data.message);
+          }
         }
       }
-      // this.props.setLoader(false);
-      
-
-
     }
     else {
       this.validator.showMessages();
@@ -163,6 +245,9 @@ class addUpdateVideoNews extends Component {
       content: contentHtml,
     });
   };
+
+  
+
   render() {
     let {
       videoLink,
@@ -177,6 +262,10 @@ class addUpdateVideoNews extends Component {
       publish,
       critical,
       tags,
+      content,
+      countryList,
+      stateList,
+      adminUserList
     } = this.state;
     return (
       <div className="m-sm-30">
@@ -184,7 +273,7 @@ class addUpdateVideoNews extends Component {
           <Breadcrumb
             routeSegments={[
               { name: "News | Video", path: "/news/videoNews" },
-              { name: "Add Video News", path: "/" },
+              { name: this.state.type === "add" ? "Add Video News" : "Edit Video News", path: "/" },
             ]}
           />
 
@@ -192,14 +281,14 @@ class addUpdateVideoNews extends Component {
             className="capitalize text-white bg-circle-primary"
             onClick={this.handleSubmit}
           ><Icon>add</Icon>
-            Add News
-                  </Button>
+            {this.state.type === "add" ? 'Add News' : 'Update News'}
+          </Button>
         </div>
 
 
         <ValidatorForm
           ref="form"
-          onSubmit={this.handleSubmit}
+          onSubmit={this.state.type === "add" ? this.handleSubmit : this.updateVideoNews}
           onError={(errors) => null}
         >
           <Grid container spacing={3}>
@@ -210,6 +299,7 @@ class addUpdateVideoNews extends Component {
                 onChange={this.handleChange}
                 type="url"
                 name="videoLink"
+                value={videoLink}
                 error={this.validator.message(
                   "videoLink",
                   videoLink,
@@ -228,6 +318,7 @@ class addUpdateVideoNews extends Component {
                 onChange={this.handleChange}
                 type="text"
                 name="title"
+                value={title}
                 error={this.validator.message(
                   "title",
                   title,
@@ -247,25 +338,28 @@ class addUpdateVideoNews extends Component {
                 <FormControlLabel
                   className="mt-16"
                   control={
-                    <Switch onClick={() => this.setState({publish :
-                      !publish})} name="publish" />
+                    <Switch onClick={() => this.setState({
+                      publish:
+                        !publish
+                    })} name="publish" checked={publish} />
                   }
                   label="Publish This News"
                 />
                 <FormControlLabel
                   className="mt-16"
                   control={
-                    <Switch onClick={() => this.setState({critical :
-                      !critical})} name="critical" />
+                    <Switch onClick={() => this.setState({
+                      critical:
+                        !critical
+                    })} name="critical" checked={critical} />
                   }
                   label="Notify To Subscriber"
                 />
 
-
                 <FormControl style={{ width: "43%" }}>
                   <InputLabel id="publishedBy" error={this.validator.message(
-                    "newsType",
-                    newsType,
+                    "PublishedBy",
+                    publishedBy,
                     "required"
                   )}>
                     PublishedBy
@@ -274,13 +368,20 @@ class addUpdateVideoNews extends Component {
                     labelId="publishedBy"
                     id="publishedBy"
                     name="publishedBy"
+                    value={publishedBy}
                     onChange={this.handleChange}
                     displayEmpty
                     onBlur={() => this.validator.showMessageFor("publishedBy")}
                   >
-                    <MenuItem value={10}>Bharat</MenuItem>
-                    <MenuItem value={20}>Tanvi</MenuItem>
-                    <MenuItem value={30}>Darshan</MenuItem>
+                    {adminUserList.map((admin, index) => {
+                      console.log(admin)
+                      return (
+                        <MenuItem value={admin} key={index} >
+                          {admin}
+                        </MenuItem>
+                      );
+                    })}
+                    
                   </Select>
                   <FormHelperText style={{ color: 'red' }}>{this.validator.message(
                     "publishedBy",
@@ -304,6 +405,7 @@ class addUpdateVideoNews extends Component {
                     labelId="newsType"
                     id="newsType"
                     name="newsType"
+                    value={newsType}
                     onChange={this.handleChange}
                     displayEmpty
                     onBlur={() => this.validator.showMessageFor("newsType")}
@@ -330,6 +432,7 @@ class addUpdateVideoNews extends Component {
                     labelId="category"
                     id="category"
                     name="category"
+                    value={category}
                     onChange={this.handleChange}
                     displayEmpty
                     onBlur={() => this.validator.showMessageFor("category")}
@@ -356,8 +459,9 @@ class addUpdateVideoNews extends Component {
                     labelId="subCategory"
                     id="subCategory"
                     name="subCategory"
+                    value={subCategory}
                     onChange={this.handleChange}
-                    displayEmpty
+                    //displayEmpty
                     onBlur={() => this.validator.showMessageFor("subCategory")}
                   >
                     <MenuItem value={10}>Ten</MenuItem>
@@ -376,8 +480,9 @@ class addUpdateVideoNews extends Component {
           </Grid>
           <Grid sm={12} style={{ padding: "20px 0px" }}>
             <RichTextEditor
-              content={this.state.content}
+              content={content}
               name="content"
+
               handleContentChange={this.handleContentChange}
               placeholder="insert text here..."
             />
@@ -393,17 +498,21 @@ class addUpdateVideoNews extends Component {
                   Country
                   </InputLabel>
                 <Select
-
                   labelId="country"
                   id="country"
                   name="country"
+                  value={country}
                   onChange={this.handleChange}
                   displayEmpty
                   onBlur={() => this.validator.showMessageFor("country")}
                 >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  {countryList.map((countryObj, index) => {
+                      return (
+                        <MenuItem value={countryObj.countryName} key={index}  onClick={() => this.handleChangeCountry(countryObj)}>
+                          {countryObj.countryName}
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
                 <FormHelperText style={{ color: 'red' }}>{this.validator.message(
                   "country",
@@ -423,13 +532,18 @@ class addUpdateVideoNews extends Component {
                   labelId="state"
                   id="state"
                   name="state"
+                  value={state}
                   onChange={this.handleChange}
                   displayEmpty
                   onBlur={() => this.validator.showMessageFor("state")}
                 >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  {stateList.map((stateObj, index) => {
+                      return (
+                        <MenuItem value={stateObj.stateName} key={index}  onClick= {() =>this.handleChangeState(stateObj)}>
+                          {stateObj.stateName}
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
                 <FormHelperText style={{ color: 'red' }}>{this.validator.message(
                   "state",
@@ -449,6 +563,7 @@ class addUpdateVideoNews extends Component {
                   labelId="city"
                   id="city"
                   name="city"
+                  value={city}
                   onChange={this.handleChange}
                   displayEmpty
                   onBlur={() => this.validator.showMessageFor("city")}
@@ -467,8 +582,9 @@ class addUpdateVideoNews extends Component {
             </Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>
 
-              <FormControl className="pt-12 w-100" >
+              <FormControl className="pt-12 w-100 " >
                 <ReactTagInput
+                  //class='react-tag-input__input'
                   tags={tags}
                   placeholder="Type tag and press enter"
                   maxTags={10}
@@ -495,12 +611,17 @@ class addUpdateVideoNews extends Component {
 
 
 const mapStateToProps = (state) => {
-  const {  } = state.videoNews;
+  // const { } = state.videoNews;
+  const { countryList } = state.country;
+  const { adminUserList } = state.adminUser;
+  const { stateList } = state.state;
   return {
-
+    countryList,
+    adminUserList,
+    stateList
   };
 };
 
-export default connect(mapStateToProps, {  addVideoNewsApi })(
+export default connect(mapStateToProps, { addVideoNewsApi,countryListApi ,getAdminNameListApi,getStateByCountryApi})(
   addUpdateVideoNews
 );

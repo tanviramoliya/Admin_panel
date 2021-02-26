@@ -7,6 +7,9 @@ const videoNews = MatxLoadable({
 const addUpdateVideoNews = MatxLoadable({
     loader: () => import("./videoNews/addUpdateVideoNews")
 });
+const viewVideoNews = MatxLoadable({
+    loader: () => import("./videoNews/viewVideoNews")
+});
 
 const newsRoutes = [
     {
@@ -17,6 +20,10 @@ const newsRoutes = [
     {
         path: "/news/videoNews/edit",
         component: addUpdateVideoNews
+    },
+    {
+        path: "/news/videoNews/view",
+        component: viewVideoNews
     },
    
 ]
