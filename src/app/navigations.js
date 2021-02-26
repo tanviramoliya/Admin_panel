@@ -55,20 +55,11 @@ export const navigations = [
     icon: "trending_up",
     children: [
       {
-        name: "Country",
+        name: "Location",
         path: "/master/country",
         iconText: "1"
       },
-      {
-        name: "State",
-        path: "/master/state",
-        iconText: "2"
-      },
-      {
-        name: "City",
-        path: "/master/city",
-        iconText: "3"
-      },
+      
       {
         name: "NEWS Type",
         path: "/master/newsType",
