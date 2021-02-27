@@ -108,26 +108,7 @@ class videoNews extends Component {
       deleteVideoNewsId: null,
     });
   };
-  // for open a modal
-  setModel = (type, data) => {
-    this.setState({ openModal: true, type: type });
-    if (type === "edit") {
-      this.setState({
-        videoNewsId: data.videoNewsId,
-        videoLink: data.videoLink,
-        title: data.title,
-        description: data.description,
-        publishedBy: data.publishedBy,
-        city: data.city,
-        state: data.state,
-        country: data.country,
-        publish: data.publish,
-        critical: data.critical,
-        tags: data.tags,
-
-      });
-    }
-  };
+  
   //for close a modal
   handleClose = () => {
     this.setState({
@@ -150,146 +131,6 @@ class videoNews extends Component {
 
     });
   };
-  AddVideoNews = async () => {
-    const { type, firstName, lastName, role, email, contactNumber } = this.state;
-    if (type === "new") {
-      if (!firstName) {
-        toastr.error("firstName is required");
-        return;
-      }
-      if (!lastName) {
-        toastr.error("lastName is required");
-        return;
-      }
-      if (!role) {
-        toastr.error("role is required");
-        return;
-      }
-      if (!email) {
-        toastr.error("email is required");
-        return;
-      }
-      if (!contactNumber) {
-        toastr.error("contactNumber is required");
-        return;
-      }
-
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
-      let data = {
-        firstName: firstName,
-        lastName: lastName,
-        role: role,
-        email: email,
-        contactNumber: contactNumber
-      };
-      const createVideoNews = await addVideoNewsApi(data);
-      if (createVideoNews) {
-        if (createVideoNews.status === status.success) {
-          if (createVideoNews.data.code === status.success) {
-            toastr.success(createVideoNews.data.message);
-            this.getVideoNewsList();
-            this.setState({
-              openModal: false,
-              type: "new",
-              adminId: "",
-              adminToken: "",
-              firstName: "",
-              lastName: "",
-              role: "",
-              roleToken: "",
-              email: "",
-              contactNumber: ""
-
-            });
-          } else {
-            toastr.warning(createVideoNews.data.message);
-          }
-        } else {
-          toastr.error(createVideoNews.data.message);
-        }
-      }
-      // this.props.setLoader(false);
-
-    }
-  };
-  UpdateVideoNews = async () => {
-    const {
-      type,
-      adminToken, firstName, lastName, role, email, contactNumber } = this.state;
-    if (type === "edit") {
-      if (!firstName) {
-        toastr.error("firstName is required");
-        return;
-      }
-      if (!lastName) {
-        toastr.error("lastName is required");
-        return;
-      }
-      if (!role) {
-        toastr.error("role is required");
-        return;
-      }
-      if (!email) {
-        toastr.error("email is required");
-        return;
-      }
-      if (!contactNumber) {
-        toastr.error("contactNumber is required");
-        return;
-      }
-      // if (!passWord) {
-      //   toastr.error("password is required");
-      //   return;
-      // }
-      // if (!confirmPassWord) {
-      //   toastr.error("confirmPassword is required");
-      //   return;
-      // }
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
-      let data = {
-        adminToken: adminToken,
-        firstName: firstName,
-        lastName: lastName,
-        role: role,
-        email: email,
-        contactNumber: contactNumber
-      };
-      const updateVideoNews = await updateVideoNewsApi(data);
-      if (updateVideoNews) {
-        if (updateVideoNews.status === status.success) {
-          if (updateVideoNews.data.code === status.success) {
-            toastr.success(updateVideoNews.data.message);
-            this.getVideoNewsList();
-            this.setState({
-              openModal: false,
-              newsText: "",
-              type: "new",
-              adminToken: "",
-              firstName: "",
-              lastName: "",
-              role: "",
-              roleToken: "",
-              email: "",
-              contactNumber: ""
-            });
-          } else {
-            toastr.warning(updateVideoNews.data.message);
-          }
-        } else {
-          toastr.error(updateVideoNews.data.message);
-        }
-      }
-      // this.props.setLoader(false);
-
-    }
-  };
-  
 
   handleChange = (event) => {
     event.persist();
@@ -319,11 +160,11 @@ class videoNews extends Component {
           <div className="py-12">
           <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
-              <div className="card-title">Vidoe News Infromation</div>
+              <div className="card-title">Video News Infromation</div>
               <Button
                 className="capitalize text-white bg-circle-primary"
-                onClick={() => this.props.history.push('/news/videoNews/edit')}
-              >
+                onClick={() => this.props.history.push({pathname : '/news/videoNews/edit', state :{type : 'add'}})}
+                >
                 Add Video News
                   </Button>
             </div>
@@ -331,12 +172,12 @@ class videoNews extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0"  >VidoeNewsId</TableCell>
-                    <TableCell className="px-0" >title</TableCell>
-                    <TableCell className="px-0"  >Location</TableCell>
-                    <TableCell className="px-0" >publish</TableCell>
-                    <TableCell className="px-0" >critical</TableCell>
-                    <TableCell className="px-0" >publishedBy</TableCell>
+                    <TableCell className="px-0" width="15%">VideoNewsId</TableCell>
+                    <TableCell className="px-0" width ="20%">Title</TableCell>
+                    <TableCell className="px-0" width="10%">NewsType</TableCell>
+                    <TableCell className="px-0" width = "15%">Category</TableCell>
+                    {/* <TableCell className="px-0" >critical</TableCell> */}
+                    <TableCell className="px-0" >PublishedBy</TableCell>
                     <TableCell className="px-0" >CreatedTime</TableCell>
                     <TableCell className="px-0"  >Actions</TableCell>
 
@@ -347,47 +188,56 @@ class videoNews extends Component {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((VideoNews, index) => (
                       <TableRow key={index}>
-                        <TableCell className="ellipse p-0" >
+                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
                           {VideoNews.videoNewsId}
                         </TableCell>
-                        <TableCell className="ellipse p-0" >
+                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
                           {VideoNews.title}
                         </TableCell>
-                        <TableCell className="ellipse p-0">
-                          {VideoNews.city + "," + VideoNews.state + "," + VideoNews.country}
+                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
+                          {VideoNews.newsType}
                         </TableCell>
-                        <TableCell className="ellipse p-0" >
+                        {/* {/* <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
                           {VideoNews.publish}
-                        </TableCell>
-                        <TableCell className="ellipse p-0" >
-                          {VideoNews.critical}
-                        </TableCell>
-                        <TableCell className="ellipse p-0">
+                        </TableCell> */}
+                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
+                          {VideoNews.category+" / "+ VideoNews.subCategory}
+                        </TableCell> 
+                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
                           {VideoNews.publishedBy}
                         </TableCell>
-                        <TableCell className="ellipse p-0" >
-                          {VideoNews.CreatedTime}
+                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
+                          {VideoNews.createdTime}
                         </TableCell>
 
                         <TableCell className="p-0">
                           <IconButton className="p-8">
                             <Icon
                               color="primary"
-                              onClick={() => this.setModel("edit", VideoNews)}
-                            >
-                              edit
-                                </Icon>
+                              onClick={() => this.props.history.push({pathname : '/news/videoNews/edit', state :{type : 'edit',id : VideoNews.videoNewsId}})}
+                              >edit </Icon>
                           </IconButton>
                           <IconButton className="p-8">
                             <Icon
                               color="error"
                               onClick={() =>
                                 this.deleteAdminUserClicked(VideoNews.videoNewsId)
-                              }
-                            >
-                              delete
-                                </Icon>
+                              }>delete</Icon>
                           </IconButton>
+                          <IconButton className="p-8">
+                            <Icon
+                              color="secondary"
+                               onClick={() => this.props.history.push({pathname : '/news/videoNews/view'})}
+                                >visibility</Icon>
+                          </IconButton>
+                          <IconButton className="p-8">
+                            <Icon
+                              color="default"
+                              // onClick={() =>
+                              //   this.deleteAdminUserClicked(VideoNews.videoNewsId)}
+                                >comment</Icon>
+                          </IconButton>
+
                         </TableCell>
                       </TableRow>
                     ))}

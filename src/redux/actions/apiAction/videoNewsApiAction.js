@@ -17,7 +17,7 @@ export const videoNewsListApi = () => {
 
 export const deleteVideoNewsApi = async (id) => {
   const deleteVideoNews = await api(
-    `video/deleteVideoNews?Vid=${id}`,
+    `video/deleteVideoNews?vId=${id}`,
     {},
     "delete"
   );
@@ -44,5 +44,16 @@ export const updateVideoNewsApi = async (data) => {
   );
   if (updateVideoNews) {
     return updateVideoNews;
+  }
+};
+
+export const getSingleVideoNewsApi = async (id) => {
+  const getSingleVideoNews = await api(
+    `video/getVideoNews?vId=${id}`,
+    {},
+    "get"
+  );
+  if (getSingleVideoNews) {
+    return getSingleVideoNews;
   }
 };

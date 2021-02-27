@@ -4,6 +4,7 @@ import {
     ADD_SUBCATEGORY,
     DELETE_SUBCATEGORY,
     UPDATE_SUBCATEGORY,
+    GET_SUBCATEGORY_BY_CATEGORY_LIST
   } from "../../../actions/master/subCategory/subCategoryAction";
   
   const initialState = {
@@ -13,6 +14,12 @@ import {
   const SubCategoryReducer = function(state = initialState, action) {
     switch (action.type) {
       case GET_SUBCATEGORY_LIST : {
+        return {
+          ...state,
+          subCategoryList: action.payload
+        };
+      }
+      case GET_SUBCATEGORY_BY_CATEGORY_LIST : {
         return {
           ...state,
           subCategoryList: action.payload

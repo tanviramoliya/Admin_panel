@@ -3,7 +3,7 @@ import {
   GET_ADMIN_USER,
   ADD_ADMIN_USER,
   DELETE_ADMIN_USER,
-  UPDATE_ADMIN_USER,
+  UPDATE_ADMIN_USER,GET_ADMIN_NAME_LIST
   } from "../../actions/adminUser/index";
   
   const initialState = {
@@ -13,6 +13,12 @@ import {
   const AdminUserReducer = function(state = initialState, action) {
     switch (action.type) {
       case GET_ADMIN_USER_LIST : {
+        return {
+          ...state,
+          adminUserList: action.payload
+        };
+      }
+      case GET_ADMIN_NAME_LIST : {
         return {
           ...state,
           adminUserList: action.payload

@@ -1,4 +1,4 @@
-import { getAdminUserList } from "../index";
+import { getAdminUserList,getAdminNameList } from "../index";
 import { api } from "../../../api/api";
 
 
@@ -45,4 +45,18 @@ export const updateAdminUserApi = async (data) => {
   if (updateAdminUser) {
     return updateAdminUser;
   }
+};
+
+export const getAdminNameListApi = () => {
+  return async (dispatch) => {
+    await api(`admin/getAdminNameList`,{},
+    "get")
+      .then((res) => {
+        dispatch(getAdminNameList(res.data.data));
+      })
+      .catch((error) => {
+        console.log(error);
+        // toastr.error('Can not able to get lesson list');
+      });
+  };
 };

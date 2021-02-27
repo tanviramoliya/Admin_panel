@@ -1,8 +1,6 @@
 export const GET_COUNTRY_LIST = "GET_COUNTRY_LIST";
-export const GET_COUNTRY = "GET_COUNTRY";
-export const ADD_COUNTRY = "ADD_COUNTRY";
-export const DELETE_COUNTRY = "DELETE_COUNTRY";
-export const UPDATE_COUNTRY = "UPDATE_COUNTRY";
+export const GET_STATE_LIST = "GET_STATE_LIST";
+export const GET_CITY_LIST = "GET_CITY_LIST";
 
 export const getCountryList = (value) => {
   return {
@@ -10,3 +8,16 @@ export const getCountryList = (value) => {
     payload: value,
   };
 };
+export const getStateList = (value) => {
+  return {
+    type: GET_STATE_LIST,
+    payload: value,
+  };
+};
+export const getCityList = (value) => {
+  return {
+    type: GET_CITY_LIST,
+    payload: value,
+  };
+};
+
