@@ -6,7 +6,7 @@ import ReactQuill from "react-quill";
  * Simple editor component that takes placeholder text as a prop
  */
 
-const RichTextEditor = ({ content, placeholder, handleContentChange }) => {
+const RichTextEditor = ({ content, placeholder, handleContentChange,readOnly }) => {
   return (
     <ReactQuill
       theme="snow"
@@ -15,6 +15,7 @@ const RichTextEditor = ({ content, placeholder, handleContentChange }) => {
       modules={RichTextEditor.modules}
       formats={RichTextEditor.formats}
       placeholder={placeholder}
+      readOnly={readOnly}
     />
   );
 };

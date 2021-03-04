@@ -58,7 +58,7 @@ class AdminUser extends Component {
   };
 
 
-  //to delete Category
+  
   deleteAdminUserClicked = async (token) => {
     if (token) {
       this.setState({ deleteAdminUserToken: token });

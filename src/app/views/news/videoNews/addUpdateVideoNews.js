@@ -17,7 +17,7 @@ import {
   FormControl,
   Input,
   Chip,
-  InputLabel,
+  InputLabel,Badge, InputAdornment
 } from "@material-ui/core";
 import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
 import RichTextEditor from "components/matx/RichTextEditor";
@@ -42,8 +42,18 @@ import {
   stateListApi,
   cityListApi
 } from "../../../../redux/actions/index";
+import "./style.css"
 
+import { Theme, makeStyles, withStyles, createStyles } from '@material-ui/core/styles';
+import { AccountCircle, YouTube, Business } from "@material-ui/icons";
 
+ const StyledBadge = withStyles((theme) => ({
+  badge: {
+    backgroundColor: '#44b700',
+    color: '#44b700',
+    
+  }
+}))(Badge);
 
 class addUpdateVideoNews extends Component {
   constructor(props) {
@@ -62,6 +72,7 @@ class addUpdateVideoNews extends Component {
     city: "",
     state: "",
     country: "",
+    optionalAddress:"",
     publish: false,
     critical: false,
     tags: [],
@@ -145,6 +156,7 @@ class addUpdateVideoNews extends Component {
           city: data.city,
           state: data.state,
           country: data.country,
+          optionalAddress : data.optionalAddress,
           publish: data.publish,
           critical: data.critical,
           tags: data.tags,
@@ -169,6 +181,7 @@ class addUpdateVideoNews extends Component {
       city,
       state,
       country,
+      optionalAddress,
       publish,
       critical,
       tags,
@@ -197,6 +210,7 @@ class addUpdateVideoNews extends Component {
         city: city,
         state: state,
         country: country,
+        optionalAddress:optionalAddress,
         publish: publish,
         critical: critical,
         tags: tags,
@@ -266,6 +280,7 @@ class addUpdateVideoNews extends Component {
       city,
       state,
       country,
+      optionalAddress,
       publish,
       critical,
       tags,
@@ -301,7 +316,7 @@ class addUpdateVideoNews extends Component {
           <div>
             <FormControlLabel
               control={
-                <Switch onClick={() => this.setState({
+                <Switch color="primary" onClick={() => this.setState({
                   critical:
                     !critical
                 })} name="critical" checked={critical} />
@@ -325,7 +340,7 @@ class addUpdateVideoNews extends Component {
           onSubmit={this.state.type === "add" ? this.handleSubmit : this.updateVideoNews}
           onError={(errors) => null}
         >
-          <Grid container spacing={3}>
+          <Grid container spacing={3} style={{marginTop:'10px'}}>
             <Grid item lg={6} md={6} sm={12} xs={12}>
               <TextField
                 className="mb-16 w-100"
@@ -334,6 +349,13 @@ class addUpdateVideoNews extends Component {
                 type="url"
                 name="videoLink"
                 value={videoLink}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <YouTube color="error"/>
+                    </InputAdornment>
+                  ),
+                }}
                 error={this.validator.message(
                   "videoLink",
                   videoLink,
@@ -392,7 +414,12 @@ class addUpdateVideoNews extends Component {
                         {newsTypeList.map((newsType, index) => {
                           return (
                             <MenuItem value={newsType.newsTypeName} key={index} >
-                              {newsType.newsTypeName}
+                               
+                                <div style={{ alignItems: "center", display: "flex" }}>
+                                <div className={newsType.isActive?"activeDot":"inActiveDot"}></div>
+                                  <div className="pl-4">{newsType.newsTypeName}</div>
+                                  </div>
+                               
                             </MenuItem>
                           );
                         })}
@@ -420,6 +447,7 @@ class addUpdateVideoNews extends Component {
                         value={publishedBy}
                         onChange={this.handleChange}
                         displayEmpty
+                        
                         onBlur={() => this.validator.showMessageFor("publishedBy")}
                       >
                         {adminUserList.map((admin, index) => {
@@ -464,7 +492,10 @@ class addUpdateVideoNews extends Component {
                         {categoryList.map((category, index) => {
                           return (
                             <MenuItem value={category.categoryName} key={index} onClick={() => this.getSubCatByCategory(category)}>
-                              {category.categoryName}
+                              <div style={{ alignItems: "center", display: "flex" }}>
+                                <div className={category.isActive?"activeDot":"inActiveDot"}></div>
+                                  <div className="pl-4">{category.categoryName}</div>
+                                  </div>
                             </MenuItem>
                           );
                         })}
@@ -497,7 +528,10 @@ class addUpdateVideoNews extends Component {
                         {subCategoryList.map((subCategory, index) => {
                           return (
                             <MenuItem value={subCategory.subCategoryName} key={index} >
-                              {subCategory.subCategoryName}
+                              <div style={{ alignItems: "center", display: "flex" }}>
+                                <div className={subCategory.isActive?"activeDot":"inActiveDot"}></div>
+                                  <div className="pl-4">{subCategory.subCategoryName}</div>
+                                  </div>
                             </MenuItem>
                           );
                         })}
@@ -519,6 +553,7 @@ class addUpdateVideoNews extends Component {
           </Grid>
           <Grid sm={12} style={{ padding: "20px 0px" }}>
             <RichTextEditor
+            readOnly={false}
               content={content}
               name="content"
               handleContentChange={this.handleContentChange}
@@ -562,7 +597,7 @@ class addUpdateVideoNews extends Component {
                   </FormControl>
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
-                  <FormControl  className="mb-16 pr-16 w-100" error={this.validator.message(
+                  <FormControl className="mb-16 pr-16 w-100" error={this.validator.message(
                     "state",
                     state,
                     "required"
@@ -595,7 +630,7 @@ class addUpdateVideoNews extends Component {
                   </FormControl>
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
-                  <FormControl  className="mb-16 w-100" error={this.validator.message(
+                  <FormControl className="mb-16 w-100" error={this.validator.message(
                     "city",
                     city,
                     "required"
@@ -627,6 +662,25 @@ class addUpdateVideoNews extends Component {
                     )}</FormHelperText>
                   </FormControl>
                 </Grid>
+
+              </Grid>
+              <Grid item lg={12} >
+
+                <TextField
+                  className="w-100"
+                  label="Optional Address"
+                  onChange={this.handleChange}
+                  type="text"
+                  name="optionalAddress"
+                  value={optionalAddress}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Business color="primary"/>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
               </Grid>
             </Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>

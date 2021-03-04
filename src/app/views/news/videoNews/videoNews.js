@@ -11,17 +11,23 @@ import { Breadcrumb } from "../../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, Slide, Toolbar, AppBar, Typography
+  Icon, TablePagination, Badge, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, Slide, Toolbar, AppBar, Typography
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import { PhoneIphone, Email, Person, GroupAdd } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
-import  history  from "../../../../history";
+import history from "../../../../history";
+import "./style.css";
+import { Theme, makeStyles, withStyles, createStyles } from '@material-ui/core/styles';
 
-
-
+const StyledBadge = withStyles((theme) => ({
+  badge: {
+    backgroundColor: '#44b700',
+    color: '#44b700',
+  }
+}))(Badge);
 
 class videoNews extends Component {
   state = {
@@ -47,9 +53,7 @@ class videoNews extends Component {
     tags: "",
     type: "new"
   };
-  Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="left" ref={ref} {...props} />;
-  });
+ 
 
   componentDidMount = async () => {
     await this.getVideoNewsList();
@@ -60,13 +64,14 @@ class videoNews extends Component {
     await this.props.videoNewsListApi();
     this.setState({ videoNewsList: this.props.videoNewsList });
   };
+
   handleChangePage = (event, newPage) => {
     this.setState({ page: newPage });
   };
+
   handleChangeRowsPerPage = (event) => {
     this.setState({ rowsPerPage: event.target.value });
   };
-
 
   //to delete Category
   deletvideoNewsClicked = async (vId) => {
@@ -108,7 +113,7 @@ class videoNews extends Component {
       deleteVideoNewsId: null,
     });
   };
-  
+
   //for close a modal
   handleClose = () => {
     this.setState({
@@ -150,21 +155,21 @@ class videoNews extends Component {
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
-        <Breadcrumb
+          <Breadcrumb
             routeSegments={[
               { name: "News", path: "/news/videoNews" },
               { name: "Video News" },
             ]}
           />
         </div>
-          <div className="py-12">
+        <div className="py-12">
           <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
               <div className="card-title">Video News Infromation</div>
               <Button
                 className="capitalize text-white bg-circle-primary"
-                onClick={() => this.props.history.push({pathname : '/news/videoNews/edit', state :{type : 'add'}})}
-                >
+                onClick={() => this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'add' } })}
+              >
                 Add Video News
                   </Button>
             </div>
@@ -173,9 +178,9 @@ class videoNews extends Component {
                 <TableHead>
                   <TableRow>
                     <TableCell className="px-0" width="15%">VideoNewsId</TableCell>
-                    <TableCell className="px-0" width ="20%">Title</TableCell>
+                    <TableCell className="px-0" width="20%">Title</TableCell>
                     <TableCell className="px-0" width="10%">NewsType</TableCell>
-                    <TableCell className="px-0" width = "15%">Category</TableCell>
+                    <TableCell className="px-0" width="15%">Category</TableCell>
                     {/* <TableCell className="px-0" >critical</TableCell> */}
                     <TableCell className="px-0" >PublishedBy</TableCell>
                     <TableCell className="px-0" >CreatedTime</TableCell>
@@ -188,25 +193,28 @@ class videoNews extends Component {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((VideoNews, index) => (
                       <TableRow key={index}>
-                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
-                          {VideoNews.videoNewsId}
+                        <TableCell  style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
+                          <div style={{ alignItems: "center", display: "flex" }}>
+                          <div className={VideoNews.publish?"activeDot":"inActiveDot"}></div>
+                            <div className="pl-4">{VideoNews.videoNewsId}</div>
+                            </div>
                         </TableCell>
-                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
                           {VideoNews.title}
                         </TableCell>
-                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                           {VideoNews.newsType}
                         </TableCell>
                         {/* {/* <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
                           {VideoNews.publish}
                         </TableCell> */}
-                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
-                          {VideoNews.category+" / "+ VideoNews.subCategory}
-                        </TableCell> 
-                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
+                          {VideoNews.category + " / " + VideoNews.subCategory}
+                        </TableCell>
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                           {VideoNews.publishedBy}
                         </TableCell>
-                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
                           {VideoNews.createdTime}
                         </TableCell>
 
@@ -214,28 +222,28 @@ class videoNews extends Component {
                           <IconButton className="p-8">
                             <Icon
                               color="primary"
-                              onClick={() => this.props.history.push({pathname : '/news/videoNews/edit', state :{type : 'edit',id : VideoNews.videoNewsId}})}
-                              >edit </Icon>
+                              onClick={() => this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'edit', id: VideoNews.videoNewsId } })}
+                            >edit </Icon>
                           </IconButton>
                           <IconButton className="p-8">
                             <Icon
                               color="error"
                               onClick={() =>
-                                this.deleteAdminUserClicked(VideoNews.videoNewsId)
+                                this.deletvideoNewsClicked(VideoNews.videoNewsId)
                               }>delete</Icon>
                           </IconButton>
                           <IconButton className="p-8">
                             <Icon
                               color="secondary"
-                               onClick={() => this.props.history.push({pathname : '/news/videoNews/view'})}
-                                >visibility</Icon>
+                              onClick={() => this.props.history.push({ pathname: '/news/videoNews/view', state: { id: VideoNews.videoNewsId } })}
+                            >visibility</Icon>
                           </IconButton>
                           <IconButton className="p-8">
                             <Icon
                               color="default"
-                              // onClick={() =>
-                              //   this.deleteAdminUserClicked(VideoNews.videoNewsId)}
-                                >comment</Icon>
+                            // onClick={() =>
+                            //   this.deleteAdminUserClicked(VideoNews.videoNewsId)}
+                            >comment</Icon>
                           </IconButton>
 
                         </TableCell>
@@ -263,177 +271,23 @@ class videoNews extends Component {
             />
 
           </Card>
-          </div>
-          <div>
+        </div>
+        <div>
           <ConfirmationDialog
             open={this.state.deleteModal}
             title="Delete Confirmation"
-            message={"are you sure want to delete this Admin User?"}
+            message={"are you sure want to delete this Video News?"}
             toggle={this.deletvideoNewsClicked}
             onYesClick={() =>
               this.yesDeleteClicked(this.state.deleteVideoNewsId)
             }
             onNoClick={this.noDeleteClicked}
           />
-          </div>
-          <div>
-          <Dialog fullScreen open={openModal} onClose={this.handleClose} TransitionComponent={this.Transition}>
-          <AppBar position="relative">
-          <Toolbar variant="dense">
-            <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className="capitalize text-white"
- >
-              Sound
-            </Typography>
-            <Button autoFocus color="secondary" onClick={this.handleClose}>
-              save
-            </Button>
-          </Toolbar>
-        </AppBar>
-            <DialogTitle id="form-dialog-title" >
-              {type === "new" ? <div style={{ display: "contents" }}>Add a Video News</div> : "Edit Video News"}
-            </DialogTitle>
-            {/* <DialogContent>
-              <ValidatorForm
-                ref="form"
-                onSubmit={
-                  type === "new" ? this.AddAdminUser : this.UpdateAdminUser
-                }
-                onError={(errors) => null}
-              >
-                <Grid container spacing={1} >
-                  <Grid item lg={6} md={6} sm={12} xs={12}>
-                    <TextValidator
-                      className="mb-16 "
-                      label="first Name"
-
-                      onChange={this.handleChange}
-
-                      name="firstName"
-                      placeholder="Enter First Name"
-                      value={firstName}
-                      validators={["required", "minStringLength: 2"]}
-                      errorMessages={["this field is required"]}
-                      style={{ width: "-webkit-fill-available" }}
-                      variant="outlined"
-                      size="medium"
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Person />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item lg={6} md={6} sm={12} xs={12}>
-                    <TextValidator
-                      className="mb-16 "
-                      label="last Name"
-                      onChange={this.handleChange}
-                      placeholder="Enter Last Name"
-                      type="text"
-                      name="lastName"
-                      value={lastName}
-                      validators={["required"]}
-                      errorMessages={["this field is required"]}
-                      style={{ width: "-webkit-fill-available" }}
-                      variant="outlined"
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Person />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <TextValidator
-                  className="mb-16 "
-                  label="role"
-                  onChange={this.handleChange}
-                  type="text"
-                  name="role"
-                  value={role}
-                  validators={["required"]}
-                  errorMessages={["this field is required"]}
-                  style={{ width: "-webkit-fill-available" }}
-                  variant="outlined"
-                />
-
-                <TextValidator
-                  className="mb-16 "
-                  label="email"
-                  placeholder="Enter Email"
-                  onChange={this.handleChange}
-                  type="email"
-                  name="email"
-                  value={email}
-                  validators={["required", "isEmail"]}
-                  errorMessages={["this field is required", "Enter valid email"]}
-                  style={{ width: "-webkit-fill-available" }}
-                  variant="outlined"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Email />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <TextValidator
-                  className="mb-16 "
-                  label="contact Number"
-                  onChange={this.handleChange}
-                  type="number"
-                  name="contactNumber"
-                  placeholder="Enter Contact Number"
-                  value={contactNumber}
-                  validators={["required", "minStringLength:10",
-                    "maxStringLength: 10"]}
-                  errorMessages={["this field is required", "Contact Number must contains 10 digits", "Contact Number must contains 10 digits"]}
-                  style={{ width: "-webkit-fill-available" }}
-                  variant="outlined"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PhoneIphone />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-
-                <DialogActions className="p-0">
-                  <div className="swiper-container-no-flexbox">
-                    <Tooltip title="Password will generated by The System" placement="right">
-
-                      <IconButton className="p-0">
-                        <Icon>info_outlined</Icon>
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                  <Button onClick={this.handleClose} color="primary">
-                    Cancel
-                        </Button>
-                  {type === "new" ? (
-                    <Button color="primary" type="submit">
-                      Add
-                          </Button>
-                  ) : (
-                      <Button color="primary" type="submit">
-                        Save
-                          </Button>
-                    )}
-                </DialogActions>
-              </ValidatorForm>
-            </DialogContent> */}
-          </Dialog>
-          </div>
         </div>
-      
+        <div>
+        </div>
+      </div>
+
     );
   }
 }
