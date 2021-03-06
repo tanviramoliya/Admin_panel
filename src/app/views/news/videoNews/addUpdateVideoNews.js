@@ -17,14 +17,14 @@ import {
   FormControl,
   Input,
   Chip,
-  InputLabel,
+  InputLabel,Badge, InputAdornment
 } from "@material-ui/core";
 import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
 import RichTextEditor from "components/matx/RichTextEditor";
 import { connect } from "react-redux";
 import { status } from "../../../../utility/config";
 import { toastr } from "react-redux-toastr";
-import  history  from "../../../../history";
+import history from "../../../../history";
 import SimpleReactValidator from "simple-react-validator";
 import PublishIcon from '@material-ui/icons/Face';
 import DoneIcon from '@material-ui/icons/Done';
@@ -33,28 +33,27 @@ import {
   deleteVideoNewsApi,
   addVideoNewsApi,
   updateVideoNewsApi,
+  getSingleVideoNewsApi,
+  newsTypeListApi,
+  categoryListApi,
+  getsubCateByCategoryListApi,
+  countryListApi,
+  getAdminNameListApi,
+  stateListApi,
+  cityListApi
 } from "../../../../redux/actions/index";
+import "./style.css"
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: 48 * 4.5 + 8,
-      width: 250,
-    },
-  },
-};
+import { Theme, makeStyles, withStyles, createStyles } from '@material-ui/core/styles';
+import { AccountCircle, YouTube, Business } from "@material-ui/icons";
+
+ const StyledBadge = withStyles((theme) => ({
+  badge: {
+    backgroundColor: '#44b700',
+    color: '#44b700',
+    
+  }
+}))(Badge);
 
 class addUpdateVideoNews extends Component {
   constructor(props) {
@@ -62,31 +61,118 @@ class addUpdateVideoNews extends Component {
     this.validator = new SimpleReactValidator({ autoForceUpdate: this });
   }
   state = {
+    videoNewsId: this.props.location.state.id,
     videoLink: "",
     title: "",
     newsType: "",
     category: "",
+    categoryToken: "",
     subCategory: "",
     publishedBy: "",
     city: "",
     state: "",
     country: "",
+    optionalAddress:"",
     publish: false,
     critical: false,
     tags: [],
-    content: ""
+    content: "",
+    type: this.props.location.state.type,
+    newsTypeList: [],
+    categoryList: [],
+    countryList: [],
+    subCategoryList: [],
+    stateList: [],
+    cityList: [],
+    adminUserList: [],
+
     //content: `<h1>Matx | Angular material admin</h1><p><a href="http://devegret.com/" target="_blank"><strong>DevEgret</strong></a></p><p><br></p><p><strong>Lorem Ipsum</strong>&nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries</p>`,
   };
 
-  componentDidMount() { }
+  componentDidMount = async () => {
+    await this.getVideoNewsData();
+    await this.newsTypeList();
+    await this.categoryList();
+    await this.setSubCategory(this.state.categoryToken);
+    await this.getCountryList();
+    await this.getAdminUserList();
+    await this.getStateListByCountry(this.state.country);
+    await this.getCityListByState(this.state.state);
+  }
+
+  newsTypeList = async () => {
+    await this.props.newsTypeListApi();
+    this.setState({ newsTypeList: this.props.newsTypeList })
+  };
+  categoryList = async () => {
+    await this.props.categoryListApi();
+    this.setState({ categoryList: this.props.categoryList });
+  };
+  getSubCatByCategory = (category) => {
+    this.setState({ category: category.categoryName, categoryToken: category.categoryToken })
+    this.setSubCategory(category.categoryToken);
+  }
+  setSubCategory = async (categoryToken) => {
+    await this.props.getsubCateByCategoryListApi(categoryToken);
+    this.setState({ subCategoryList: this.props.subCategoryList });
+  }
+
+  getCountryList = async () => {
+    await this.props.countryListApi();
+    this.setState({ countryList: this.props.countryList });
+  };
+  getStateListByCountry = async (country) => {
+    this.setState({ country: country })
+    await this.props.stateListApi(country);
+    this.setState({ stateList: this.props.stateList });
+  };
+  getCityListByState = async (state) => {
+    this.setState({ state: state })
+    await this.props.cityListApi(state);
+    this.setState({ cityList: this.props.cityList });
+  }
+  getAdminUserList = async () => {
+    await this.props.getAdminNameListApi();
+    this.setState({ adminUserList: this.props.adminUserList });
+  };
 
   componentWillUnmount() { }
+  getVideoNewsData = async () => {
+    const { type, videoNewsId } = this.state;
+    if (type === 'edit') {
+      const videoNewsData = await getSingleVideoNewsApi(videoNewsId);
+      if (videoNewsData) {
+        const data = videoNewsData.data.data;
+        console.log("DATA", data);
+        this.setState({
+          videoNewsId: data.videoNewsId,
+          videoLink: data.videoLink,
+          title: data.title,
+          newsType: data.newsType,
+          category: data.category,
+          categoryToken: data.categoryToken,
+          subCategory: data.subCategory,
+          publishedBy: data.publishedBy,
+          city: data.city,
+          state: data.state,
+          country: data.country,
+          optionalAddress : data.optionalAddress,
+          publish: data.publish,
+          critical: data.critical,
+          tags: data.tags,
+          content: data.content
+        })
+      }
+    }
+  }
 
   handleTags = (e) => {
     this.setState({ tags: e })
   }
   handleSubmit = async (event) => {
-    const { videoLink,
+    const {
+      videoNewsId,
+      videoLink,
       title,
       newsType,
       category,
@@ -95,10 +181,12 @@ class addUpdateVideoNews extends Component {
       city,
       state,
       country,
+      optionalAddress,
       publish,
       critical,
       tags,
-      content } = this.state
+      categoryToken,
+      content, type } = this.state
     if (
       this.validator.fieldValid("videoLink") &&
       this.validator.fieldValid("title") &&
@@ -110,39 +198,55 @@ class addUpdateVideoNews extends Component {
       this.validator.fieldValid("state") &&
       this.validator.fieldValid("publishedBy")
     ) {
-      console.log(event);
       let data = {
-        videoLink : videoLink,
-        title : title,
-        newsType : newsType,
-        category : category,
-        subCategory : subCategory,
-        publishedBy : publishedBy,
-        city : city,
-        state : state,
-        country : country,
-        publish : publish,
-        critical : critical,
-        tags : tags,
-        content : content
+        videoNewsId: videoNewsId,
+        videoLink: videoLink,
+        title: title,
+        newsType: newsType,
+        category: category,
+        categoryToken: categoryToken,
+        subCategory: subCategory,
+        publishedBy: publishedBy,
+        city: city,
+        state: state,
+        country: country,
+        optionalAddress:optionalAddress,
+        publish: publish,
+        critical: critical,
+        tags: tags,
+        content: content
       };
-      const createVideoNews = await addVideoNewsApi(data);
-      if (createVideoNews) {
-        if (createVideoNews.status === status.success) {
-          if (createVideoNews.data.code === status.success) {
-            toastr.success(createVideoNews.data.message);
-            this.props.history.push('/news/videoNews')
+      if (type === 'add') {
+        const createVideoNews = await addVideoNewsApi(data);
+        if (createVideoNews) {
+          if (createVideoNews.status === status.success) {
+            if (createVideoNews.data.code === status.success) {
+              toastr.success(createVideoNews.data.message);
+              this.props.history.push('/news/videoNews')
+            } else {
+              toastr.warning(createVideoNews.data.message);
+            }
           } else {
-            toastr.warning(createVideoNews.data.message);
+            toastr.error(createVideoNews.data.message);
           }
-        } else {
-          toastr.error(createVideoNews.data.message);
+        }
+        // this.props.setLoader(false);
+      }
+      else if (type === 'edit') {
+        const updateVideoNews = await updateVideoNewsApi(data);
+        if (updateVideoNews) {
+          if (updateVideoNews.status === status.success) {
+            if (updateVideoNews.data.code === status.success) {
+              toastr.success(updateVideoNews.data.message);
+              this.props.history.push('/news/videoNews')
+            } else {
+              toastr.warning(updateVideoNews.data.message);
+            }
+          } else {
+            toastr.error(updateVideoNews.data.message);
+          }
         }
       }
-      // this.props.setLoader(false);
-      
-
-
     }
     else {
       this.validator.showMessages();
@@ -151,7 +255,6 @@ class addUpdateVideoNews extends Component {
 
   handleChange = (event) => {
     event.persist();
-    console.log(event)
     this.setState({ [event.target.name]: event.target.value });
   };
   handleDelete = (event) => {
@@ -163,6 +266,9 @@ class addUpdateVideoNews extends Component {
       content: contentHtml,
     });
   };
+
+
+
   render() {
     let {
       videoLink,
@@ -174,9 +280,18 @@ class addUpdateVideoNews extends Component {
       city,
       state,
       country,
+      optionalAddress,
       publish,
       critical,
       tags,
+      content,
+      newsTypeList,
+      categoryList,
+      subCategoryList,
+      countryList,
+      stateList,
+      cityList,
+      adminUserList
     } = this.state;
     return (
       <div className="m-sm-30">
@@ -184,25 +299,48 @@ class addUpdateVideoNews extends Component {
           <Breadcrumb
             routeSegments={[
               { name: "News | Video", path: "/news/videoNews" },
-              { name: "Add Video News", path: "/" },
+              { name: this.state.type === "add" ? "Add Video News" : "Edit Video News", path: "/" },
             ]}
           />
-
-          <Button
-            className="capitalize text-white bg-circle-primary"
-            onClick={this.handleSubmit}
-          ><Icon>add</Icon>
-            Add News
-                  </Button>
+          <div>
+            <FormControlLabel
+              control={
+                <Switch onClick={() => this.setState({
+                  publish:
+                    !publish
+                })} name="publish" checked={publish} />
+              }
+              label="Publish This News"
+            />
+          </div>
+          <div>
+            <FormControlLabel
+              control={
+                <Switch color="primary" onClick={() => this.setState({
+                  critical:
+                    !critical
+                })} name="critical" checked={critical} />
+              }
+              label="Notify To Subscriber"
+            />
+          </div>
+          <div>
+            <Button
+              className="capitalize text-white bg-circle-primary"
+              onClick={this.handleSubmit}
+            ><Icon>add</Icon>
+              {this.state.type === "add" ? 'Add News' : 'Update News'}
+            </Button>
+          </div>
         </div>
 
 
         <ValidatorForm
           ref="form"
-          onSubmit={this.handleSubmit}
+          onSubmit={this.state.type === "add" ? this.handleSubmit : this.updateVideoNews}
           onError={(errors) => null}
         >
-          <Grid container spacing={3}>
+          <Grid container spacing={3} style={{marginTop:'10px'}}>
             <Grid item lg={6} md={6} sm={12} xs={12}>
               <TextField
                 className="mb-16 w-100"
@@ -210,6 +348,14 @@ class addUpdateVideoNews extends Component {
                 onChange={this.handleChange}
                 type="url"
                 name="videoLink"
+                value={videoLink}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <YouTube color="error"/>
+                    </InputAdornment>
+                  ),
+                }}
                 error={this.validator.message(
                   "videoLink",
                   videoLink,
@@ -228,6 +374,7 @@ class addUpdateVideoNews extends Component {
                 onChange={this.handleChange}
                 type="text"
                 name="title"
+                value={title}
                 error={this.validator.message(
                   "title",
                   title,
@@ -244,139 +391,170 @@ class addUpdateVideoNews extends Component {
 
             <Grid item lg={6} md={6} sm={12} xs={12}>
               <Grid item xl={12}>
-                <FormControlLabel
-                  className="mt-16"
-                  control={
-                    <Switch onClick={() => this.setState({publish :
-                      !publish})} name="publish" />
-                  }
-                  label="Publish This News"
-                />
-                <FormControlLabel
-                  className="mt-16"
-                  control={
-                    <Switch onClick={() => this.setState({critical :
-                      !critical})} name="critical" />
-                  }
-                  label="Notify To Subscriber"
-                />
+                <Grid container >
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <FormControl className="mb-16 pr-16 w-100" error={this.validator.message(
+                      "newsType",
+                      newsType,
+                      "required"
+                    )}>
+                      <InputLabel id="newsType">
+                        News Type
+                  </InputLabel>
+                      <Select
 
-
-                <FormControl style={{ width: "43%" }}>
-                  <InputLabel id="publishedBy" error={this.validator.message(
-                    "newsType",
-                    newsType,
-                    "required"
-                  )}>
-                    PublishedBy
+                        labelId="newsType"
+                        id="newsType"
+                        name="newsType"
+                        value={newsType}
+                        onChange={this.handleChange}
+                        displayEmpty
+                        onBlur={() => this.validator.showMessageFor("newsType")}
+                      >
+                        {newsTypeList.map((newsType, index) => {
+                          return (
+                            <MenuItem value={newsType.newsTypeName} key={index} >
+                               
+                                <div style={{ alignItems: "center", display: "flex" }}>
+                                <div className={newsType.isActive?"activeDot":"inActiveDot"}></div>
+                                  <div className="pl-4">{newsType.newsTypeName}</div>
+                                  </div>
+                               
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                      <FormHelperText style={{ color: 'red' }}>{this.validator.message(
+                        "newsType",
+                        newsType,
+                        "required"
+                      )}</FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <FormControl className="mb-16  w-100" error={this.validator.message(
+                      "publishedBy",
+                      publishedBy,
+                      "required"
+                    )}>
+                      <InputLabel id="publishedBy">
+                        PublishedBy
                 </InputLabel>
-                  <Select
-                    labelId="publishedBy"
-                    id="publishedBy"
-                    name="publishedBy"
-                    onChange={this.handleChange}
-                    displayEmpty
-                    onBlur={() => this.validator.showMessageFor("publishedBy")}
-                  >
-                    <MenuItem value={10}>Bharat</MenuItem>
-                    <MenuItem value={20}>Tanvi</MenuItem>
-                    <MenuItem value={30}>Darshan</MenuItem>
-                  </Select>
-                  <FormHelperText style={{ color: 'red' }}>{this.validator.message(
-                    "publishedBy",
-                    publishedBy,
-                    "required"
-                  )}</FormHelperText>
-                </FormControl>
+                      <Select
+                        labelId="publishedBy"
+                        id="publishedBy"
+                        name="publishedBy"
+                        value={publishedBy}
+                        onChange={this.handleChange}
+                        displayEmpty
+                        
+                        onBlur={() => this.validator.showMessageFor("publishedBy")}
+                      >
+                        {adminUserList.map((admin, index) => {
+                          return (
+                            <MenuItem value={admin} key={index} >
+                              {admin}
+                            </MenuItem>
+                          );
+                        })}
+
+                      </Select>
+                      <FormHelperText style={{ color: 'red' }}>{this.validator.message(
+                        "publishedBy",
+                        publishedBy,
+                        "required"
+                      )}</FormHelperText>
+                    </FormControl>
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid item xl={12}>
-                <FormControl className="mt-8" style={{ width: "32%" }} error={this.validator.message(
-                  "newsType",
-                  newsType,
-                  "required"
-                )}>
-                  <InputLabel id="newsType">
-                    News Type
+                <Grid container >
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <FormControl className="mb-16 pr-16 w-100" error={this.validator.message(
+                      "category",
+                      category,
+                      "required"
+                    )}>
+                      <InputLabel id="category">
+                        Category
                   </InputLabel>
-                  <Select
+                      <Select
+                        labelId="category"
+                        id="category"
+                        name="category"
+                        value={category}
+                        onChange={this.handleChange}
+                        displayEmpty
+                        onBlur={() => this.validator.showMessageFor("category")}
+                      >
+                        {categoryList.map((category, index) => {
+                          return (
+                            <MenuItem value={category.categoryName} key={index} onClick={() => this.getSubCatByCategory(category)}>
+                              <div style={{ alignItems: "center", display: "flex" }}>
+                                <div className={category.isActive?"activeDot":"inActiveDot"}></div>
+                                  <div className="pl-4">{category.categoryName}</div>
+                                  </div>
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                      <FormHelperText style={{ color: 'red' }}>{this.validator.message(
+                        "category",
+                        category,
+                        "required"
+                      )}</FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <FormControl className="mb-16 w-100" error={this.validator.message(
+                      "subCategory",
+                      subCategory,
+                      "required"
+                    )}>
+                      <InputLabel id="subCategory">
+                        SubCategory
+                  </InputLabel>
+                      <Select
+                        labelId="subCategory"
+                        id="subCategory"
+                        name="subCategory"
+                        value={subCategory}
+                        onChange={this.handleChange}
+                        //displayEmpty
+                        onBlur={() => this.validator.showMessageFor("subCategory")}
+                      >
+                        {subCategoryList.map((subCategory, index) => {
+                          return (
+                            <MenuItem value={subCategory.subCategoryName} key={index} >
+                              <div style={{ alignItems: "center", display: "flex" }}>
+                                <div className={subCategory.isActive?"activeDot":"inActiveDot"}></div>
+                                  <div className="pl-4">{subCategory.subCategoryName}</div>
+                                  </div>
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                      <FormHelperText style={{ color: 'red' }}>{this.validator.message(
+                        "subCategory",
+                        subCategory,
+                        "required"
+                      )}</FormHelperText>
+                    </FormControl>
+                  </Grid>
+                </Grid>
 
-                    labelId="newsType"
-                    id="newsType"
-                    name="newsType"
-                    onChange={this.handleChange}
-                    displayEmpty
-                    onBlur={() => this.validator.showMessageFor("newsType")}
-                  >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                  </Select>
-                  <FormHelperText style={{ color: 'red' }}>{this.validator.message(
-                    "newsType",
-                    newsType,
-                    "required"
-                  )}</FormHelperText>
-                </FormControl>
-                <FormControl className="mt-8 mx-8" style={{ width: "32%" }} error={this.validator.message(
-                  "category",
-                  category,
-                  "required"
-                )}>
-                  <InputLabel id="category">
-                    Category
-                  </InputLabel>
-                  <Select
-                    labelId="category"
-                    id="category"
-                    name="category"
-                    onChange={this.handleChange}
-                    displayEmpty
-                    onBlur={() => this.validator.showMessageFor("category")}
-                  >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                  </Select>
-                  <FormHelperText style={{ color: 'red' }}>{this.validator.message(
-                    "category",
-                    category,
-                    "required"
-                  )}</FormHelperText>
-                </FormControl>
-                <FormControl className="mt-8 " style={{ width: "33%" }} error={this.validator.message(
-                  "subCategory",
-                  subCategory,
-                  "required"
-                )}>
-                  <InputLabel id="subCategory">
-                    SubCategory
-                  </InputLabel>
-                  <Select
-                    labelId="subCategory"
-                    id="subCategory"
-                    name="subCategory"
-                    onChange={this.handleChange}
-                    displayEmpty
-                    onBlur={() => this.validator.showMessageFor("subCategory")}
-                  >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                  </Select>
-                  <FormHelperText style={{ color: 'red' }}>{this.validator.message(
-                    "subCategory",
-                    subCategory,
-                    "required"
-                  )}</FormHelperText>
-                </FormControl>
+
+
               </Grid>
 
             </Grid>
           </Grid>
           <Grid sm={12} style={{ padding: "20px 0px" }}>
             <RichTextEditor
-              content={this.state.content}
+            readOnly={false}
+              content={content}
               name="content"
               handleContentChange={this.handleContentChange}
               placeholder="insert text here..."
@@ -384,91 +562,132 @@ class addUpdateVideoNews extends Component {
           </Grid>
           <Grid container spacing={3}>
             <Grid item lg={6} md={6} sm={12} xs={12}>
-              <FormControl className="m-4" style={{ width: "32%" }} error={this.validator.message(
-                "country",
-                country,
-                "required"
-              )}>
-                <InputLabel id="country">
-                  Country
+              <Grid container >
+                <Grid item md={4} sm={12} xs={12}>
+                  <FormControl className="mb-16 pr-16 w-100" error={this.validator.message(
+                    "country",
+                    country,
+                    "required"
+                  )}>
+                    <InputLabel id="country">
+                      Country
                   </InputLabel>
-                <Select
+                    <Select
+                      labelId="country"
+                      id="country"
+                      name="country"
+                      value={country}
+                      onChange={this.handleChange}
+                      displayEmpty
+                      onBlur={() => this.validator.showMessageFor("country")}
+                    >
+                      {countryList.map((countryName, index) => {
+                        return (
+                          <MenuItem value={countryName} key={index} onClick={() => this.getStateListByCountry(countryName)}>
+                            {countryName}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                    <FormHelperText style={{ color: 'red' }}>{this.validator.message(
+                      "country",
+                      country,
+                      "required"
+                    )}</FormHelperText>
+                  </FormControl>
+                </Grid>
+                <Grid item md={4} sm={12} xs={12}>
+                  <FormControl className="mb-16 pr-16 w-100" error={this.validator.message(
+                    "state",
+                    state,
+                    "required"
+                  )}>
+                    <InputLabel id="state">
+                      State
+                  </InputLabel>
+                    <Select
+                      labelId="state"
+                      id="state"
+                      name="state"
+                      value={state}
+                      onChange={this.handleChange}
+                      displayEmpty
+                      onBlur={() => this.validator.showMessageFor("state")}
+                    >
+                      {stateList.map((stateName, index) => {
+                        return (
+                          <MenuItem value={stateName} key={index} onClick={() => this.getCityListByState(stateName)}>
+                            {stateName}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                    <FormHelperText style={{ color: 'red' }}>{this.validator.message(
+                      "state",
+                      state,
+                      "required"
+                    )}</FormHelperText>
+                  </FormControl>
+                </Grid>
+                <Grid item md={4} sm={12} xs={12}>
+                  <FormControl className="mb-16 w-100" error={this.validator.message(
+                    "city",
+                    city,
+                    "required"
+                  )}>
+                    <InputLabel id="city">
+                      City
+                  </InputLabel>
+                    <Select
+                      labelId="city"
+                      id="city"
+                      name="city"
+                      value={city}
+                      onChange={this.handleChange}
+                      displayEmpty
+                      onBlur={() => this.validator.showMessageFor("city")}
+                    >
+                      {cityList.map((cityName, index) => {
+                        return (
+                          <MenuItem value={cityName} key={index} onClick={() => this.handleChange}>
+                            {cityName}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                    <FormHelperText style={{ color: 'red' }}>{this.validator.message(
+                      "city",
+                      city,
+                      "required"
+                    )}</FormHelperText>
+                  </FormControl>
+                </Grid>
 
-                  labelId="country"
-                  id="country"
-                  name="country"
-                  onChange={this.handleChange}
-                  displayEmpty
-                  onBlur={() => this.validator.showMessageFor("country")}
-                >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-                <FormHelperText style={{ color: 'red' }}>{this.validator.message(
-                  "country",
-                  country,
-                  "required"
-                )}</FormHelperText>
-              </FormControl>
-              <FormControl className="m-4" style={{ width: "32%" }} error={this.validator.message(
-                "state",
-                state,
-                "required"
-              )}>
-                <InputLabel id="state">
-                  State
-                  </InputLabel>
-                <Select
-                  labelId="state"
-                  id="state"
-                  name="state"
-                  onChange={this.handleChange}
-                  displayEmpty
-                  onBlur={() => this.validator.showMessageFor("state")}
-                >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-                <FormHelperText style={{ color: 'red' }}>{this.validator.message(
-                  "state",
-                  state,
-                  "required"
-                )}</FormHelperText>
-              </FormControl>
-              <FormControl className="m-4" style={{ width: "32%" }} error={this.validator.message(
-                "city",
-                city,
-                "required"
-              )}>
-                <InputLabel id="city">
-                  City
-                  </InputLabel>
-                <Select
-                  labelId="city"
-                  id="city"
-                  name="city"
-                  onChange={this.handleChange}
-                  displayEmpty
-                  onBlur={() => this.validator.showMessageFor("city")}
-                >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-                <FormHelperText style={{ color: 'red' }}>{this.validator.message(
-                  "city",
-                  city,
-                  "required"
-                )}</FormHelperText>
-              </FormControl>
+              </Grid>
+              <Grid item lg={12} >
 
+                <TextField
+                  className="w-100"
+                  label="Optional Address"
+                  onChange={this.handleChange}
+                  type="text"
+                  name="optionalAddress"
+                  value={optionalAddress}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Business color="primary"/>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
             </Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>
 
-              <FormControl className="pt-12 w-100" >
+              <FormControl className="pt-12 w-100 " >
                 <ReactTagInput
+                  //class='react-tag-input__input'
                   tags={tags}
                   placeholder="Type tag and press enter"
                   maxTags={10}
@@ -476,16 +695,10 @@ class addUpdateVideoNews extends Component {
                   readOnly={false}
                   removeOnBackspace={true}
                   onChange={this.handleTags}
-
-
                 />
               </FormControl>
-
-
-
             </Grid>
           </Grid>
-
 
         </ValidatorForm>
       </div>
@@ -495,12 +708,23 @@ class addUpdateVideoNews extends Component {
 
 
 const mapStateToProps = (state) => {
-  const {  } = state.videoNews;
+  // const { } = state.videoNews;
+  const { categoryList } = state.category;
+  const { subCategoryList } = state.subCategory;
+  const { newsTypeList } = state.newsType;
+  const { countryList, stateList, cityList } = state.location;
+  const { adminUserList } = state.adminUser;
   return {
-
+    categoryList,
+    subCategoryList,
+    countryList,
+    newsTypeList,
+    adminUserList,
+    stateList,
+    cityList
   };
 };
 
-export default connect(mapStateToProps, {  addVideoNewsApi })(
+export default connect(mapStateToProps, { addVideoNewsApi, categoryListApi, getsubCateByCategoryListApi, newsTypeListApi, countryListApi, stateListApi, cityListApi, getAdminNameListApi })(
   addUpdateVideoNews
 );

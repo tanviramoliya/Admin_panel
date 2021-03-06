@@ -1,5 +1,5 @@
 import {
-    getSubCategoryList,
+    getSubCategoryList,getSubCateByCategoryList
   } from "../index";
   import { api } from '../../../api/api';
 
@@ -42,4 +42,17 @@ import {
     if (updateSubCategory) {
       return updateSubCategory;
     }
+  };
+
+  export const getsubCateByCategoryListApi = (token) => {
+    return async (dispatch) => {
+      await api(`subCategory/getByCategory?categoryToken=${token}`, {}, 'get')
+        .then((res) => {
+          dispatch(getSubCateByCategoryList(res.data.data));
+        })
+        .catch((error) => {
+          console.log(error)
+          // toastr.error('Can not able to get lesson list');
+        });
+    };
   };

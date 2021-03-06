@@ -3,6 +3,8 @@ export const GET_SUBCATEGORY = "GET_SUBCATEGORY";
 export const ADD_SUBCATEGORY = "ADD_SUBCATEGORY";
 export const DELETE_SUBCATEGORY = "DELETE_SUBCATEGORY";
 export const UPDATE_SUBCATEGORY = "UPDATE_SUBCATEGORY";
+export const GET_SUBCATEGORY_BY_CATEGORY_LIST = "GET_SUBCATEGORY_BY_CATEGORY_LIST";
+
 
 export const getSubCategoryList = (value) => {
   return {
@@ -33,6 +35,12 @@ export const updateSubCategory = (value) => {
 export const getSubCategory = (value) => {
   return {
     type: GET_SUBCATEGORY,
+    payload: value,
+  };
+};
+export const getSubCateByCategoryList = (value) => {
+  return {
+    type: GET_SUBCATEGORY_BY_CATEGORY_LIST,
     payload: value,
   };
 };
