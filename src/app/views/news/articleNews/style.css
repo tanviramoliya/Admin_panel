@@ -1,0 +1,18 @@
+.activeDot {
+    height:7px;
+    width: 7px;
+    background-color: orange;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .inActiveDot {
+    height:7px;
+    width: 7px;
+    background-color: silver;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .MuiInputBase-input{
+      color:darkslategray;
+  }

@@ -10,7 +10,7 @@ export const navigations = [
     children: [
       {
         name: "Article",
-        path: "/forms/basic",
+        path: "/news/articleNews",
         icon: "assignment"
       },
       {
