@@ -224,7 +224,7 @@ class country extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {countryList
+                  {countryList && countryList === []? countryList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((country, index) => (
                       <TableRow key={index}>
@@ -255,7 +255,9 @@ class country extends Component {
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )) : <h1>
+                      No Data is there!
+                      </h1>}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -263,7 +265,7 @@ class country extends Component {
               className="px-16"
               rowsPerPageOptions={[8, 16, 24]}
               component="div"
-              count={countryList.length}
+              count={countryList ? countryList.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{

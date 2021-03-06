@@ -289,7 +289,7 @@ class subCategory extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {subCategoryList
+                  {subCategoryList && subCategoryList === [] ? subCategoryList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((subCategory, index) => (
                       <TableRow key={index}>
@@ -336,7 +336,10 @@ class subCategory extends Component {
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )) : 
+                    <h1>
+                      No Data is there!
+                      </h1>}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -344,7 +347,7 @@ class subCategory extends Component {
               className="px-16"
               rowsPerPageOptions={[8, 16, 24]}
             component="div"
-              count={subCategoryList.length}
+              count={subCategoryList ?  subCategoryList.length :0 }
             rowsPerPage={rowsPerPage}
             page={page}
             backIconButtonProps={{
@@ -403,7 +406,7 @@ class subCategory extends Component {
                     value={categoryName}
                     label="Category"
                   >
-                    {categoryList.map((category, index) => {
+                    {categoryList ? categoryList.map((category, index) => {
                       return (
                         <MenuItem
                           value={category.categoryName}
@@ -413,7 +416,7 @@ class subCategory extends Component {
                           {category.categoryName}
                         </MenuItem>
                       );
-                    })}
+                    }) : null}
                   </Select>
                 </FormControl>
                 <div style={{ marginTop: "25px" }}>

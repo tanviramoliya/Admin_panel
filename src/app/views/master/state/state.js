@@ -262,7 +262,7 @@ class state extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {stateList
+                  {stateList && stateList === []? stateList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((state, index) => (
                       <TableRow key={index}>
@@ -296,7 +296,10 @@ class state extends Component {
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )): 
+                    <h1>
+                      No Data is there!
+                      </h1>}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -304,7 +307,7 @@ class state extends Component {
               className="px-16"
               rowsPerPageOptions={[8, 16, 24]}
               component="div"
-              count={stateList.length}
+              count={stateList ? stateList.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{
@@ -350,14 +353,14 @@ class state extends Component {
                 <FormControl style={{ width: "-webkit-fill-available" }} error={countryName === ""} variant="outlined">
                   <InputLabel htmlFor="grouped-select" id="country">Country</InputLabel>
                   <Select name="countryName" labelId="country" value={countryName} label="Country">
-                    {countryList.map((country, index) => {
+                    {countryList ? countryList.map((country, index) => {
                       return (
                         <MenuItem value={country.countryName} key={index}
                           onClick={() => this.handleChangeCountry(country)}>
                           {country.countryName}
                         </MenuItem>
                       );
-                    })}
+                    }) : null}
                   </Select>
                 </FormControl>
                 <div style={{ marginTop: "25px" }}>

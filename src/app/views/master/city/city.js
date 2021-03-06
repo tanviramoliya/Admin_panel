@@ -252,7 +252,7 @@ class city extends Component{
           </TableRow>
         </TableHead>
         <TableBody>
-          {cityList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          {cityList && cityList === [] ? cityList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((city, index) => (
               <TableRow key={index}>
                 <TableCell className="p-0" >
@@ -273,7 +273,9 @@ class city extends Component{
                   </IconButton>
                 </TableCell>
               </TableRow>
-            ))}
+            )) : <h1>
+            No Data is there!
+            </h1>}
         </TableBody>
       </Table>
       </TableContainer>
@@ -282,7 +284,7 @@ class city extends Component{
         className="px-16"
         rowsPerPageOptions={[8, 16, 24]}
         component="div"
-        count={cityList.length}
+        count={cityList ? cityList.length : 0}
         rowsPerPage={rowsPerPage}
         page={page}
         backIconButtonProps={{
@@ -326,14 +328,14 @@ class city extends Component{
                 <FormControl style={{ width: "-webkit-fill-available"}} error={stateName === ""} variant="outlined" >
                   <InputLabel htmlFor="grouped-select" id="state">State</InputLabel>
                   <Select name="stateName" labelId="state" value={stateName} label="State">
-                  {stateList.map((state, index) => {
+                  {stateList ? stateList.map((state, index) => {
                         return (
                           <MenuItem value={state.stateName} key={index}
                           onClick={() =>this.handleChangeState(state)}>
                             {state.stateName}
                           </MenuItem>
                         );
-                      })}
+                      }) : null}
                     </Select>
                 </FormControl>
                 <div style={{marginTop : "25px"}}>
