@@ -191,7 +191,8 @@ class articleNews extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {articleNewsList
+                  {articleNewsList && articleNewsList !== [] ?
+                  articleNewsList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((ArticleNews, index) => (
                       <TableRow key={index}>
@@ -250,7 +251,9 @@ class articleNews extends Component {
 
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )) :<h1>
+                    No Data is there!
+                    </h1>}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -259,7 +262,7 @@ class articleNews extends Component {
               className="px-16"
               rowsPerPageOptions={[8, 16, 24]}
               component="div"
-              count={articleNewsList.length}
+              count={articleNewsList ? articleNewsList.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{

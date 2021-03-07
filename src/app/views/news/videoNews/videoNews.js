@@ -189,7 +189,7 @@ class videoNews extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {videoNewsList
+                  {videoNewsList && videoNewsList !== [] ?videoNewsList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((VideoNews, index) => (
                       <TableRow key={index}>
@@ -248,7 +248,10 @@ class videoNews extends Component {
 
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )) : 
+                    <h1>
+                    No Data is there!
+                    </h1>}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -257,7 +260,7 @@ class videoNews extends Component {
               className="px-16"
               rowsPerPageOptions={[8, 16, 24]}
               component="div"
-              count={videoNewsList.length}
+              count={videoNewsList ? videoNewsList.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{

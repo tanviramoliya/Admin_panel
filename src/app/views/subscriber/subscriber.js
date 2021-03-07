@@ -104,7 +104,7 @@ class subscriber extends Component {
     console.log(" Called");
     const { subscriberList } = this.state;
     if (event.target.checked) {
-      const newSelecteds = subscriberList.map((n) => n.userToken);
+      const newSelecteds = subscriberList ? subscriberList.map((n) => n.userToken) : null;
       this.setState({ selected: newSelecteds });
       console.log("In ALL selected", newSelecteds);
       return;
@@ -213,7 +213,7 @@ class subscriber extends Component {
                 </TableHead>
 
                 <TableBody>
-                  {subscriberList
+                  {subscriberList && subscriberList !== [] ? subscriberList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((subscriberUpdate, index) => {
                       const isItemSelected = this.isSelected(
@@ -261,7 +261,9 @@ class subscriber extends Component {
                           </TableCell>
                         </TableRow>
                       );
-                    })}
+                    }) : <h1>
+                    No Data is there!
+                    </h1>}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -270,7 +272,7 @@ class subscriber extends Component {
               className="px-16"
               rowsPerPageOptions={[8, 16, 24]}
               component="div"
-              count={subscriberList.length}
+              count={subscriberList ? subscriberList.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{

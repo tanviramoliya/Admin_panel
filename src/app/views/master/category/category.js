@@ -267,7 +267,7 @@ class category extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {categoryList
+                  {categoryList && categoryList !== [] ? categoryList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((category, index) => (
                       <TableRow key={index}>
@@ -314,7 +314,10 @@ class category extends Component {
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )) : 
+                    <h1>
+                      No Data is there!
+                      </h1>}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -322,7 +325,7 @@ class category extends Component {
               className="px-16"
               rowsPerPageOptions={[8, 16, 24]}
               component="div"
-              count={categoryList.length}
+              count={categoryList ? categoryList.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{

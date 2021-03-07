@@ -218,7 +218,7 @@ class inquiry extends Component {
     console.log(" Called");
     const { inquiryList } = this.state;
     if (event.target.checked) {
-      const newSelecteds = inquiryList.map((n) => n.token);
+      const newSelecteds = inquiryList ? inquiryList.map((n) => n.token) : null;
       this.setState({ selected: newSelecteds });
       console.log("In ALL selected", newSelecteds);
       return;
@@ -347,7 +347,7 @@ class inquiry extends Component {
                 </TableHead>
 
                 <TableBody>
-                  {inquiryList
+                  {inquiryList && inquiryList !== []? inquiryList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((inquiryUpdate, index) => {
                       const isItemSelected = this.isSelected(
@@ -445,7 +445,9 @@ class inquiry extends Component {
                           </TableCell>
                         </TableRow>
                       );
-                    })}
+                    }) : <h1>
+                    No Data is there!
+                    </h1>}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -454,7 +456,7 @@ class inquiry extends Component {
               className="px-16"
               rowsPerPageOptions={[8, 16, 24]}
               component="div"
-              count={inquiryList.length}
+              count={inquiryList ? inquiryList.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{

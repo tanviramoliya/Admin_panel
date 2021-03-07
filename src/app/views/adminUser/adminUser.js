@@ -323,7 +323,7 @@ class AdminUser extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {adminUserList
+                  {adminUserList && adminUserList !== [] ? adminUserList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((AdminUser, index) => (
                       <TableRow key={index}>
@@ -370,7 +370,9 @@ class AdminUser extends Component {
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )) : <h1>
+                    No Data is there!
+                    </h1>}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -379,7 +381,7 @@ class AdminUser extends Component {
               className="px-16"
               rowsPerPageOptions={[8, 16, 24]}
               component="div"
-              count={adminUserList.length}
+              count={adminUserList ? adminUserList.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{

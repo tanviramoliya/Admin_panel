@@ -1,68 +1,50 @@
-import React, { Component, Fragment } from "react";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Checkbox,
+  createMuiTheme,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControlLabel,
+  Grid,
+  Icon,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
+  Tooltip
+} from "@material-ui/core";
+import { red } from "@material-ui/core/colors";
+import Paper from "@material-ui/core/Paper";
+import { GroupAdd, Warning } from "@material-ui/icons";
+import ConfirmationDialog from "components/matx/ConfirmationDialog";
+import React, { Component } from "react";
+import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
+import { connect } from "react-redux";
+import { toastr } from "react-redux-toastr";
+import { Breadcrumb } from "../../../components/matx/Breadcrumb";
 import {
   aclRoleListApi,
-  deleteAclRoleApi,
   addAclRoleApi,
+  deleteAclRoleApi,
   updateAclRoleApi,
 } from "../../../redux/actions/index";
 import { status } from "../../../utility/config";
-import { toastr } from "react-redux-toastr";
-import { Breadcrumb } from "../../../components/matx/Breadcrumb";
-import Paper from "@material-ui/core/Paper";
-import {
-  Card,
-  Button,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  IconButton,
-  Icon,
-  TablePagination,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TableContainer,
-  Grid,
-  InputAdornment,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormControl,
-  Chip,
-  Avatar,
-  Tooltip,
-  CardActions,
-  CardContent,
-  Typography,
-  createMuiTheme,
-  MuiThemeProvider,
-  Divider,
-  Checkbox,
-  FormGroup,
-  FormHelperText,
-} from "@material-ui/core";
-import ConfirmationDialog from "components/matx/ConfirmationDialog";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-import { connect } from "react-redux";
-import {
-  PhoneIphone,
-  Email,
-  Person,
-  GroupAdd,
-  CheckBox,
-} from "@material-ui/icons";
 
-import { withStyles } from "@material-ui/styles";
-import { purple, blue, red } from "@material-ui/core/colors";
 const theme = createMuiTheme({
   palette: {
     secondary: red,
   },
 });
+
 class AclRole extends Component {
   state = {
     aclRoleList: [],
@@ -71,12 +53,21 @@ class AclRole extends Component {
     deleteModal: false,
     deleteAclRoleToken: null,
     openModal: false,
-    openCard: false,
     roleToken: "",
     roleType: "",
-    createdDate: "",
-    updateDate: "",
-    permission: "",
+    permission: [
+      { key: "Dashboard", value: "N/A" },
+      { key: "Administrator", value: "N/A" },
+      { key: "News_headline", value: "N/A" },
+      { key: "News", value: "N/A" },
+      { key: "Publish", value: "N/A" },
+      { key: "Comments", value: "N/A" },
+      { key: "Menu_serial_no", value: "N/A" },
+      { key: "Master", value: "N/A" },
+      { key: "Settings", value: "N/A" },
+      { key: "Subscription", value: "N/A" },
+      { key: "Role", value: "N/A" },
+    ],
     type: "new",
   };
 
@@ -138,17 +129,10 @@ class AclRole extends Component {
       this.setState({
         roleToken: data.roleToken,
         roleType: data.roleType,
-        createdDate: data.createdDate,
-        updateDate: data.updateDate,
-        permission: data.permission,
+        permission: JSON.parse(data.permission),
       });
     }
   };
-  handleClick = () => {
-    this.setState({ openCard: !this.state.openCard });
-    console.log("click---" + this.state.openCard);
-  };
-
   //for close a modal
   handleClose = () => {
     this.setState({
@@ -158,10 +142,10 @@ class AclRole extends Component {
       roleType: "",
       createdDate: "",
       updateDate: "",
-      permission: "",
+      // permission: "",
     });
   };
-  AddAdminUser = async () => {
+  AddAclRole = async () => {
     const { type, roleType, permission } = this.state;
     if (type === "new") {
       if (!roleType) {
@@ -174,9 +158,6 @@ class AclRole extends Component {
       }
 
       // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
       let data = {
         roleType: roleType,
         permission: permission,
@@ -191,12 +172,8 @@ class AclRole extends Component {
               openModal: false,
               deleteModal: false,
               deleteAclRoleToken: null,
-              openCard: false,
               roleToken: "",
               roleType: "",
-              createdDate: "",
-              updateDate: "",
-              permission: "",
               type: "new",
             });
           } else {
@@ -213,11 +190,11 @@ class AclRole extends Component {
     const { type, roleToken, roleType, permission } = this.state;
     if (type === "edit") {
       if (!roleType) {
-        toastr.error("firstName is required");
+        toastr.error("roleType is required");
         return;
       }
       if (!permission) {
-        toastr.error("lastName is required");
+        toastr.error("permission is required");
         return;
       }
 
@@ -241,9 +218,6 @@ class AclRole extends Component {
               type: "new",
               roleToken: "",
               roleType: "",
-              createdDate: "",
-              updateDate: "",
-              permission: "",
             });
           } else {
             toastr.warning(updateAclRole.data.message);
@@ -256,25 +230,36 @@ class AclRole extends Component {
     }
   };
 
-  handleChange = (event) => {
+  handleChange = (event, key) => {
+    console.log(event.target.name, event.target.checked, key);
+    let name = event.target.name;
+    let value = event.target.checked;
     event.persist();
-    this.setState({ [event.target.name]: event.target.value });
+    this.state.permission.map((item) => {
+      if (item.key === key) {
+        let index = this.state.permission.findIndex((i) => i.key === key);
+        let permission = [...this.state.permission];
+        let permissions = { ...permission[index] };
+        permissions.key = key;
+        if (value) {
+          permissions.value = name;
+        } else {
+          if (permissions.value === "RW" && name !== "RO") {
+            permissions.value = "N/A";
+          }
+          if (permissions.value === "RO" && name !== "RW") {
+            permissions.value = "N/A";
+          }
+        }
+        permission[index] = permissions;
+        this.setState({ permission });
+        console.log(this.state.permission);
+      }
+    });
   };
 
   render() {
-    const {
-      openCard,
-      page,
-      rowsPerPage,
-      aclRoleList,
-      roleToken,
-      roleType,
-      createdDate,
-      updateDate,
-      permission,
-      type,
-      openModal,
-    } = this.state;
+    const { aclRoleList, roleType, type, openModal } = this.state;
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
@@ -284,103 +269,97 @@ class AclRole extends Component {
           <Card elevation={6} className="px-20 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
               <div className="card-title">User Role And Permission</div>
-              <Button
-                className="capitalize text-white bg-circle-primary"
-                onClick={() => this.setModel("new")}
-              >
-                Add New Role
-              </Button>
+              {aclRoleList.length > 3 ? (
+                <Button
+                  className="capitalize text-white bg-circle-primary"
+                  onClick={() => this.setModel("new")}
+                >
+                  Add New Role
+                </Button>
+              ) : (
+                <Tooltip
+                  title="You can add only three roles!"
+                  placement="right"
+                >
+                  <Warning fontSize="large" color="secondary" />
+                </Tooltip>
+              )}
             </div>
           </Card>
-          <Grid container className="pt-20">
-            {console.log(" ROle Data", aclRoleList)}
+          <Grid container className="pt-20" spacing={4}>
             {aclRoleList.map((AclRole, index) => (
-              <Grid item lg={4} md={4} sm={12} xs={12} style={{ paddingRight : "6px"}}>
+              <Grid item lg={4} md={4} sm={12} xs={12}>
                 <Card elevation={6}>
                   <CardContent>
-                    <Typography variant="h4" className="text-green px-6">
-                      {AclRole.roleType}
-                      <MuiThemeProvider theme={theme}>
-                      <IconButton className="p-8">
-                            <Icon 
-                              color="primary"
-                              onClick={() => this.setModel("edit", AclRole)}
-                            >
-                              edit
+                    <div className="flex flex-middle flex-space-between pb-12">
+                      <Typography variant="h4" className="px-6">
+                        {AclRole.roleType}
+                      </Typography>
+                      <div>
+                        <IconButton className="p-8">
+                          <Icon
+                            color="primary"
+                            onClick={() => this.setModel("edit", AclRole)}
+                          >
+                            edit
                           </Icon>
                         </IconButton>
-                      <IconButton className="p-8">
-                            <Icon 
-                             color="secondary"
-                            onClick={() => this.deleteAdminUserClicked(AclRole.roleToken)}
-                            >
-                              delete
+                        <IconButton className="p-8">
+                          <Icon
+                            color="error"
+                            onClick={() =>
+                              this.deleteAclRoleClicked(AclRole.roleToken)
+                            }
+                          >
+                            delete
                           </Icon>
                         </IconButton>
-                        </MuiThemeProvider>
-                    </Typography>
+                      </div>
+                    </div>
                     <Divider />
                     <Grid container className="pt-20">
-              <Grid item lg={12}>
-                <Card elevation={2}>
-                  <div>
-                    <TableContainer component={Paper}>
-                      <Table
-                        size="small"
-                        aria-label="a dense table"
-                      >
-                        <TableBody>
-                          <TableRow>
-                            {console.log("Key",Object.keys(JSON.parse(AclRole.permission)))}
-                            {console.log("Values",Object.values(JSON.parse(AclRole.permission)))}
-                            {
-                              Object.keys(JSON.parse(AclRole.permission)).map(name => {
-                                return <TableCell align="center">{name}</TableCell>
-                              })
-                            }
-                            {
-                              Object.values(JSON.parse(AclRole.permission)).map(p => {
-                               return  <TableCell align="center"> {p === "RW" ?  <Chip
-                               variant="outlined"
-                               color="primary"
-                               size="small"
-                               label="R/W"
-                               style={{marginRight: "6px"}}
-                             /> :  <Chip
-                             variant="outlined"
-                             color="secondary"
-                             size="small"
-                             label="R/O"
-                           />
-                        } </TableCell>
-                              })
-                            }
-                            
-                          </TableRow>
-  
-                          {/* {rows.map((row) => (
-                            <TableRow key={row.name}>
-                              <TableCell component="th" scope="row">
-                                {row.name}
-                              </TableCell>
-                              <TableCell align="right">
-                                {row.calories}
-                              </TableCell>
-                              <TableCell align="right">{row.fat}</TableCell>
-                              <TableCell align="right">{row.carbs}</TableCell>
-                              <TableCell align="right">{row.protein}</TableCell>
-                            </TableRow>
-                          ))} */}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </div>
-                  <CardActions></CardActions>
-                </Card>
-              </Grid>
-            </Grid>
+                      <Grid item lg={12}>
+                        <div>
+                          <TableContainer component={Paper}>
+                            <Table size="small" aria-label="a dense table">
+                              <TableBody>
+                                {Object.values(
+                                  JSON.parse(AclRole.permission)
+                                ).map((row) => (
+                                  <TableRow key={row.key}>
+                                    <TableCell component="th" scope="row">
+                                      {row.key}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                      <small
+                                        className={
+                                          row.value === "N/A"
+                                            ? "border-radius-4 text-white px-8 py-2 bg-error"
+                                            : row.value === "RW"
+                                            ? "border-radius-4 text-white px-8 py-2 bg-primary"
+                                            : "border-radius-4 text-white px-8 py-2 bg-secondary"
+                                        }
+                                      >
+                                        {row.value === "N/A"
+                                          ? "N/A"
+                                          : row.value === "RW"
+                                          ? "RW"
+                                          : "RO"}
+                                      </small>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </div>
+                      </Grid>
+                    </Grid>
                   </CardContent>
-                  <CardActions>
+                  <CardActions style={{ paddingLeft: "16px" }}>
+                    <Typography variant="h6">
+                      Last Modified Date: {AclRole.updatedTime}
+                    </Typography>
                   </CardActions>
                 </Card>
               </Grid>
@@ -423,11 +402,13 @@ class AclRole extends Component {
                 onError={(errors) => null}
               >
                 <Grid container spacing={1}>
-                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                  <Grid item lg={12}>
                     <TextValidator
                       className="mb-16 "
                       label="Role Type"
-                      onChange={this.handleChange}
+                      onChange={(e) =>
+                        this.setState({ roleType: e.target.value })
+                      }
                       type="text"
                       name="roleType"
                       placeholder="Enter Role Type"
@@ -438,19 +419,50 @@ class AclRole extends Component {
                       variant="outlined"
                       size="medium"
                     />
+                    <TableContainer component={Paper}>
+                      <Table size="small" aria-label="a dense table">
+                        <TableBody>
+                          {this.state.permission.map((row) => (
+                            <TableRow>
+                              <TableCell className="p-0">{row.key}</TableCell>
+                              <TableCell align="center" className="p-0">
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        this.handleChange(e, row.key)
+                                      }
+                                      checked={row.value === "RW"}
+                                      name="RW"
+                                      color="primary"
+                                    />
+                                  }
+                                  label="RW"
+                                />
+                              </TableCell>
+                              <TableCell align="center" className="p-0">
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        this.handleChange(e, row.key)
+                                      }
+                                      checked={row.value !== "N/A"}
+                                      name="RO"
+                                      color="secondary"
+                                    />
+                                  }
+                                  label="RO"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   </Grid>
                 </Grid>
                 <DialogActions className="p-0">
-                  <div className="swiper-container-no-flexbox">
-                    <Tooltip
-                      title="Password will generated by The System"
-                      placement="right"
-                    >
-                      <IconButton className="p-0">
-                        <Icon>info_outlined</Icon>
-                      </IconButton>
-                    </Tooltip>
-                  </div>
                   <Button onClick={this.handleClose} color="primary">
                     Cancel
                   </Button>
@@ -473,12 +485,10 @@ class AclRole extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  const { aclRoleList, roleType, createdDate, updateDate } = state.aclRole;
+  const { aclRoleList, roleType } = state.aclRole;
   return {
     aclRoleList,
     roleType,
-    createdDate,
-    updateDate,
   };
 };
 
