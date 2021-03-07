@@ -19,4 +19,5 @@ export * from "./apiAction/aclRoleApiAction";
 export * from "./apiAction/footerApiAction";
 export * from "./news/index";
 export * from "./apiAction/videoNewsApiAction";
+export * from "./apiAction/articleNewsApiAction";
 

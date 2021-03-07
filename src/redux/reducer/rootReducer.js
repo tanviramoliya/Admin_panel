@@ -15,6 +15,7 @@ import SubscriberReducer from "./subscriber/subcscriberReducer"
 import AdminUserReducer from "./adminUser/adminUserReducer";
 import AclRoleReducer from "./aclRole/aclRoleReducer";
 import VideoNewsReducer from "./news/videoNews/videoNewsReducer";
+import ArticleNewsReducer from "./news/articleNews/articleNewsReducer";
 import SocialMediaReducer from "./settingModule/socialMedia/socialMediaReducer";
 import AboutUsReducer from "./settingModule/aboutUs/aboutUsReducer";
 import InquiryReducer from "./inquiry/inquiryReducer";
@@ -29,6 +30,7 @@ const RootReducer = combineReducers({
   scrumboard: ScrumBoardReducer,
   notification: NotificationReducer,
   ecommerce: EcommerceReducer,
+  articleNews : ArticleNewsReducer,
   videoNews : VideoNewsReducer,
   location : LocationReducer,
   newsType : NewsTypeReducer,
