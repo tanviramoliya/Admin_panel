@@ -29,12 +29,14 @@ import {
   FormControl,
   TextField,
   TableContainer,
+  InputAdornment,
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from "../../../../utility/config";
 import { toastr } from "react-redux-toastr";
+import { Search } from "@material-ui/icons";
 
 class category extends Component {
   state = {
@@ -165,7 +167,7 @@ class category extends Component {
         }
       }
       // this.props.setLoader(false);
-      
+
     }
   };
   UpdateCategory = async () => {
@@ -213,7 +215,7 @@ class category extends Component {
         }
       }
       // this.props.setLoader(false);
-     
+
     }
   };
   handleChange = (event) => {
@@ -242,9 +244,10 @@ class category extends Component {
           />
         </div>
         <div className="py-12" >
-        <Card elevation={6} className="px-24 pt-20 h-100">
+          <Card elevation={6} className="px-24 pt-20 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
-              <div className="card-title">Category Infromation</div>
+              <div className="card-title">Category Information</div>
+              
               <Button
                 className="capitalize text-white bg-circle-primary"
                 onClick={() => this.setModel("new")}
@@ -275,13 +278,13 @@ class category extends Component {
                           {category.categoryName}
                         </TableCell>
                         <TableCell className="p-0">
-                        <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
+                          <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
                             {category.serialNo}
                           </small>
                         </TableCell>
                         <TableCell className="p-0">
                           {category.isActive ? (
-                            <small  className="border-radius-4 bg-primary text-white px-8 py-2 ">
+                            <small className="border-radius-4 bg-primary text-white px-8 py-2 ">
                               Active
                           </small >
                           ) : (
@@ -292,7 +295,7 @@ class category extends Component {
                         </TableCell>
                         <TableCell className="p-0">
                           <IconButton className="p-8">
-                            <Icon 
+                            <Icon
                               color="primary"
                               onClick={() => this.setModel("edit", category)}
                             >
@@ -300,7 +303,7 @@ class category extends Component {
                           </Icon>
                           </IconButton>
                           <IconButton className="p-8">
-                            <Icon 
+                            <Icon
                               color="error"
                               onClick={() =>
                                 this.deleteCategoryClicked(category.categoryToken)
@@ -386,7 +389,7 @@ class category extends Component {
                     name="categoryName"
                     value={categoryName}
                     validators={["required", "minStringLength: 2"]}
-                    errorMessages={["this field is required","category name more then 2 character"]}
+                    errorMessages={["this field is required", "category name more then 2 character"]}
                     style={{ width: "-webkit-fill-available" }}
                     variant="outlined"
                   />
