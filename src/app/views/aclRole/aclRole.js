@@ -63,6 +63,7 @@ const theme = createMuiTheme({
     secondary: red,
   },
 });
+
 class AclRole extends Component {
   state = {
     aclRoleList: [],
@@ -76,7 +77,23 @@ class AclRole extends Component {
     roleType: "",
     createdDate: "",
     updateDate: "",
-    permission: "",
+    permission: [
+      { key: "Dashboard", value: "N/A" },
+      { key: "Administrator", value: "N/A" },
+      { key: "News_headline", value: "N/A" },
+      { key: "News", value: "N/A" },
+      { key: "Publish", value: "N/A" },
+      { key: "Comments", value: "N/A" },
+      { key: "Menu_serial_no", value: "N/A" },
+      { key: "Master", value: "N/A" },
+      { key: "Settings", value: "N/A" },
+      { key: "Subscription", value: "N/A" },
+      { key: "Role", value: "N/A" },
+    ],
+    // permission:{
+    //   Dashboard:"",
+    //   Administrator
+    // }
     type: "new",
   };
 
@@ -158,7 +175,7 @@ class AclRole extends Component {
       roleType: "",
       createdDate: "",
       updateDate: "",
-      permission: "",
+      // permission: "",
     });
   };
   AddAdminUser = async () => {
@@ -256,9 +273,51 @@ class AclRole extends Component {
     }
   };
 
-  handleChange = (event) => {
+  handleChange = (event, key) => {
+    console.log(event.target.name, event.target.checked, key);
+    let name = event.target.name;
+    let value = event.target.checked;
     event.persist();
-    this.setState({ [event.target.name]: event.target.value });
+    this.state.permission.map((item) => {
+      if (item.key === key) {
+        let index = this.state.permission.findIndex((i) => i.key === key);
+        let permission = [...this.state.permission];
+        let permissions = { ...permission[index] };
+        permissions.key = key;
+        if(value){
+          permissions.value = name;
+        }
+        else{
+          if(permissions.value === 'RW' && name !== 'RO'){
+            permissions.value = 'N/A';
+          }
+          if(permissions.value === 'RO' && name !== 'RW'){
+            permissions.value = 'N/A';
+          }
+        }
+        // if(name === 'RO' && value === true){
+        //   permissions.value = 'RO';
+        // }
+        // if(name === 'RW' && value === true){
+        //   permissions.value = 'RW';
+        // }
+        // if((name === 'RW' && value === false) && (name === 'RO' && value === true)){
+        //   permissions.value = 'RO';
+        // }
+        // if((name === 'RW' && value === true) && (name === 'RO' && value === false)){
+        //   permissions.value = 'RW';
+        // }
+        // if((name === 'RW' && value === true) && (name === 'RO' && value === true)){
+        //   permissions.value = 'RW';
+        // }
+        // if((name === 'RW' && value === false) && (name === 'RO' && value === false)){
+        //   permissions.value = 'N/A';
+        // }
+        permission[index] = permissions;
+        this.setState({ permission });
+        console.log(this.state.permission);
+      }
+    });
   };
 
   render() {
@@ -293,95 +352,94 @@ class AclRole extends Component {
             </div>
           </Card>
           <Grid container className="pt-20">
-            {console.log(" ROle Data", aclRoleList)}
             {aclRoleList.map((AclRole, index) => (
-              <Grid item lg={4} md={4} sm={12} xs={12} style={{ paddingRight : "6px"}}>
+              <Grid
+                item
+                lg={4}
+                md={4}
+                sm={12}
+                xs={12}
+                style={{ paddingRight: "6px" }}
+              >
                 <Card elevation={6}>
                   <CardContent>
                     <Typography variant="h4" className="text-green px-6">
                       {AclRole.roleType}
                       <MuiThemeProvider theme={theme}>
-                      <IconButton className="p-8">
-                            <Icon 
-                              color="primary"
-                              onClick={() => this.setModel("edit", AclRole)}
-                            >
-                              edit
+                        <IconButton className="p-8">
+                          <Icon
+                            color="primary"
+                            onClick={() => this.setModel("edit", AclRole)}
+                          >
+                            edit
                           </Icon>
                         </IconButton>
-                      <IconButton className="p-8">
-                            <Icon 
-                             color="secondary"
-                            onClick={() => this.deleteAdminUserClicked(AclRole.roleToken)}
-                            >
-                              delete
+                        <IconButton className="p-8">
+                          <Icon
+                            color="secondary"
+                            onClick={() =>
+                              this.deleteAdminUserClicked(AclRole.roleToken)
+                            }
+                          >
+                            delete
                           </Icon>
                         </IconButton>
-                        </MuiThemeProvider>
+                      </MuiThemeProvider>
                     </Typography>
                     <Divider />
                     <Grid container className="pt-20">
-              <Grid item lg={12}>
-                <Card elevation={2}>
-                  <div>
-                    <TableContainer component={Paper}>
-                      <Table
-                        size="small"
-                        aria-label="a dense table"
-                      >
-                        <TableBody>
-                          <TableRow>
-                            {console.log("Key",Object.keys(JSON.parse(AclRole.permission)))}
-                            {console.log("Values",Object.values(JSON.parse(AclRole.permission)))}
-                            {
-                              Object.keys(JSON.parse(AclRole.permission)).map(name => {
-                                return <TableCell align="center">{name}</TableCell>
-                              })
-                            }
-                            {
-                              Object.values(JSON.parse(AclRole.permission)).map(p => {
-                               return  <TableCell align="center"> {p === "RW" ?  <Chip
-                               variant="outlined"
-                               color="primary"
-                               size="small"
-                               label="R/W"
-                               style={{marginRight: "6px"}}
-                             /> :  <Chip
-                             variant="outlined"
-                             color="secondary"
-                             size="small"
-                             label="R/O"
-                           />
-                        } </TableCell>
-                              })
-                            }
-                            
-                          </TableRow>
-  
-                          {/* {rows.map((row) => (
-                            <TableRow key={row.name}>
-                              <TableCell component="th" scope="row">
-                                {row.name}
-                              </TableCell>
-                              <TableCell align="right">
-                                {row.calories}
-                              </TableCell>
-                              <TableCell align="right">{row.fat}</TableCell>
-                              <TableCell align="right">{row.carbs}</TableCell>
-                              <TableCell align="right">{row.protein}</TableCell>
-                            </TableRow>
-                          ))} */}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </div>
-                  <CardActions></CardActions>
-                </Card>
-              </Grid>
-            </Grid>
+                      <Grid item lg={12}>
+                        <Card elevation={2}>
+                          <div>
+                            <TableContainer component={Paper}>
+                              <Table size="small" aria-label="a dense table">
+                                <TableBody>
+                                  {Object.values(
+                                    JSON.parse(AclRole.permission)
+                                  ).map((row) => (
+                                    <TableRow key={row.key}>
+                                      <TableCell component="th" scope="row">
+                                        {row.key}
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        {" "}
+                                        {row.value === "N/A" ? (
+                                          <Chip
+                                            variant="outlined"
+                                            color="error"
+                                            size="small"
+                                            label="N/A"
+                                            style={{ marginRight: "6px" }}
+                                          />
+                                        ) : row.value === "RW" ? (
+                                          <Chip
+                                            variant="outlined"
+                                            color="primary"
+                                            size="small"
+                                            label="R/W"
+                                            style={{ marginRight: "6px" }}
+                                          />
+                                        ) : (
+                                          <Chip
+                                            variant="outlined"
+                                            color="secondary"
+                                            size="small"
+                                            label="R/O"
+                                          />
+                                        )}{" "}
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </div>
+                          <CardActions></CardActions>
+                        </Card>
+                      </Grid>
+                    </Grid>
                   </CardContent>
-                  <CardActions>
-                  </CardActions>
+                  <CardActions></CardActions>
                 </Card>
               </Grid>
             ))}
@@ -423,11 +481,13 @@ class AclRole extends Component {
                 onError={(errors) => null}
               >
                 <Grid container spacing={1}>
-                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                  <Grid item lg={12}>
                     <TextValidator
                       className="mb-16 "
                       label="Role Type"
-                      onChange={this.handleChange}
+                      onChange={(e) =>
+                        this.setState({ roleType: e.target.value })
+                      }
                       type="text"
                       name="roleType"
                       placeholder="Enter Role Type"
@@ -438,19 +498,50 @@ class AclRole extends Component {
                       variant="outlined"
                       size="medium"
                     />
+                    <TableContainer component={Paper}>
+                      <Table size="small" aria-label="a dense table">
+                        <TableBody>
+                          {this.state.permission.map((row) => (
+                            <TableRow>
+                              <TableCell className="p-0">{row.key}</TableCell>
+                              <TableCell align="center" className="p-0">
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        this.handleChange(e, row.key)
+                                      }
+                                      checked={row.value === 'RW'}
+                                      name="RW"
+                                      color="primary"
+                                    />
+                                  }
+                                  label="RW"
+                                />
+                              </TableCell>
+                              <TableCell align="center" className="p-0">
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        this.handleChange(e, row.key)
+                                      }
+                                      checked={row.value !== 'N/A'}
+                                      name="RO"
+                                      color="secondary"
+                                    />
+                                  }
+                                  label="RO"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   </Grid>
                 </Grid>
                 <DialogActions className="p-0">
-                  <div className="swiper-container-no-flexbox">
-                    <Tooltip
-                      title="Password will generated by The System"
-                      placement="right"
-                    >
-                      <IconButton className="p-0">
-                        <Icon>info_outlined</Icon>
-                      </IconButton>
-                    </Tooltip>
-                  </div>
                   <Button onClick={this.handleClose} color="primary">
                     Cancel
                   </Button>
