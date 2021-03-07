@@ -323,7 +323,7 @@ class AdminUser extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {adminUserList && adminUserList === [] ? adminUserList
+                  {adminUserList && adminUserList !== [] ? adminUserList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((AdminUser, index) => (
                       <TableRow key={index}>

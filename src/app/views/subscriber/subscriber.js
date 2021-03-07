@@ -213,7 +213,7 @@ class subscriber extends Component {
                 </TableHead>
 
                 <TableBody>
-                  {subscriberList && subscriberList === [] ? subscriberList
+                  {subscriberList && subscriberList !== [] ? subscriberList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((subscriberUpdate, index) => {
                       const isItemSelected = this.isSelected(

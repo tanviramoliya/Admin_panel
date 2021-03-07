@@ -227,7 +227,7 @@ class newsType extends Component{
           </TableRow>
         </TableHead>
         <TableBody>
-          {newsTypeList && newsTypeList === []? newsTypeList
+          {newsTypeList && newsTypeList !== []? newsTypeList
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map(
             (newsType, index) => (

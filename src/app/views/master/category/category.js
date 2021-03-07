@@ -264,7 +264,7 @@ class category extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {categoryList && categoryList === [] ? categoryList
+                  {categoryList && categoryList !== [] ? categoryList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((category, index) => (
                       <TableRow key={index}>

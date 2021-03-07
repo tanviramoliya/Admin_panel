@@ -347,7 +347,7 @@ class inquiry extends Component {
                 </TableHead>
 
                 <TableBody>
-                  {inquiryList && inquiryList === []? inquiryList
+                  {inquiryList && inquiryList !== []? inquiryList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((inquiryUpdate, index) => {
                       const isItemSelected = this.isSelected(

@@ -275,7 +275,7 @@ class newsUpdate extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  { newsList && newsList === [] ? newsList
+                  { newsList && newsList !== [] ? newsList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((newsUpdate, index) => (
                       <TableRow key={index}>

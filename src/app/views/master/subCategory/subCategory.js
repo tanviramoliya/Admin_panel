@@ -289,7 +289,7 @@ class subCategory extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {subCategoryList && subCategoryList === [] ? subCategoryList
+                  {subCategoryList && subCategoryList !== [] ? subCategoryList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((subCategory, index) => (
                       <TableRow key={index}>

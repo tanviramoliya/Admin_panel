@@ -189,7 +189,7 @@ class videoNews extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {videoNewsList && videoNewsList === [] ?videoNewsList
+                  {videoNewsList && videoNewsList !== [] ?videoNewsList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((VideoNews, index) => (
                       <TableRow key={index}>
