@@ -4,7 +4,7 @@ import {
   Grid,
   Button,
   withStyles,
-  CircularProgress
+  CircularProgress,
 } from "@material-ui/core";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
@@ -15,12 +15,12 @@ import { resetPassword } from "../../../redux/actions/LoginActions";
 
 class ForgotPassword extends Component {
   state = {
-    email: "watson@example.com"
+    email: "",
   };
-  handleChange = event => {
+  handleChange = (event) => {
     event.persist();
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
   handleFormSubmit = () => {
@@ -36,7 +36,7 @@ class ForgotPassword extends Component {
             <Grid container>
               <Grid item lg={5} md={5} sm={5} xs={12}>
                 <div className="p-32 flex flex-center flex-middle h-100">
-                  <img src="/assets/images/illustrations/dreamer.svg" alt="" />
+                  <img src="/assets/images/sidebar/gntv.png" alt="GNTV Logo" />
                 </div>
               </Grid>
               <Grid item lg={7} md={7} sm={7} xs={12}>
@@ -53,21 +53,12 @@ class ForgotPassword extends Component {
                       validators={["required", "isEmail"]}
                       errorMessages={[
                         "this field is required",
-                        "email is not valid"
+                        "email is not valid",
                       ]}
                     />
                     <div className="flex flex-middle">
                       <Button variant="contained" color="primary" type="submit">
                         Reset Password
-                      </Button>
-                      <span className="ml-16 mr-8">or</span>
-                      <Button
-                        className="capitalize"
-                        onClick={() =>
-                          this.props.history.push("/session/signin")
-                        }
-                      >
-                        Sign in
                       </Button>
                     </div>
                   </ValidatorForm>
@@ -81,13 +72,10 @@ class ForgotPassword extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   resetPassword: PropTypes.func.isRequired,
-  login: state.login
+  login: state.login,
 });
 export default withRouter(
-  connect(
-    mapStateToProps,
-    { resetPassword }
-  )(ForgotPassword)
+  connect(mapStateToProps, { resetPassword })(ForgotPassword)
 );
