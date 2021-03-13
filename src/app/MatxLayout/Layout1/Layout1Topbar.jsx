@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { setLayoutSettings } from "redux/actions/LayoutActions";
 import { logoutUser } from "redux/actions/UserActions";
 import { PropTypes } from "prop-types";
-import { MatxMenu, MatxSearchBox } from "../../../components/matx/index";
+import { MatxMenu } from "../../../components/matx/index";
 import { isMdScreen } from "utils";
 import { Link } from "react-router-dom";
 
@@ -72,26 +72,9 @@ class Layout1Topbar extends Component {
                 <IconButton onClick={this.handleSidebarToggle} className="hide-on-lg">
                   <Icon>menu</Icon>
                 </IconButton>
-
-                <div className="hide-on-mobile">
-                  {/* <IconButton>
-                    <Icon>mail_outline</Icon>
-                  </IconButton>
-
-                  <IconButton>
-                    <Icon>web_asset</Icon>
-                  </IconButton>
-
-                  <IconButton>
-                    <Icon>star_outline</Icon>
-                  </IconButton> */}
-                </div>
               </div>
               <div className="flex flex-middle">
-                {/* { <MatxSearchBox />
-
-                <NotificationBar /> */}
-                <MatxMenu
+                 <MatxMenu
                   menuButton={
                     <img
                       className="mx-8 text-middle circular-image-small cursor-pointer"
@@ -100,12 +83,12 @@ class Layout1Topbar extends Component {
                     />
                   }
                 >
-                  {/* <MenuItem style={{ minWidth: 185 }}>
+                  <MenuItem style={{ minWidth: 185 }}>
                     <Link className="flex flex-middle" to="/">
                       <Icon> home </Icon>
                       <span className="pl-16"> Home </span>
                     </Link>
-                  </MenuItem> */}
+                  </MenuItem>
                   <MenuItem style={{ minWidth: 185 }}>
                     <Link
                       className="flex flex-middle"
@@ -115,13 +98,13 @@ class Layout1Topbar extends Component {
                       <span className="pl-16"> Profile </span>
                     </Link>
                   </MenuItem>
-                  {/* <MenuItem
+                  <MenuItem
                     className="flex flex-middle"
                     style={{ minWidth: 185 }}
                   >
                     <Icon> settings </Icon>
                     <span className="pl-16"> Settings </span>
-                  </MenuItem> */}
+                  </MenuItem>
                   <MenuItem
                     onClick={this.handleSignOut}
                     className="flex flex-middle"
