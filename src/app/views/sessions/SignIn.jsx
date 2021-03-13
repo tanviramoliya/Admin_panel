@@ -90,7 +90,7 @@ class SignIn extends Component {
                       name="agreement"
                       onChange={this.handleChange}
                       control={<Checkbox checked />}
-                      label="Keep me logged in"
+                      label="Remember me"
                     />
                     <div className="flex flex-middle mb-8">
                       <div className={classes.wrapper}>
