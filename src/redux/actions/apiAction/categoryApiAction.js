@@ -1,13 +1,26 @@
 import {
-    getCategoryList,
+    getCategoryList,getCategoryNameList
   } from "../index";
   import { api } from '../../../api/api';
 
-  export const categoryListApi = () => {
+  export const categoryListApi = (data) => {
     return async (dispatch) => {
-      await api('category/getAllCategory', {}, 'get')
+      await api('category/search', data, 'post')
         .then((res) => {
           dispatch(getCategoryList(res.data.data));
+        })
+        .catch((error) => {
+          console.log(error)
+          // toastr.error('Can not able to get Category list');
+        });
+    };
+  };
+//for news module
+  export const categoryNameListApi = () => {
+    return async (dispatch) => {
+      await api('category/categoryNameList', {}, 'get')
+        .then((res) => {
+          dispatch(getCategoryNameList(res.data.data));
         })
         .catch((error) => {
           console.log(error)

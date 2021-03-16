@@ -11,18 +11,22 @@ import { Breadcrumb } from "../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip
+  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, TextField, TableSortLabel
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
-import { PhoneIphone, Email, Person, GroupAdd } from '@material-ui/icons';
+import { PhoneIphone, Email, Person, GroupAdd, Search } from '@material-ui/icons';
 
 
 class AdminUser extends Component {
   state = {
     adminUserList: [],
-    rowsPerPage: 8,
+    count: "",
+    sortingField: "updatedTime",
+    sortingOrder: "asc",
+    keyword: "",
+    rowsPerPage: 10,
     page: 0,
     deleteModal: false,
     deleteAdminUserToken: null,
@@ -47,18 +51,40 @@ class AdminUser extends Component {
   };
 
   getAdminUserList = async () => {
-    await this.props.adminUserListApi();
-    this.setState({ adminUserList: this.props.adminUserList });
+    const { rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
+    let data = {
+      keyword: keyword,
+      pageSize: rowsPerPage,
+      pageNo: page,
+      field: sortingField,
+      order: sortingOrder
+    }
+    await this.props.adminUserListApi(data);
+    this.setState({ adminUserList: this.props.adminUserList.result, count: this.props.adminUserList.count });
   };
-  handleChangePage = (event, newPage) => {
-    this.setState({ page: newPage });
+
+  handleSearchKeyword = async (event) => {
+    await this.setState({ keyword: event.target.value });
+    this.getAdminUserList();
+  }
+  handleSortingOrder = async (fieldName, order) => {
+
+    await this.setState({ sortingField: fieldName, sortingOrder: order === 'asc' ? 'desc' : 'asc' });
+    this.getAdminUserList();
+
+  }
+  handleChangePage = async (event, newPage) => {
+    await this.setState({ page: newPage });
+    this.getAdminUserList();
   };
-  handleChangeRowsPerPage = (event) => {
-    this.setState({ rowsPerPage: event.target.value });
+  handleChangeRowsPerPage = async (event) => {
+    await this.setState({ rowsPerPage: event.target.value });
+    this.getAdminUserList();
   };
 
 
-  
+
+
   deleteAdminUserClicked = async (token) => {
     if (token) {
       this.setState({ deleteAdminUserToken: token });
@@ -281,6 +307,9 @@ class AdminUser extends Component {
     const {
       page,
       rowsPerPage,
+      sortingOrder,
+      keyword,
+      sortingField, count,
       adminUserList,
       firstName, lastName, role, email, contactNumber,
       type,
@@ -301,30 +330,83 @@ class AdminUser extends Component {
           <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
               <div className="card-title">Admin User Infromation</div>
-              <Button
-                className="capitalize text-white bg-circle-primary"
-                onClick={() => this.setModel("new")}
-              >
-                Add New Admin
+              <div>
+                <TextField style={{ width: '300px' }}
+                  className="mr-16"
+                  placeholder="Search..."
+
+                  type="search"
+                  name="keyword"
+                  value={keyword}
+                  onChange={this.handleSearchKeyword}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                <Button
+                  className="capitalize text-white bg-circle-primary"
+                  onClick={() => this.setModel("new")}
+                >
+                  Add New Admin
                   </Button>
+              </div>
             </div>
-            <TableContainer style={{ maxHeight: "405px" }}>
+            <TableContainer style={{ maxHeight: "465px" }}>
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="5%" >Sr.No</TableCell>
-                    <TableCell className="px-0" width="15%" >UserName</TableCell>
-                    <TableCell className="px-0" width="8%" >Role</TableCell>
-                    <TableCell className="px-0" width="20%">Email</TableCell>
-                    <TableCell className="px-0" width="15%" >ContactNumber</TableCell>
-                    <TableCell className="px-0" width="15%">CreatedTime</TableCell>
-                    <TableCell className="px-0"  >Actions</TableCell>
+                    <TableCell className="px-0 py-8" width="5%" >Sr.No</TableCell>
+                    <TableCell className="px-0 py-8" width="15%" >
+                    <TableSortLabel
+                        active={sortingField === 'firstName'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("firstName", sortingOrder)}
+                      >
+                        UserName
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="8%" >
+                    <TableSortLabel
+                        active={sortingField === 'role'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("role", sortingOrder)}
+                      >
+                        Role
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="20%">
+                    <TableSortLabel
+                        active={sortingField === 'email'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("email", sortingOrder)}
+                      >
+                        Email
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="15%" >
+                    <TableSortLabel
+                        active={sortingField === 'contactNumber'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("contactNumber", sortingOrder)}
+                      >
+                        ContactNumber
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="15%"> 
+                    <TableSortLabel
+                        active={sortingField === 'createdTime'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("createdTime", sortingOrder)}
+                      >
+                        CreatedTime
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8"  >Actions</TableCell>
 
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {adminUserList && adminUserList !== [] ? adminUserList
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((AdminUser, index) => (
                       <TableRow key={index}>
                         <TableCell className="p-0" >
@@ -371,7 +453,7 @@ class AdminUser extends Component {
                         </TableCell>
                       </TableRow>
                     )) : <h1>
-                    No Data is there!
+                      No Data is there!
                     </h1>}
                 </TableBody>
               </Table>
@@ -379,9 +461,9 @@ class AdminUser extends Component {
 
             <TablePagination
               className="px-16"
-              rowsPerPageOptions={[8, 16, 24]}
+              rowsPerPageOptions={[10, 20, 30]}
               component="div"
-              count={adminUserList ? adminUserList.length : 0}
+              count={count ? count : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{
@@ -432,7 +514,7 @@ class AdminUser extends Component {
                       label="first Name"
 
                       onChange={this.handleChange}
-                     
+
                       name="firstName"
                       placeholder="Enter First Name"
                       value={firstName}
@@ -529,13 +611,13 @@ class AdminUser extends Component {
                 />
 
                 <DialogActions className="p-0">
-                <div className="swiper-container-no-flexbox">
-                  <Tooltip title="Password will generated by The System" placement="right">
-                    
-                    <IconButton className="p-0">
-                      <Icon>info_outlined</Icon>
-                    </IconButton>
-                  </Tooltip>
+                  <div className="swiper-container-no-flexbox">
+                    <Tooltip title="Password will generated by The System" placement="right">
+
+                      <IconButton className="p-0">
+                        <Icon>info_outlined</Icon>
+                      </IconButton>
+                    </Tooltip>
                   </div>
                   <Button onClick={this.handleClose} color="primary">
                     Cancel

@@ -21,42 +21,72 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  TableContainer
+  TableContainer,
+  TextField,
+  InputAdornment,
+  TableSortLabel
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from '../../../../utility/config';
 import { toastr } from 'react-redux-toastr';
+import { Search } from "@material-ui/icons";
 
-class newsType extends Component{
+class newsType extends Component {
   state = {
     newsTypeList: [],
-    rowsPerPage : 8,
-    page : 0,
-    deleteModal : false,
-    deleteNewsTypeToken : null,
+    count: "",
+    sortingField: "createdDate",
+    sortingOrder: "asc",
+    keyword: "",
+    rowsPerPage: 10,
+    page: 0,
+    deleteModal: false,
+    deleteNewsTypeToken: null,
     openModal: false,
     newsTypeName: "",
     newsTypeToken: "",
-    isActive : "active",
+    isActive: "active",
     type: "new",
   };
   componentDidMount = async () => {
     await this.newsTypeList();
   };
   newsTypeList = async () => {
-    await this.props.newsTypeListApi();
-    this.setState({ newsTypeList : this.props.newsTypeList})
+    const { rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
+    let data = {
+      keyword: keyword,
+      pageSize: rowsPerPage,
+      pageNo: page,
+      field: sortingField,
+      order: sortingOrder
+    }
+    await this.props.newsTypeListApi(data);
+    this.setState({ newsTypeList: this.props.newsTypeList.result, count: this.props.newsTypeList.count })
   };
-     handleChangePage = (event, newPage) => {
-      this.setState({ page : newPage})
-    };  
-     handleChangeRowsPerPage = event => {
-       this.setState({ rowsPerPage : event.target.value})
-    };
 
-    //to delete NewsType
+  handleSearchKeyword = async (event) => {
+    await this.setState({ keyword: event.target.value });
+    this.newsTypeList();
+  }
+  handleSortingOrder = async (fieldName, order) => {
+
+    await this.setState({ sortingField: fieldName, sortingOrder: order === 'asc' ? 'desc' : 'asc' });
+    this.newsTypeList();
+
+  }
+  handleChangePage = async (event, newPage) => {
+    await this.setState({ page: newPage });
+    this.newsTypeList();
+  };
+  handleChangeRowsPerPage = async (event) => {
+    await this.setState({ rowsPerPage: event.target.value });
+    this.newsTypeList();
+  };
+
+
+  //to delete NewsType
   deleteNewsTypeClicked = async (token) => {
     if (token) {
       this.setState({ deleteNewsTypeToken: token });
@@ -96,7 +126,7 @@ class newsType extends Component{
       this.setState({
         newsTypeName: data.newsTypeName,
         newsTypeToken: data.newsTypeToken,
-        isActive : data.isActive ? 'active' : 'notActive'
+        isActive: data.isActive ? 'active' : 'notActive'
       });
     }
   };
@@ -107,11 +137,11 @@ class newsType extends Component{
       newsTypeName: "",
       type: "new",
       newsTypeToken: "",
-      isActive : "active"
+      isActive: "active"
     });
   };
   AddNewsType = async () => {
-    const { type, newsTypeName ,isActive} = this.state;
+    const { type, newsTypeName, isActive } = this.state;
     if (type === "new") {
       if (!newsTypeName) {
         toastr.error("News type is required");
@@ -123,7 +153,7 @@ class newsType extends Component{
       // });
       let data = {
         newsTypeName: newsTypeName,
-        isActive : isActive === 'active' ? true : false
+        isActive: isActive === 'active' ? true : false
       };
       const createNewsType = await addNewsTypeApi(data);
       if (createNewsType) {
@@ -136,7 +166,7 @@ class newsType extends Component{
               openModal: false,
               newsTypeToken: "",
               type: "new",
-              isActive : "active"
+              isActive: "active"
             });
           } else {
             toastr.warning(createNewsType.data.message);
@@ -146,11 +176,11 @@ class newsType extends Component{
         }
       }
       // this.props.setLoader(false);
-      
+
     }
   };
   UpdateNewsType = async () => {
-    const { type, newsTypeName, newsTypeToken,isActive } = this.state;
+    const { type, newsTypeName, newsTypeToken, isActive } = this.state;
     if (type === "edit") {
       if (!newsTypeName) {
         toastr.error("News Type is required");
@@ -163,7 +193,7 @@ class newsType extends Component{
       let data = {
         newsTypeName: newsTypeName,
         newsTypeToken: newsTypeToken,
-        isActive : isActive === 'active' ? true : false
+        isActive: isActive === 'active' ? true : false
       };
       const updateNewsType = await updateNewsTypeApi(data);
       if (updateNewsType) {
@@ -176,7 +206,7 @@ class newsType extends Component{
               openModal: false,
               newsTypeToken: "",
               type: "new",
-              isActive : "active"
+              isActive: "active"
             });
           } else {
             toastr.warning(updateNewsType.data.message);
@@ -186,15 +216,19 @@ class newsType extends Component{
         }
       }
       // this.props.setLoader(false);
-      
+
     }
   };
   handleChange = (event) => {
     event.persist();
     this.setState({ [event.target.name]: event.target.value });
   };
-  render(){
-    const { page , rowsPerPage , newsTypeList, newsTypeName, type, openModal, isActive} = this.state;
+  render() {
+    const { page,
+      rowsPerPage,
+      sortingOrder,
+      keyword,
+      sortingField, count, newsTypeList, newsTypeName, type, openModal, isActive } = this.state;
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
@@ -206,87 +240,131 @@ class newsType extends Component{
           />
         </div>
         <div className="py-12" >
-        <Card elevation={6} className="px-24 pt-20 h-100">
+          <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
-            <div className="card-title">News Type Infromation</div>
-            <Button
-              className="capitalize text-white bg-circle-primary"
-              onClick={() => this.setModel("new")}
-            >
-              Add News type
+              <div className="card-title">News Type Infromation</div>
+              <div>            
+              <TextField style={{ width: '300px' }}
+                  className="mr-16"
+                  placeholder="Search..."
+
+                  type="search"
+                  name="keyword"
+                  value={keyword}
+                  onChange={this.handleSearchKeyword}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                <Button
+                className="capitalize text-white bg-circle-primary"
+                onClick={() => this.setModel("new")}
+              >
+                Add News type
             </Button>
-          </div>
-          <TableContainer style={{ maxHeight: "405px" }}>
-              <Table style={{ whiteSpace: "pre" }}  stickyHeader>
-        <TableHead>
-          <TableRow>
-          <TableCell className="px-0">Sr.No</TableCell>
-            <TableCell className="px-0">NEWS Type</TableCell>
-            <TableCell className="px-0">Active/Not Active</TableCell>
-            <TableCell className="px-0">Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {newsTypeList && newsTypeList !== []? newsTypeList
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map(
-            (newsType, index) => (
-              <TableRow key={index}>
-                <TableCell className="p-0">
-                  {index + 1}
-                </TableCell>
-                <TableCell className="p-0">
-                  {newsType.newsTypeName}
-                </TableCell>
-                <TableCell className="p-0" >
-                {newsType.isActive ?
-               ( <small className="border-radius-4 bg-primary text-white px-8 py-2 ">
-                Active
+              </div>
+            </div>
+
+            <TableContainer style={{ maxHeight: "465px" }}>
+              <Table style={{ whiteSpace: "pre" }} stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell className="px-0 py-8">Sr.No</TableCell>
+                    <TableCell className="px-0 py-8">
+                    <TableSortLabel
+                        active={sortingField === 'newsTypeName'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("newsTypeName", sortingOrder)}
+                      >
+                        NEWS Type
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8">
+                    <TableSortLabel
+                        active={sortingField === 'isActive'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("isActive", sortingOrder)}
+                      >
+                      Active/Not Active
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8">
+                    <TableSortLabel
+                        active={sortingField === 'createdDate'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("createdDate", sortingOrder)}
+                      >
+                        Created Date
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8">Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {newsTypeList && newsTypeList !== [] ? newsTypeList
+                    //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map(
+                      (newsType, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="p-0">
+                            {index + 1}
+                          </TableCell>
+                          <TableCell className="p-0">
+                            {newsType.newsTypeName}
+                          </TableCell>
+                          <TableCell className="p-0" >
+                            {newsType.isActive ?
+                              (<small className="border-radius-4 bg-primary text-white px-8 py-2 ">
+                                Active
               </small>) :
-              (<small className="border-radius-4 bg-error text-white px-8 py-2 ">
-                Not Active
+                              (<small className="border-radius-4 bg-error text-white px-8 py-2 ">
+                                Not Active
                 </small>)
-                  }
-                </TableCell>
-                <TableCell className="p-0">
-                  <IconButton className="p-8">
-                    <Icon  color="primary" onClick={() => this.setModel("edit", newsType)}>edit</Icon>
-                  </IconButton>
-                  <IconButton className="p-8">                   
-                    <Icon  color="error" onClick={() => this.deleteNewsTypeClicked(newsType.newsTypeToken)}>delete</Icon>
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            )) : <h1>
-            No Data is there!
+                            }
+                          </TableCell>
+                          <TableCell className="p-0">
+                            {newsType.createdDate}
+                          </TableCell>
+                          <TableCell className="p-0">
+                            <IconButton className="p-8">
+                              <Icon color="primary" onClick={() => this.setModel("edit", newsType)}>edit</Icon>
+                            </IconButton>
+                            <IconButton className="p-8">
+                              <Icon color="error" onClick={() => this.deleteNewsTypeClicked(newsType.newsTypeToken)}>delete</Icon>
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      )) : <h1>
+                      No Data is there!
             </h1>}
-        </TableBody>
-      </Table>
-                  </TableContainer>
-      <TablePagination
-        className="px-16"
-        rowsPerPageOptions={[8, 16, 24]}
-        component="div"
-        count={ newsTypeList ?newsTypeList.length : 0}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        backIconButtonProps={{
-          "aria-label": "Previous Page"
-        }}
-        nextIconButtonProps={{
-          "aria-label": "Next Page"
-        }}
-        onChangePage={this.handleChangePage}
-        onChangeRowsPerPage={this.handleChangeRowsPerPage}
-      />
-    
-    </Card>
-    </div>
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              className="px-16"
+              rowsPerPageOptions={[10, 20, 30]}
+              component="div"
+              count={count ? count : 0}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              backIconButtonProps={{
+                "aria-label": "Previous Page"
+              }}
+              nextIconButtonProps={{
+                "aria-label": "Next Page"
+              }}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            />
+
+          </Card>
+        </div>
         <div>
           <ConfirmationDialog
             open={this.state.deleteModal}
-            title = "Delete Confirmation"
-            message = {"are you sure want to delete this News Type?"}
+            title="Delete Confirmation"
+            message={"are you sure want to delete this News Type?"}
             toggle={this.deleteNewsTypeClicked}
             onYesClick={() => this.yesDeleteClicked(this.state.deleteNewsTypeToken)}
             onNoClick={this.noDeleteClicked}
@@ -317,40 +395,40 @@ class newsType extends Component{
                   value={newsTypeName}
                   validators={["required", "minStringLength: 2"]}
                   errorMessages={["this field is required"]}
-                  style={{width: "-webkit-fill-available"}}
+                  style={{ width: "-webkit-fill-available" }}
                 />
-                 <RadioGroup
-                value={isActive}
-                name="isActive"
-                onChange={this.handleChange}
-                row
-              >
-                <FormControlLabel
-                  value={"active"}
-                  control={<Radio color="secondary" />}
-                  label="Active"
-                  labelPlacement="end"
-                />
-                <FormControlLabel
-                  value={"notActive"}
-                  control={<Radio color="secondary" />}
-                  label="Not Active"
-                  labelPlacement="end"
-                />
-              </RadioGroup>
+                <RadioGroup
+                  value={isActive}
+                  name="isActive"
+                  onChange={this.handleChange}
+                  row
+                >
+                  <FormControlLabel
+                    value={"active"}
+                    control={<Radio color="secondary" />}
+                    label="Active"
+                    labelPlacement="end"
+                  />
+                  <FormControlLabel
+                    value={"notActive"}
+                    control={<Radio color="secondary" />}
+                    label="Not Active"
+                    labelPlacement="end"
+                  />
+                </RadioGroup>
                 <DialogActions className="p-0">
-                <Button onClick={this.handleClose} color="primary">
-                  Cancel
+                  <Button onClick={this.handleClose} color="primary">
+                    Cancel
                 </Button>
-                {type === "new" ? (
-                  <Button color="primary" type="submit">
-                    Add
+                  {type === "new" ? (
+                    <Button color="primary" type="submit">
+                      Add
                   </Button>
-                ) : (
-                  <Button color="primary" type="submit">
-                    Save
+                  ) : (
+                      <Button color="primary" type="submit">
+                        Save
                   </Button>
-                )}
+                    )}
                 </DialogActions>
               </ValidatorForm>
             </DialogContent>

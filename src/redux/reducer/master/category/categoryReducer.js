@@ -4,10 +4,12 @@ import {
     ADD_CATEGORY,
     DELETE_CATEGORY,
     UPDATE_CATEGORY,
+    GET_CATEGORY_NAME_LIST
   } from "../../../actions/master/category/categoryAction";
   
   const initialState = {
-    categoryList: []
+    categoryList: [],
+    categoryNameList : []
   };
   
   const CategoryReducer = function(state = initialState, action) {
@@ -16,6 +18,12 @@ import {
         return {
           ...state,
           categoryList: action.payload
+        };
+      }
+      case GET_CATEGORY_NAME_LIST : {
+        return {
+          ...state,
+          categoryNameList: action.payload
         };
       }
       case GET_CATEGORY : {

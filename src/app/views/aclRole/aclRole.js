@@ -20,7 +20,8 @@ import {
   TableContainer,
   TableRow,
   Typography,
-  Tooltip
+  Tooltip,
+  Box
 } from "@material-ui/core";
 import { red } from "@material-ui/core/colors";
 import Paper from "@material-ui/core/Paper";
@@ -231,7 +232,6 @@ class AclRole extends Component {
   };
 
   handleChange = (event, key) => {
-    console.log(event.target.name, event.target.checked, key);
     let name = event.target.name;
     let value = event.target.checked;
     event.persist();
@@ -253,7 +253,6 @@ class AclRole extends Component {
         }
         permission[index] = permissions;
         this.setState({ permission });
-        console.log(this.state.permission);
       }
     });
   };
@@ -269,7 +268,7 @@ class AclRole extends Component {
           <Card elevation={6} className="px-20 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
               <div className="card-title">User Role And Permission</div>
-              {aclRoleList.length > 3 ? (
+              {aclRoleList.length < 3 ? (
                 <Button
                   className="capitalize text-white bg-circle-primary"
                   onClick={() => this.setModel("new")}
@@ -277,13 +276,13 @@ class AclRole extends Component {
                   Add New Role
                 </Button>
               ) : (
-                <Tooltip
-                  title="You can add only three roles!"
-                  placement="right"
-                >
-                  <Warning fontSize="large" color="secondary" />
-                </Tooltip>
-              )}
+                  <Tooltip
+                    title="You can add only three roles!"
+                    placement="right"
+                  >
+                    <Warning fontSize="large" color="secondary" />
+                  </Tooltip>
+                )}
             </div>
           </Card>
           <Grid container className="pt-20" spacing={4}>
@@ -317,7 +316,7 @@ class AclRole extends Component {
                       </div>
                     </div>
                     <Divider />
-                    <Grid container className="pt-20">
+                    <Grid container className="pt-12">
                       <Grid item lg={12}>
                         <div>
                           <TableContainer component={Paper}>
@@ -336,15 +335,15 @@ class AclRole extends Component {
                                           row.value === "N/A"
                                             ? "border-radius-4 text-white px-8 py-2 bg-error"
                                             : row.value === "RW"
-                                            ? "border-radius-4 text-white px-8 py-2 bg-primary"
-                                            : "border-radius-4 text-white px-8 py-2 bg-secondary"
+                                              ? "border-radius-4 text-white px-8 py-2 bg-primary"
+                                              : "border-radius-4 text-white px-8 py-2 bg-secondary"
                                         }
                                       >
                                         {row.value === "N/A"
                                           ? "N/A"
                                           : row.value === "RW"
-                                          ? "RW"
-                                          : "RO"}
+                                            ? "RW"
+                                            : "RO"}
                                       </small>
                                     </TableCell>
                                   </TableRow>
@@ -356,10 +355,16 @@ class AclRole extends Component {
                       </Grid>
                     </Grid>
                   </CardContent>
-                  <CardActions style={{ paddingLeft: "16px" }}>
-                    <Typography variant="h6">
-                      Last Modified Date: {AclRole.updatedTime}
-                    </Typography>
+                  <Divider />
+                  <CardActions>
+                   <div style={{display:"flex"}}>
+
+                      <Box fontWeight="fontWeightRegular" marginLeft="16px">
+                        Last Modified Date :
+                      </Box>
+                      <Box fontStyle="italic"> {AclRole.updatedTime}</Box> 
+                    
+                    </div>
                   </CardActions>
                 </Card>
               </Grid>
@@ -392,8 +397,8 @@ class AclRole extends Component {
                   Add a Admin Role
                 </div>
               ) : (
-                "Edit Admin Role"
-              )}
+                  "Edit Admin Role"
+                )}
             </DialogTitle>
             <DialogContent>
               <ValidatorForm
@@ -433,6 +438,7 @@ class AclRole extends Component {
                                         this.handleChange(e, row.key)
                                       }
                                       checked={row.value === "RW"}
+
                                       name="RW"
                                       color="primary"
                                     />
@@ -471,10 +477,10 @@ class AclRole extends Component {
                       Add
                     </Button>
                   ) : (
-                    <Button color="primary" type="submit">
-                      Save
+                      <Button color="primary" type="submit">
+                        Save
                     </Button>
-                  )}
+                    )}
                 </DialogActions>
               </ValidatorForm>
             </DialogContent>

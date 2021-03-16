@@ -11,7 +11,7 @@ import { Breadcrumb } from "../../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Badge, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, Slide, Toolbar, AppBar, Typography, TextField
+  Icon, TablePagination, Badge, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, Slide, Toolbar, AppBar, Typography, TextField, TableSortLabel
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
@@ -31,8 +31,13 @@ const StyledBadge = withStyles((theme) => ({
 
 class articleNews extends Component {
   state = {
+
     articleNewsList: [],
-    rowsPerPage: 8,
+    count: "",
+    sortingField: "createdTime",
+    sortingOrder: "asc",
+    keyword: "",
+    rowsPerPage: 10,
     page: 0,
     deleteModal: false,
     deleteArticleId: null,
@@ -53,7 +58,7 @@ class articleNews extends Component {
     tags: "",
     type: "new"
   };
- 
+
 
   componentDidMount = async () => {
     await this.getArticleNewsList();
@@ -61,17 +66,37 @@ class articleNews extends Component {
   };
 
   getArticleNewsList = async () => {
-    await this.props.articleNewsListApi();
-    this.setState({ articleNewsList: this.props.articleNewsList });
+    const { rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
+    let data = {
+      keyword: keyword,
+      pageSize: rowsPerPage,
+      pageNo: page,
+      field: sortingField,
+      order: sortingOrder
+    }
+    await this.props.articleNewsListApi(data);
+    this.setState({ articleNewsList: this.props.articleNewsList.result, count: this.props.articleNewsList.count });
   };
 
-  handleChangePage = (event, newPage) => {
-    this.setState({ page: newPage });
+  handleSearchKeyword = async (event) => {
+    await this.setState({ keyword: event.target.value });
+    this.getArticleNewsList();
+  }
+  handleSortingOrder = async (fieldName, order) => {
+
+    await this.setState({ sortingField: fieldName, sortingOrder: order === 'asc' ? 'desc' : 'asc' });
+    this.getArticleNewsList();
+
+  }
+  handleChangePage = async (event, newPage) => {
+    await this.setState({ page: newPage });
+    this.getArticleNewsList();
+  };
+  handleChangeRowsPerPage = async (event) => {
+    await this.setState({ rowsPerPage: event.target.value });
+    this.getArticleNewsList();
   };
 
-  handleChangeRowsPerPage = (event) => {
-    this.setState({ rowsPerPage: event.target.value });
-  };
 
   //to delete Category
   deleteArticleNewsClicked = async (aId) => {
@@ -146,7 +171,10 @@ class articleNews extends Component {
   render() {
     const {
       page,
-      rowsPerPage, articleNewsList,
+      rowsPerPage,
+      sortingOrder,
+      keyword, count,
+      sortingField, articleNewsList,
       articleNewsId, path, title, description, publishedBy, city, state, country, createdTime, updatedTime, publishedTime, publish, critical, tags,
       type,
       openModal
@@ -167,92 +195,165 @@ class articleNews extends Component {
             <div className="flex flex-middle flex-space-between pb-12">
               <div className="card-title">Article News Information</div>
               <div>
-              <Button
-                className="capitalize text-white bg-circle-primary"
-                onClick={() => this.props.history.push({ pathname: '/news/articleNews/edit', state: { type: 'add' } })}
-              >
-                Add Article News
+                <TextField style={{ width: '300px' }}
+                  className="mr-16"
+                  placeholder="Search..."
+
+                  type="search"
+                  name="keyword"
+                  value={keyword}
+                  onChange={this.handleSearchKeyword}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                <Button
+                  className="capitalize text-white bg-circle-primary"
+                  onClick={() => this.props.history.push({ pathname: '/news/articleNews/edit', state: { type: 'add' } })}
+                >
+                  Add Article News
                   </Button>
-                  </div>
+              </div>
             </div>
-            <TableContainer style={{ maxHeight: "405px" }}>
+            <TableContainer style={{ maxHeight: "465px" }}>
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="15%">ArticleNewsId</TableCell>
-                    <TableCell className="px-0" width="20%">Title</TableCell>
-                    <TableCell className="px-0" width="10%">NewsType</TableCell>
-                    <TableCell className="px-0" width="15%">Category</TableCell>
-                    {/* <TableCell className="px-0" >critical</TableCell> */}
-                    <TableCell className="px-0" >PublishedBy</TableCell>
-                    <TableCell className="px-0" >CreatedTime</TableCell>
-                    <TableCell className="px-0"  >Actions</TableCell>
+                    <TableCell className="px-0 py-8" width="13%">
+                      <TableSortLabel
+                        active={sortingField === 'articleNewsId'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("articleNewsId", sortingOrder)}
+                      >
+                        ArticleNewsId
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="18%">
+                      <TableSortLabel
+                        active={sortingField === 'title'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("title", sortingOrder)}
+                      >
+                        Title
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="10%">
+                      <TableSortLabel
+                        active={sortingField === 'newsType'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("newsType", sortingOrder)}
+                      >
+                        News Type
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="13%">
+                      <TableSortLabel
+                        active={sortingField === 'category'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("category", sortingOrder)}
+                      >
+                        Category
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="10%">
+                      <TableSortLabel
+                        active={sortingField === 'publish'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("publish", sortingOrder)}
+                      >
+                        Is Published
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="12%" >
+                      <TableSortLabel
+                        active={sortingField === 'PublishedBy'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("PublishedBy", sortingOrder)}
+                      >
+                        PublishedBy
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="10%">
+                      <TableSortLabel
+                        active={sortingField === 'createdTime'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("createdTime", sortingOrder)}
+                      >
+                        Created Time
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8"  >Actions</TableCell>
 
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {articleNewsList && articleNewsList !== [] ?
-                  articleNewsList
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((ArticleNews, index) => (
-                      <TableRow key={index}>
-                        <TableCell  style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
-                          <div style={{ alignItems: "center", display: "flex" }}>
-                          <div className={ArticleNews.publish?"activeDot":"inActiveDot"}></div>
-                            <div className="pl-4">{ArticleNews.articleNewsId}</div>
+                    articleNewsList
+                      //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((ArticleNews, index) => (
+                        <TableRow key={index}>
+                          <TableCell style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
+                            <div style={{ alignItems: "center", display: "flex" }}>
+                              <div className={ArticleNews.critical ? "activeDot" : "inActiveDot"}></div>
+                              <div className="pl-4">{ArticleNews.articleNewsId}</div>
                             </div>
-                        </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
-                          {ArticleNews.title}
-                        </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-                          {ArticleNews.newsType}
-                        </TableCell>
-                        {/* {/* <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
-                          {VideoNews.publish}
-                        </TableCell> */}
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
-                          {ArticleNews.category + " / " + ArticleNews.subCategory}
-                        </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-                          {ArticleNews.publishedBy}
-                        </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
-                          {ArticleNews.createdTime}
-                        </TableCell>
+                          </TableCell>
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
+                            {ArticleNews.title}
+                          </TableCell>
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                            {ArticleNews.newsType}
+                          </TableCell>
+                          
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
+                            {ArticleNews.category + " / " + ArticleNews.subCategory}
+                          </TableCell>
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                            {ArticleNews.publish ?
+                              (<small className="border-radius-4 bg-primary text-white px-8 py-2 ">
+                                Published
+              </small>) :
+                              (<small className="border-radius-4 bg-error text-white px-8 py-2 ">
+                                Not Published
+                </small>)
+                            }
+                          </TableCell>
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                            {ArticleNews.publishedBy}
+                          </TableCell>
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
+                            {ArticleNews.createdTime}
+                          </TableCell>
 
-                        <TableCell className="p-0">
-                          <IconButton className="p-8">
-                            <Icon
-                              color="primary"
-                              onClick={() => this.props.history.push({ pathname: '/news/articleNews/edit', state: { type: 'edit', id: ArticleNews.articleNewsId } })}
-                            >edit </Icon>
-                          </IconButton>
-                          <IconButton className="p-8">
-                            <Icon
-                              color="error"
-                              onClick={() =>
-                                this.deleteArticleNewsClicked(ArticleNews.articleNewsId)
-                              }>delete</Icon>
-                          </IconButton>
-                          <IconButton className="p-8">
-                            <Icon
-                              color="secondary"
-                              onClick={() => this.props.history.push({ pathname: '/news/articleNews/view', state: { id: ArticleNews.articleNewsId } })}
-                            >visibility</Icon>
-                          </IconButton>
-                          <IconButton className="p-8">
-                            <Icon
-                              color="default"
-                            // onClick={() =>
-                            //   this.deleteAdminUserClicked(VideoNews.videoNewsId)}
-                            >comment</Icon>
-                          </IconButton>
+                          <TableCell className="p-0">
+                            <IconButton className="p-8">
+                              <Icon
+                                color="primary"
+                                onClick={() => this.props.history.push({ pathname: '/news/articleNews/edit', state: { type: 'edit', id: ArticleNews.articleNewsId } })}
+                              >edit </Icon>
+                            </IconButton>
+                            <IconButton className="p-8">
+                              <Icon
+                                color="error"
+                                onClick={() =>
+                                  this.deleteArticleNewsClicked(ArticleNews.articleNewsId)
+                                }>delete</Icon>
+                            </IconButton>
+                            <IconButton className="p-8">
+                              <Icon
+                                color="secondary"
+                                onClick={() => this.props.history.push({ pathname: '/news/articleNews/view', state: { id: ArticleNews.articleNewsId } })}
+                              >visibility</Icon>
+                            </IconButton>
+                            <IconButton className="p-8">
+                              <Icon
+                                color="default"
+                              // onClick={() =>
+                              //   this.deleteAdminUserClicked(VideoNews.videoNewsId)}
+                              >comment</Icon>
+                            </IconButton>
 
-                        </TableCell>
-                      </TableRow>
-                    )) :<h1>
-                    No Data is there!
+                          </TableCell>
+                        </TableRow>
+                      )) : <h1>
+                      No Data is there!
                     </h1>}
                 </TableBody>
               </Table>
@@ -260,9 +361,9 @@ class articleNews extends Component {
 
             <TablePagination
               className="px-16"
-              rowsPerPageOptions={[8, 16, 24]}
+              rowsPerPageOptions={[10, 20, 30]}
               component="div"
-              count={articleNewsList ? articleNewsList.length : 0}
+              count={count ? count : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{

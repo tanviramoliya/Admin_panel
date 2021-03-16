@@ -4,10 +4,12 @@ import {
     ADD_NEWSTYPE,
     DELETE_NEWSTYPE,
     UPDATE_NEWSTYPE,
+    GET_NEWSTYPE_NAME_LIST
   } from "../../../actions/master/newsType/newsTypeAction";
   
   const initialState = {
-    newsTypeList: []
+    newsTypeList: [],
+    newsTypeNameList : []
   };
   
   const NewsTypeReducer = function(state = initialState, action) {
@@ -16,6 +18,12 @@ import {
         return {
           ...state,
           newsTypeList: action.payload
+        };
+      }
+      case GET_NEWSTYPE_NAME_LIST : {
+        return {
+          ...state,
+          newsTypeNameList: action.payload
         };
       }
       case GET_NEWSTYPE : {

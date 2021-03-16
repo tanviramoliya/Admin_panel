@@ -3,9 +3,9 @@ import {
   } from "../index";
   import { api } from '../../../api/api';
 
-  export const newsListApi = () => {
+  export const newsListApi = (data) => {
     return async (dispatch) => {
-      await api('newsHeadLine/getAllNewsUpdate', {}, 'get')
+      await api('newsHeadLine/search', data, 'post')
         .then((res) => {
           dispatch(getNewsList(res.data.data));
         })

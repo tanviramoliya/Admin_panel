@@ -2,9 +2,9 @@ import { getAdminUserList,getAdminNameList } from "../index";
 import { api } from "../../../api/api";
 
 
-export const adminUserListApi = () => {
+export const adminUserListApi = (data) => {
   return async (dispatch) => {
-    await api("admin/getAllAdmin", {}, "get")
+    await api("admin/search", data , "post")
       .then((res) => {
         dispatch(getAdminUserList(res.data.data));
       })

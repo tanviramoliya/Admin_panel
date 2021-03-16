@@ -21,24 +21,31 @@ import {
   IconButton,
   Chip,
   Toolbar,
-  TableSortLabel
+  TableSortLabel,
+  TextField,
+  InputAdornment
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { connect } from "react-redux";
+import { Search } from "@material-ui/icons";
 
 class subscriber extends Component {
   state = {
     subscriberList: [],
-    rowsPerPage: 8,
+    count: "",
+    sortingField: "subscriptionDate",
+    sortingOrder: "asc",
+    keyword: "",
+    rowsPerPage: 10,
     page: 0,
     deleteModal: false,
     deleteSubscriberToken: null,
     selected: [],
-    order:"asc",
-    orderBy:"",
-    setOrder:"",
-    sertOrderby:"",
+    order: "asc",
+    orderBy: "",
+    setOrder: "",
+    sertOrderby: "",
 
   };
 
@@ -47,15 +54,37 @@ class subscriber extends Component {
     await this.getSubscriberList();
   };
   getSubscriberList = async () => {
-    await this.props.subscriberListApi();
-    this.setState({ subscriberList: this.props.subscriberList });
+    const { rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
+    let data = {
+      keyword: keyword,
+      pageSize: rowsPerPage,
+      pageNo: page,
+      field: sortingField,
+      order: sortingOrder
+    }
+    await this.props.subscriberListApi(data);
+    this.setState({ subscriberList: this.props.subscriberList.result, count : this.props.subscriberList.count });
   };
-  handleChangePage = (event, newPage) => {
-    this.setState({ page: newPage });
+  
+  handleSearchKeyword = async (event) => {
+    await this.setState({ keyword: event.target.value });
+    this.getSubscriberList();
+  }
+  handleSortingOrder = async (fieldName, order) => {
+
+    await this.setState({ sortingField: fieldName, sortingOrder: order === 'asc' ? 'desc' : 'asc' });
+    this.getSubscriberList();
+
+  }
+  handleChangePage = async (event, newPage) => {
+    await this.setState({ page: newPage });
+    this.getSubscriberList();
   };
-  handleChangeRowsPerPage = (event) => {
-    this.setState({ rowsPerPage: event.target.value });
+  handleChangeRowsPerPage = async (event) => {
+    await this.setState({ rowsPerPage: event.target.value });
+    this.getSubscriberList();
   };
+
 
   //to delete Category
   deleteSubscriberClicked = async (token) => {
@@ -134,7 +163,11 @@ class subscriber extends Component {
   };
 
   render() {
-    const { page, rowsPerPage, subscriberList, selected } = this.state;
+    const { page,
+      rowsPerPage,
+      sortingOrder,
+      keyword,
+      sortingField, count, subscriberList, selected } = this.state;
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
@@ -143,47 +176,60 @@ class subscriber extends Component {
           />
         </div>
         <div className="py-12">
-          <Card elevation={6} className="px-24 pt-20 h-100">
+          <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
-            <div className="card-title">
+              <div className="card-title">
 
-              {selected.length > 0 ? (
-                <Typography color="error" variant="h6" >
-                  {selected.length} rows selected
-                </Typography>
-              ) : (
-                <Typography variant="h6" >
-                  Subscription Information
-                </Typography>
-              )}
+                {selected.length > 0 ? (
+                  <span> {selected.length} rows selected</span>
+                ) : (
+                    <span>Subscription Information</span>
+                  )}
               </div>
-              {selected.length > 0 ? (
-                <Tooltip title="Delete" >
-                  <IconButton
-                    aria-label="delete" className="p-0"
-                    onClick={() => this.deleteSubscriberClicked(selected)}
-                  >
-                    <DeleteIcon color="error" />
-                  </IconButton>
-                </Tooltip>
-              ) : (
-                <Tooltip title="Delete"   style=
-                {{padding : "12px"}}>
-                  <Chip                  
-                    variant="outlined"
-                    color="secondary"
-                    label={subscriberList.length + " Subscribers"}
-                  />
-                </Tooltip>
-              )}
-              
+              <div>
+              <TextField style={{ width: '300px' }}
+                  className="mr-16"
+                  placeholder="Search..."
+
+                  type="search"
+                  name="keyword"
+                  value={keyword}
+                  onChange={this.handleSearchKeyword}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                {selected.length > 0 ? (
+                  <Tooltip title="Delete" >
+                    <IconButton
+                      aria-label="delete" className="p-0"
+                      onClick={() => this.deleteSubscriberClicked(selected)}
+                    >
+                      <DeleteIcon color="error" />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                    <Tooltip title="Delete" style=
+                      {{ padding: "12px" }}>
+                      <Chip
+                        variant="outlined"
+                        color="secondary"
+                        label={subscriberList.length + " Subscribers"}
+                      />
+                    </Tooltip>
+                  )}
               </div>
-            <TableContainer style={{ maxHeight: "405px" }}>
-              <Table style={{ whiteSpace: "pre" }}  stickyHeader>
+            </div>
+            <TableContainer style={{ maxHeight: "465px" }}>
+              <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="p-0">
-                      <Checkbox 
+                    <TableCell className="px-0 py-8">
+                      <Checkbox style={{paddingTop:0,paddingBottom:0}}
                         indeterminate={
                           selected.length > 0 &&
                           selected.length < subscriberList.length
@@ -197,24 +243,44 @@ class subscriber extends Component {
                       />
                       {/* <FormControlLabel control={<Checkbox onChange={this.handleSelectAllClick} />} /> */}
                     </TableCell>
-                    <TableCell className="px-0" width="15%">
+                    <TableCell className="px-0 py-8" width="15%">
                       <TableSortLabel>Sr.No</TableSortLabel>
                     </TableCell>
-                    <TableCell className="px-0" width="30%" >
-                      User Name
+                    <TableCell className="px-0 py-8" width="30%" >
+                    <TableSortLabel
+                        active={sortingField === 'userName'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("userName", sortingOrder)}
+                      >
+                        User Name
+                      </TableSortLabel>
                     </TableCell>
-                    <TableCell className="px-0" width="30%">
-                      User Email
+                    <TableCell className="px-0 py-8" width="30%">
+                      
+                      <TableSortLabel
+                        active={sortingField === 'emailId'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("emailId", sortingOrder)}
+                      >
+                        User Email
+                      </TableSortLabel>
                     </TableCell>
-                    <TableCell className="px-0" width="20%">
-                      Subscription Date
+                    <TableCell className="px-0 py-8" width="20%">
+                    <TableSortLabel
+                        active={sortingField === 'subscriptionDate'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("subscriptionDate", sortingOrder)}
+                      >
+                        Subscription Date
+                      </TableSortLabel>
+                      
                     </TableCell>
                   </TableRow>
                 </TableHead>
 
                 <TableBody>
                   {subscriberList && subscriberList !== [] ? subscriberList
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((subscriberUpdate, index) => {
                       const isItemSelected = this.isSelected(
                         subscriberUpdate.userToken
@@ -233,7 +299,7 @@ class subscriber extends Component {
                           selected={isItemSelected}
                         >
                           <TableCell className="p-0">
-                            <Checkbox 
+                            <Checkbox
                               checked={isItemSelected}
                               inputProps={{ "aria-labelledby": labelId }}
                             />
@@ -251,7 +317,7 @@ class subscriber extends Component {
                             {subscriberUpdate.userName}
                           </TableCell>
                           <TableCell
-                            className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
+                            className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                             {subscriberUpdate.emailId}
                           </TableCell>
                           <TableCell
@@ -262,7 +328,7 @@ class subscriber extends Component {
                         </TableRow>
                       );
                     }) : <h1>
-                    No Data is there!
+                      No Data is there!
                     </h1>}
                 </TableBody>
               </Table>
@@ -270,9 +336,9 @@ class subscriber extends Component {
 
             <TablePagination
               className="px-16"
-              rowsPerPageOptions={[8, 16, 24]}
+              rowsPerPageOptions={[10, 20, 30]}
               component="div"
-              count={subscriberList ? subscriberList.length : 0}
+              count={count ? count : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{

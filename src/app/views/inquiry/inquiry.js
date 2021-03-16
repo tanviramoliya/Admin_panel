@@ -25,7 +25,9 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField
+  TextField,
+  InputAdornment,
+  TableSortLabel
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ReplyIcon from "@material-ui/icons/Reply";
@@ -33,7 +35,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { connect } from "react-redux";
 import { green } from "@material-ui/core/colors";
-import { GroupAdd, TextFormat } from "@material-ui/icons";
+import { GroupAdd, TextFormat, Search } from "@material-ui/icons";
 import RichTextEditor from "components/matx/RichTextEditor";
 import { ValidatorForm } from "react-material-ui-form-validator";
 import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
@@ -41,7 +43,11 @@ import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
 class inquiry extends Component {
   state = {
     inquiryList: [],
-    rowsPerPage: 8,
+    count: "",
+    sortingField: "inquiryDate",
+    sortingOrder: "asc",
+    keyword: "",
+    rowsPerPage: 10,
     page: 0,
     deleteModal: false,
     deleteInquiryToken: null,
@@ -63,15 +69,37 @@ class inquiry extends Component {
     await this.getInquiryList();
   };
   getInquiryList = async () => {
-    await this.props.inquiryListApi();
-    this.setState({ inquiryList: this.props.inquiryList });
+    const { rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
+    let data = {
+      keyword: keyword,
+      pageSize: rowsPerPage,
+      pageNo: page,
+      field: sortingField,
+      order: sortingOrder
+    }
+    await this.props.inquiryListApi(data);
+    this.setState({ inquiryList: this.props.inquiryList.result, count: this.props.inquiryList.count });
   };
-  handleChangePage = (event, newPage) => {
-    this.setState({ page: newPage });
+  handleSearchKeyword = async (event) => {
+    await this.setState({ keyword: event.target.value });
+    this.getInquiryList();
+  }
+  handleSortingOrder = async (fieldName, order) => {
+
+    await this.setState({ sortingField: fieldName, sortingOrder: order === 'asc' ? 'desc' : 'asc' });
+    this.getInquiryList();
+
+  }
+  handleChangePage = async (event, newPage) => {
+    await this.setState({ page: newPage });
+    this.getInquiryList();
   };
-  handleChangeRowsPerPage = (event) => {
-    this.setState({ rowsPerPage: event.target.value });
+  handleChangeRowsPerPage = async (event) => {
+    await this.setState({ rowsPerPage: event.target.value });
+    this.getInquiryList();
   };
+
+
   handleChange = (event) => {
     event.persist();
     this.setState({ [event.target.name]: event.target.value });
@@ -124,9 +152,9 @@ class inquiry extends Component {
       subject: data.subject,
       message: data.message,
       contactNumber: data.contactNumber,
-      replyMessage : data.inquiryReply !== null ? data.inquiryReply.replyMessage : null,
-      replySubject : data.inquiryReply !== null ? data.inquiryReply.subject : null,
-      read :data.read
+      replyMessage: data.inquiryReply !== null ? data.inquiryReply.replyMessage : null,
+      replySubject: data.inquiryReply !== null ? data.inquiryReply.subject : null,
+      read: data.read
     });
   };
   setReplyModel = (data) => {
@@ -139,7 +167,7 @@ class inquiry extends Component {
       subject: data.subject,
       message: data.message,
       contactNumber: data.contactNumber,
-      read :data.read
+      read: data.read
     });
   };
   //for close a modal
@@ -153,7 +181,7 @@ class inquiry extends Component {
       subject: "",
       message: "",
       contactNumber: "",
-      read :false
+      read: false
     });
   };
   replySubmit = async () => {
@@ -195,7 +223,7 @@ class inquiry extends Component {
             replyMessage: undefined,
             replySubject: undefined,
             contactNumber: "",
-            read :false
+            read: false
 
           });
         } else {
@@ -251,6 +279,9 @@ class inquiry extends Component {
     const {
       page,
       rowsPerPage,
+      sortingOrder,
+      keyword,
+      sortingField, count,
       inquiryList,
       selected,
       userName,
@@ -270,20 +301,34 @@ class inquiry extends Component {
           <Breadcrumb routeSegments={[{ name: "Inquiry", path: "/inquiry" }]} />
         </div>
         <div className="py-12">
-          <Card elevation={6} className="px-24 pt-20 h-100">
+          <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
-            <div className="card-title">
+              <div className="card-title">
 
                 {selected.length > 0 ? (
-                  <Typography color="error" variant="h6" >
-                    {selected.length} rows selected
-                  </Typography>
+                  <span>{selected.length} rows selected</span>
                 ) : (
-                    <Typography variant="h6">
-                      Inquiry Information
-                  </Typography>
+                    <span>Inquiry Information</span>
+
                   )}
-                  </div>
+              </div>
+              <div>
+                <TextField style={{ width: '300px' }}
+                  className="mr-16"
+                  placeholder="Search..."
+
+                  type="search"
+                  name="keyword"
+                  value={keyword}
+                  onChange={this.handleSearchKeyword}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    )
+                  }}
+                />
                 {selected.length > 0 ? (
                   <Tooltip title="Delete" >
                     <IconButton
@@ -302,13 +347,14 @@ class inquiry extends Component {
                       />
                     </Tooltip>
                   )}
+              </div>
             </div>
-            <TableContainer style={{ maxHeight: "405px" }}>
+            <TableContainer style={{ maxHeight: "465px" }}>
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="p-0">
-                      <Checkbox
+                    <TableCell className="px-0 py-8">
+                      <Checkbox style={{ paddingTop: 0, paddingBottom: 0 }}
                         indeterminate={
                           selected.length > 0 &&
                           selected.length < inquiryList.length
@@ -322,33 +368,66 @@ class inquiry extends Component {
                       />
                       {/* <FormControlLabel control={<Checkbox onChange={this.handleSelectAllClick} />} /> */}
                     </TableCell>
-                    <TableCell className="px-0" width="5%">
+                    <TableCell className="px-0 py-8" width="5%">
                       Sr.No
                     </TableCell>
-                    <TableCell className="px-0" width="15%">
-                      User Name
+                    <TableCell className="px-0 py-8" width="15%">
+                      <TableSortLabel
+                        active={sortingField === 'userName'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("userName", sortingOrder)}
+                      >
+                        User Name
+                      </TableSortLabel>
                     </TableCell>
-                    <TableCell className="px-0" width="20%">
-                      Subject
+                    <TableCell className="px-0 py-8" width="20%">
+                      <TableSortLabel
+                        active={sortingField === 'subject'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("subject", sortingOrder)}
+                      >
+                        Subject
+                      </TableSortLabel>
+
                     </TableCell>
-                    <TableCell className="px-0" width="23%">
-                      Message
+                    <TableCell className="px-0 py-8" width="23%">
+                      <TableSortLabel
+                        active={sortingField === 'message'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("message", sortingOrder)}
+                      >
+                        Message
+                      </TableSortLabel>
                     </TableCell>
-                    <TableCell className="px-0" width="15%">
-                      User Email
+                    <TableCell className="px-0 py-8" width="15%">
+                      <TableSortLabel
+                        active={sortingField === 'emailId'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("emailId", sortingOrder)}
+                      >
+                        User Email                      
+                        </TableSortLabel>
+
                     </TableCell>
-                    <TableCell className="px-0" width="10%">
-                      Contact Number
+                    <TableCell className="px-0 py-8" width="10%">
+                    <TableSortLabel
+                        active={sortingField === 'contactNumber'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("contactNumber", sortingOrder)}
+                      >
+                         Contact Number                     
+                        </TableSortLabel>
+                     
                     </TableCell>
-                    <TableCell className="px-0" width="8%">
+                    <TableCell className="px-0 py-8" width="8%">
                       Action
                     </TableCell>
                   </TableRow>
                 </TableHead>
 
                 <TableBody>
-                  {inquiryList && inquiryList !== []? inquiryList
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  {inquiryList && inquiryList !== [] ? inquiryList
+                    //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((inquiryUpdate, index) => {
                       const isItemSelected = this.isSelected(
                         inquiryUpdate.token
@@ -446,7 +525,7 @@ class inquiry extends Component {
                         </TableRow>
                       );
                     }) : <h1>
-                    No Data is there!
+                      No Data is there!
                     </h1>}
                 </TableBody>
               </Table>
@@ -454,9 +533,9 @@ class inquiry extends Component {
 
             <TablePagination
               className="px-16"
-              rowsPerPageOptions={[8, 16, 24]}
+              rowsPerPageOptions={[10, 20, 30]}
               component="div"
-              count={inquiryList ? inquiryList.length : 0}
+              count={count ? count : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{
@@ -551,46 +630,46 @@ class inquiry extends Component {
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                   </TableRow>
-                  {(replySubject!==null && replyMessage !==null) ?
-                  <>
-                  <TableRow>
-                    <TableCell
-                      style={{ paddingRight: "10px", fontWeight: "bold" }}
-                    >
-                      Replied Subject
+                  {(replySubject !== null && replyMessage !== null) ?
+                    <>
+                      <TableRow>
+                        <TableCell
+                          style={{ paddingRight: "10px", fontWeight: "bold" }}
+                        >
+                          Replied Subject
                     </TableCell>
-                    <TableCell colSpan={3}>{replySubject}</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      style={{ paddingRight: "10px", fontWeight: "bold" }}
-                    >
-                      Replied Message
+                        <TableCell colSpan={3}>{replySubject}</TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          style={{ paddingRight: "10px", fontWeight: "bold" }}
+                        >
+                          Replied Message
                     </TableCell>
-                    <TableCell style={{ wordBreak: "break-word" }} colSpan={3}>
-                      {replyMessage}
-                    </TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                  </TableRow> </>: null}
+                        <TableCell style={{ wordBreak: "break-word" }} colSpan={3}>
+                          {replyMessage}
+                        </TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                      </TableRow> </> : null}
                 </TableBody>
               </TableContainer>
             </DialogContent>
             {
-              read ? null  :
-              <DialogActions>
-              <IconButton
-                className="p-8"
-                onClick={() => this.setState({ openReplyModal: true })}
-              >
-                <Icon color="primary">send</Icon>
-              </IconButton>
-            </DialogActions>
-              
+              read ? null :
+                <DialogActions>
+                  <IconButton
+                    className="p-8"
+                    onClick={() => this.setState({ openReplyModal: true })}
+                  >
+                    <Icon color="primary">send</Icon>
+                  </IconButton>
+                </DialogActions>
+
             }
-            
+
           </Dialog>
           <Dialog
             open={openReplyModal}

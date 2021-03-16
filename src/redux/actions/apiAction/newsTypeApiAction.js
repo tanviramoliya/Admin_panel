@@ -1,13 +1,27 @@
 import {
-    getNewsTypeList,
+    getNewsTypeList,getNewsTypeNameList
   } from "../index";
   import { api } from '../../../api/api';
 
-  export const newsTypeListApi = () => {
+  export const newsTypeListApi = (data) => {
     return async (dispatch) => {
-      await api('newsType/getAllNewsType', {}, 'get')
+      await api('newsType/search',data, 'post')
         .then((res) => {
           dispatch(getNewsTypeList(res.data.data));
+        })
+        .catch((error) => {
+          console.log(error)
+          // toastr.error('Can not able to get lesson list');
+        });
+    };
+  };
+
+  //for news module
+  export const newsTypeNameListApi = () => {
+    return async (dispatch) => {
+      await api('newsType/newsTypeNameList',{}, 'get')
+        .then((res) => {
+          dispatch(getNewsTypeNameList(res.data.data));
         })
         .catch((error) => {
           console.log(error)

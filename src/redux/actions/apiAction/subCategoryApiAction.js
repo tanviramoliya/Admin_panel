@@ -3,9 +3,9 @@ import {
   } from "../index";
   import { api } from '../../../api/api';
 
-  export const subCategoryListApi = () => {
+  export const subCategoryListApi = (data) => {
     return async (dispatch) => {
-      await api('subCategory/getAllSubCategory', {}, 'get')
+      await api('subCategory/search',data, 'post')
         .then((res) => {
           dispatch(getSubCategoryList(res.data.data));
         })

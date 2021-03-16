@@ -2,9 +2,9 @@ import { getArticleNewsList } from "../index";
 import { api } from "../../../api/api";
 
 
-export const articleNewsListApi = () => {
+export const articleNewsListApi = (data) => {
   return async (dispatch) => {
-    await api("article/getTableData", {}, "get")
+    await api("article/search", data, "post")
       .then((res) => {
         dispatch(getArticleNewsList(res.data.data));
       })

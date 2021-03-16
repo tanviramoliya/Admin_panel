@@ -12,15 +12,20 @@ import { Breadcrumb } from "../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Switch
+  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Switch, TableSortLabel, TextField, InputAdornment
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
+import { Search, Clear } from "@material-ui/icons";
 class newsUpdate extends Component {
   state = {
     newsList: [],
-    rowsPerPage: 8,
+    count: "",
+    sortingField: "updatedTime",
+    sortingOrder: "asc",
+    keyword : "",
+    rowsPerPage: 10,
     page: 0,
     deleteModal: false,
     deleteNewsToken: null,
@@ -28,7 +33,7 @@ class newsUpdate extends Component {
     newsToken: "",
     newsText: "",
     newsLink: "",
-    createdDate: "",
+    updateTime: "",
     published: false,
     type: "new",
 
@@ -38,15 +43,38 @@ class newsUpdate extends Component {
     await this.getNewsList();
   };
   getNewsList = async () => {
-    await this.props.newsListApi();
-    this.setState({ newsList: this.props.newsList });
+    const { rowsPerPage, page, sortingField, sortingOrder,keyword } = this.state;
+    console.log(rowsPerPage, "----", page);
+    let data = {
+      keyword: keyword,
+      pageSize: rowsPerPage,
+      pageNo: page,
+      field: sortingField,
+      order: sortingOrder
+    }
+    await this.props.newsListApi(data);
+    this.setState({ newsList: this.props.newsList.result, count: this.props.newsList.count });
   };
-  handleChangePage = (event, newPage) => {
-    this.setState({ page: newPage });
+  
+  handleSearchKeyword = async (event) => {
+    await this.setState({keyword : event.target.value});
+    this.getNewsList();
+  }
+  handleSortingOrder = async (fieldName, order) => {
+
+    await this.setState({ sortingField: fieldName, sortingOrder: order === 'asc' ? 'desc' : 'asc' });
+    this.getNewsList();
+
+  }
+  handleChangePage = async (event, newPage) => {
+    await this.setState({ page: newPage });
+    this.getNewsList();
   };
-  handleChangeRowsPerPage = (event) => {
-    this.setState({ rowsPerPage: event.target.value });
+  handleChangeRowsPerPage = async (event) => {
+    await this.setState({ rowsPerPage: event.target.value });
+    this.getNewsList();
   };
+
 
 
   //to delete Category
@@ -97,7 +125,6 @@ class newsUpdate extends Component {
         newsText: data.newsText,
         newsLink: data.newsLink,
         newsToken: data.newsToken,
-        createdDate: data.createdDate
       });
     }
   };
@@ -109,7 +136,6 @@ class newsUpdate extends Component {
       type: "new",
       newsLink: "",
       newsToken: "",
-      createdDate: "",
     });
   };
   AddNews = async () => {
@@ -143,7 +169,7 @@ class newsUpdate extends Component {
               openModal: false,
               newsText: "",
               type: "new",
-              published:false,
+              published: false,
               newsToken: ""
             });
           } else {
@@ -154,7 +180,7 @@ class newsUpdate extends Component {
         }
       }
       // this.props.setLoader(false);
-      
+
     }
   };
   UpdateNews = async () => {
@@ -203,7 +229,7 @@ class newsUpdate extends Component {
         }
       }
       // this.props.setLoader(false);
-      
+
     }
   };
   handleChange = (event) => {
@@ -212,8 +238,10 @@ class newsUpdate extends Component {
   };
 
   changeStatus = async (token, newStatus) => {
-    let data  = new FormData();
-   
+
+    let data = new FormData();
+    data.append("headLineToken", token);
+    data.append("status", !newStatus);
     const changeStatus = await changeStatusApi(data
     );
     if (changeStatus && changeStatus.data.code === status.success) {
@@ -234,11 +262,16 @@ class newsUpdate extends Component {
     const {
       page,
       rowsPerPage,
+      sortingOrder,
+      keyword,
+      sortingField,
       newsList,
       newsText,
       newsLink,
       type,
-      openModal
+      openModal,
+      count,
+
 
     } = this.state;
     return (
@@ -255,42 +288,92 @@ class newsUpdate extends Component {
           <Card elevation={6} className="px-24 pt-20 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
               <div className="card-title">News Update Infromation</div>
-              <Button
-                className="capitalize text-white bg-circle-primary"
-                onClick={() => this.setModel("new")}
-              >
-                Add News Update
+              <div>
+                <TextField style={{ width: '300px' }}
+                  className="mr-16"
+                  placeholder="Search..."
+                  
+                  type="search"
+                  name="keyword"
+                  value={keyword}
+                  onChange={this.handleSearchKeyword}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                <Button
+                  className="capitalize text-white bg-circle-primary"
+                  onClick={() => this.setModel("new")}
+                >
+                  Add News Update
                   </Button>
+              </div>
             </div>
-            <TableContainer style={{ maxHeight: "405px" }}>
+            <TableContainer style={{ maxHeight: "465px" }}>
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="10%">Sr.No</TableCell>
-                    <TableCell className="px-0" width="30%">News Text</TableCell>
-                    <TableCell className="px-0" width="30%">News Link</TableCell>
-                    <TableCell className="px-0" width="20%">Published</TableCell>
-                    <TableCell className="px-0" width="15%">Updated Date</TableCell>
-                    <TableCell className="px-0" width="10%">Actions</TableCell>
+                    <TableCell className="px-0 py-8" width="10%">Sr.No</TableCell>
+                    <TableCell className="px-0  py-8" width="30%">
+                      <TableSortLabel
+                        active={sortingField === 'newsText'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("newsText", sortingOrder)}
+                      >
+                        News Text
+                      </TableSortLabel>
+
+                    </TableCell>
+                    <TableCell className="px-0  py-8" width="30%">
+                      <TableSortLabel
+                        active={sortingField === 'newsLink'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("newsLink", sortingOrder)}
+                      >
+                        News Link
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell className="px-0 py-8" width="20%">
+                      <TableSortLabel
+                        active={sortingField === 'isPublished'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("isPublished", sortingOrder)}
+                      >
+                        Published
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell className="px-0 py-8" width="15%">
+                      <TableSortLabel
+                        active={sortingField === 'updatedTime'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("updatedTime", sortingOrder)}
+                      >Updated Date
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell className="px-0 py-8" width="10%">Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  { newsList && newsList !== [] ? newsList
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  {newsList && newsList !== [] ? newsList
+                    //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((newsUpdate, index) => (
                       <TableRow key={index}>
                         <TableCell className="p-0" >
-                          {index + 1}
+                          {page * rowsPerPage + index + 1}
                         </TableCell>
-                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                           {newsUpdate.newsText}
                         </TableCell>
-                        <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}}>
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                           {newsUpdate.newsLink}
                         </TableCell>
                         <TableCell className="p-0">
-                          <Switch 
-                            onClick={() =>this.changeStatus(newsUpdate.newsToken,newsUpdate.published)}
+                          <Switch
+                            onClick={() => this.changeStatus(newsUpdate.newsToken, newsUpdate.published)}
                             name="published"
                             color="secondary"
                             checked={newsUpdate.published}
@@ -302,7 +385,7 @@ class newsUpdate extends Component {
                         </TableCell>
                         <TableCell className="p-0">
                           <IconButton className="p-8">
-                            <Icon 
+                            <Icon
                               color="primary"
                               onClick={() => this.setModel("edit", newsUpdate)}
                             >
@@ -310,7 +393,7 @@ class newsUpdate extends Component {
                                 </Icon>
                           </IconButton>
                           <IconButton className="p-8">
-                            <Icon 
+                            <Icon
                               color="error"
                               onClick={() =>
                                 this.deleteNewsClicked(newsUpdate.newsToken)
@@ -322,7 +405,7 @@ class newsUpdate extends Component {
                         </TableCell>
                       </TableRow>
                     )) : <h1>
-                    No Data is there!
+                      No Data is there!
                     </h1>}
                 </TableBody>
               </Table>
@@ -330,9 +413,9 @@ class newsUpdate extends Component {
 
             <TablePagination
               className="px-16"
-              rowsPerPageOptions={[8, 16, 24]}
+              rowsPerPageOptions={[ 10, 20, 30]}
               component="div"
-              count={newsList ? newsList.length : 0}
+              count={count ? count : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{
