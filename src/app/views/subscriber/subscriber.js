@@ -308,7 +308,8 @@ class subscriber extends Component {
                           <TableCell
                             className="p-0"
                           >
-                            {index + 1}
+                                                      {page * rowsPerPage + index + 1}
+
                           </TableCell>
                           <TableCell
                             id={labelId}

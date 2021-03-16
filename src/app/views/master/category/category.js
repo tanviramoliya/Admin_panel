@@ -351,7 +351,8 @@ class category extends Component {
                     .map((category, index) => (
                       <TableRow key={index}>
                         <TableCell className="p-0" >
-                          {index + 1}
+                        {page * rowsPerPage + index + 1}
+
                         </TableCell>
                         <TableCell className="p-0">
                           {category.categoryName}

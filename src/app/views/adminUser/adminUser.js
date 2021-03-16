@@ -410,7 +410,7 @@ class AdminUser extends Component {
                     .map((AdminUser, index) => (
                       <TableRow key={index}>
                         <TableCell className="p-0" >
-                          {index + 1}
+                        {page * rowsPerPage + index + 1}
                         </TableCell>
                         <TableCell className="p-0" >
                           {AdminUser.firstName + " " + AdminUser.lastName}

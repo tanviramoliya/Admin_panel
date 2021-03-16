@@ -375,7 +375,8 @@ class subCategory extends Component {
                     .map((subCategory, index) => (
                       <TableRow key={index}>
                         <TableCell className="p-0" >
-                          {index + 1}
+                        {page * rowsPerPage + index + 1}
+
                         </TableCell>
                         <TableCell className="p-0">
                           {subCategory.categoryName}
