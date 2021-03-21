@@ -5,7 +5,7 @@ import {
   IconButton,
   MenuItem,
   withStyles,
-  MuiThemeProvider
+  MuiThemeProvider,
 } from "@material-ui/core";
 import { connect } from "react-redux";
 import { setLayoutSettings } from "redux/actions/LayoutActions";
@@ -15,16 +15,16 @@ import { MatxMenu } from "../../../components/matx/index";
 import { isMdScreen } from "utils";
 import { Link } from "react-router-dom";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
-    backgroundColor: theme.palette.primary.main
-  }
+    backgroundColor: theme.palette.primary.main,
+  },
 });
 
 class Layout1Topbar extends Component {
   state = {};
 
-  updateSidebarMode = sidebarSettings => {
+  updateSidebarMode = (sidebarSettings) => {
     let { settings, setLayoutSettings } = this.props;
 
     setLayoutSettings({
@@ -33,9 +33,9 @@ class Layout1Topbar extends Component {
         ...settings.layout1Settings,
         leftSidebar: {
           ...settings.layout1Settings.leftSidebar,
-          ...sidebarSettings
-        }
-      }
+          ...sidebarSettings,
+        },
+      },
     });
   };
 
@@ -65,55 +65,62 @@ class Layout1Topbar extends Component {
         <div className="topbar">
           <div
             className={`topbar-hold ${className}`}
-            style={Object.assign({}, { backgroundColor: topbarTheme.palette.primary.main }, style)}
+            style={Object.assign(
+              {},
+              { backgroundColor: topbarTheme.palette.primary.main },
+              style
+            )}
           >
             <div className="flex flex-space-between flex-middle h-100">
               <div className="flex">
-                <IconButton onClick={this.handleSidebarToggle} className="hide-on-lg">
+                <IconButton
+                  onClick={this.handleSidebarToggle}
+                  className="hide-on-lg"
+                >
                   <Icon>menu</Icon>
                 </IconButton>
-              </div>
-              <div className="flex flex-middle">
-                 <MatxMenu
-                  menuButton={
-                    <img
-                      className="mx-8 text-middle circular-image-small cursor-pointer"
-                      src="/assets/images/face-6.jpg"
-                      alt="user"
-                    />
-                  }
-                >
-                  <MenuItem style={{ minWidth: 185 }}>
-                    <Link className="flex flex-middle" to="/">
-                      <Icon> home </Icon>
-                      <span className="pl-16"> Home </span>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem style={{ minWidth: 185 }}>
-                    <Link
+                <div className="flex flex-middle">
+                  <MatxMenu
+                    menuButton={
+                      <img
+                        className="mx-8 text-middle circular-image-small cursor-pointer"
+                        src="/assets/images/face-6.jpg"
+                        alt="user"
+                      />
+                    }
+                  >
+                    <MenuItem style={{ minWidth: 185 }}>
+                      <Link className="flex flex-middle" to="/">
+                        <Icon> home </Icon>
+                        <span className="pl-16"> Home </span>
+                      </Link>
+                    </MenuItem>
+                    <MenuItem style={{ minWidth: 185 }}>
+                      <Link
+                        className="flex flex-middle"
+                        to="/page-layouts/user-profile"
+                      >
+                        <Icon> person </Icon>
+                        <span className="pl-16"> Profile </span>
+                      </Link>
+                    </MenuItem>
+                    <MenuItem
                       className="flex flex-middle"
-                      to="/page-layouts/user-profile"
+                      style={{ minWidth: 185 }}
                     >
-                      <Icon> person </Icon>
-                      <span className="pl-16"> Profile </span>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem
-                    className="flex flex-middle"
-                    style={{ minWidth: 185 }}
-                  >
-                    <Icon> settings </Icon>
-                    <span className="pl-16"> Settings </span>
-                  </MenuItem>
-                  <MenuItem
-                    onClick={this.handleSignOut}
-                    className="flex flex-middle"
-                    style={{ minWidth: 185 }}
-                  >
-                    <Icon> power_settings_new </Icon>
-                    <span className="pl-16"> Logout </span>
-                  </MenuItem>
-                </MatxMenu>
+                      <Icon> settings </Icon>
+                      <span className="pl-16"> Settings </span>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={this.handleSignOut}
+                      className="flex flex-middle"
+                      style={{ minWidth: 185 }}
+                    >
+                      <Icon> power_settings_new </Icon>
+                      <span className="pl-16"> Logout </span>
+                    </MenuItem>
+                  </MatxMenu>
+                </div>
               </div>
             </div>
           </div>
@@ -126,13 +133,13 @@ class Layout1Topbar extends Component {
 Layout1Topbar.propTypes = {
   setLayoutSettings: PropTypes.func.isRequired,
   logoutUser: PropTypes.func.isRequired,
-  settings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   setLayoutSettings: PropTypes.func.isRequired,
   logoutUser: PropTypes.func.isRequired,
-  settings: state.layout.settings
+  settings: state.layout.settings,
 });
 
 export default withStyles(styles, { withTheme: true })(
