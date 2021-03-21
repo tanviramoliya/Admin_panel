@@ -11,12 +11,12 @@ import { Breadcrumb } from "../../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Badge, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, Slide, Toolbar, AppBar, Typography
+  Icon, TablePagination, Badge, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, Slide, Toolbar, AppBar, Typography, TextField, TableSortLabel
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
-import { PhoneIphone, Email, Person, GroupAdd } from '@material-ui/icons';
+import { PhoneIphone, Email, Person, GroupAdd, Search } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import history from "../../../../history";
 import "./style.css";
@@ -32,7 +32,11 @@ const StyledBadge = withStyles((theme) => ({
 class videoNews extends Component {
   state = {
     videoNewsList: [],
-    rowsPerPage: 8,
+    count: "",
+    sortingField: "createdTime",
+    sortingOrder: "asc",
+    keyword: "",
+    rowsPerPage: 10,
     page: 0,
     deleteModal: false,
     deleteVideoNewsId: null,
@@ -53,7 +57,7 @@ class videoNews extends Component {
     tags: "",
     type: "new"
   };
- 
+
 
   componentDidMount = async () => {
     await this.getVideoNewsList();
@@ -61,17 +65,38 @@ class videoNews extends Component {
   };
 
   getVideoNewsList = async () => {
-    await this.props.videoNewsListApi();
-    this.setState({ videoNewsList: this.props.videoNewsList });
+    const { rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
+    let data = {
+      keyword: keyword,
+      pageSize: rowsPerPage,
+      pageNo: page,
+      field: sortingField,
+      order: sortingOrder
+    }
+    await this.props.videoNewsListApi(data);
+    this.setState({ videoNewsList: this.props.videoNewsList.result, count: this.props.videoNewsList.count });
   };
 
-  handleChangePage = (event, newPage) => {
-    this.setState({ page: newPage });
+  handleSearchKeyword = async (event) => {
+    await this.setState({ keyword: event.target.value });
+    this.getVideoNewsList();
+  }
+  handleSortingOrder = async (fieldName, order) => {
+
+    await this.setState({ sortingField: fieldName, sortingOrder: order === 'asc' ? 'desc' : 'asc' });
+    this.getVideoNewsList();
+
+  }
+  handleChangePage = async (event, newPage) => {
+    await this.setState({ page: newPage });
+    this.getVideoNewsList();
+  };
+  handleChangeRowsPerPage = async (event) => {
+    await this.setState({ rowsPerPage: event.target.value });
+    this.getVideoNewsList();
   };
 
-  handleChangeRowsPerPage = (event) => {
-    this.setState({ rowsPerPage: event.target.value });
-  };
+
 
   //to delete Category
   deletvideoNewsClicked = async (vId) => {
@@ -146,7 +171,10 @@ class videoNews extends Component {
   render() {
     const {
       page,
-      rowsPerPage, videoNewsList,
+      rowsPerPage,
+      sortingOrder,
+      keyword, count,
+      sortingField, videoNewsList,
       videoNewsId, videoLink, title, description, publishedBy, city, state, country, createdTime, updatedTime, publishedTime, publish, critical, tags,
       type,
       openModal
@@ -166,38 +194,105 @@ class videoNews extends Component {
           <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
               <div className="card-title">Video News Infromation</div>
-              <Button
-                className="capitalize text-white bg-circle-primary"
-                onClick={() => this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'add' } })}
-              >
-                Add Video News
+              <div>
+                <TextField style={{ width: '300px' }}
+                  className="mr-16"
+                  placeholder="Search..."
+
+                  type="search"
+                  name="keyword"
+                  value={keyword}
+                  onChange={this.handleSearchKeyword}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                <Button
+                  className="capitalize text-white bg-circle-primary"
+                  onClick={() => this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'add' } })}
+                >
+                  Add Video News
                   </Button>
+              </div>
             </div>
-            <TableContainer style={{ maxHeight: "405px" }}>
+            <TableContainer style={{ maxHeight: "465px" }}>
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="15%">VideoNewsId</TableCell>
-                    <TableCell className="px-0" width="20%">Title</TableCell>
-                    <TableCell className="px-0" width="10%">NewsType</TableCell>
-                    <TableCell className="px-0" width="15%">Category</TableCell>
-                    {/* <TableCell className="px-0" >critical</TableCell> */}
-                    <TableCell className="px-0" >PublishedBy</TableCell>
-                    <TableCell className="px-0" >CreatedTime</TableCell>
-                    <TableCell className="px-0"  >Actions</TableCell>
+                  <TableCell className="px-0 py-8" width="13%">
+                      <TableSortLabel
+                        active={sortingField === 'videoNewsId'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("videoNewsId", sortingOrder)}
+                      >
+                        VideoNewsId
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="18%">
+                      <TableSortLabel
+                        active={sortingField === 'title'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("title", sortingOrder)}
+                      >
+                        Title
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="10%">
+                      <TableSortLabel
+                        active={sortingField === 'newsType'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("newsType", sortingOrder)}
+                      >
+                        News Type
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="13%">
+                      <TableSortLabel
+                        active={sortingField === 'category'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("category", sortingOrder)}
+                      >
+                        Category
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="10%">
+                      <TableSortLabel
+                        active={sortingField === 'publish'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("publish", sortingOrder)}
+                      >
+                        Is Published
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="12%" >
+                      <TableSortLabel
+                        active={sortingField === 'PublishedBy'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("PublishedBy", sortingOrder)}
+                      >
+                        PublishedBy
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8" width="10%">
+                      <TableSortLabel
+                        active={sortingField === 'createdTime'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("createdTime", sortingOrder)}
+                      >
+                        Created Time
+                      </TableSortLabel></TableCell>
+                    <TableCell className="px-0 py-8"  >Actions</TableCell>
 
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {videoNewsList && videoNewsList !== [] ?videoNewsList
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  {videoNewsList && videoNewsList !== [] ? videoNewsList
+                   // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((VideoNews, index) => (
                       <TableRow key={index}>
-                        <TableCell  style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
+                        <TableCell style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
                           <div style={{ alignItems: "center", display: "flex" }}>
-                          <div className={VideoNews.publish?"activeDot":"inActiveDot"}></div>
+                            <div className={VideoNews.critical ? "activeDot" : "inActiveDot"}></div>
                             <div className="pl-4">{VideoNews.videoNewsId}</div>
-                            </div>
+                          </div>
                         </TableCell>
                         <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
                           {VideoNews.title}
@@ -211,6 +306,16 @@ class videoNews extends Component {
                         <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
                           {VideoNews.category + " / " + VideoNews.subCategory}
                         </TableCell>
+                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                            {VideoNews.publish ?
+                              (<small className="border-radius-4 bg-primary text-white px-8 py-2 ">
+                                Published
+              </small>) :
+                              (<small className="border-radius-4 bg-error text-white px-8 py-2 ">
+                                Not Published
+                </small>)
+                            }
+                          </TableCell>
                         <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                           {VideoNews.publishedBy}
                         </TableCell>
@@ -248,9 +353,9 @@ class videoNews extends Component {
 
                         </TableCell>
                       </TableRow>
-                    )) : 
+                    )) :
                     <h1>
-                    No Data is there!
+                      No Data is there!
                     </h1>}
                 </TableBody>
               </Table>
@@ -258,9 +363,9 @@ class videoNews extends Component {
 
             <TablePagination
               className="px-16"
-              rowsPerPageOptions={[8, 16, 24]}
+              rowsPerPageOptions={[10, 20, 30]}
               component="div"
-              count={videoNewsList ? videoNewsList.length : 0}
+              count={count ? count : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{

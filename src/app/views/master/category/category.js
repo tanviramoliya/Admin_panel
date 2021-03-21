@@ -29,17 +29,24 @@ import {
   FormControl,
   TextField,
   TableContainer,
+  InputAdornment,
+  TableSortLabel,
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from "../../../../utility/config";
 import { toastr } from "react-redux-toastr";
+import { Search } from "@material-ui/icons";
 
 class category extends Component {
   state = {
     categoryList: [],
-    rowsPerPage: 8,
+    count: "",
+    sortingField: "createdDate",
+    sortingOrder: "asc",
+    keyword: "",
+    rowsPerPage: 10,
     page: 0,
     deleteModal: false,
     deleteCategoryToken: null,
@@ -51,17 +58,35 @@ class category extends Component {
     serialNo: 1,
   };
   componentDidMount = async () => {
-    await this.categoryList();
+    await this.getCategoryList();
   };
-  categoryList = async () => {
-    await this.props.categoryListApi();
-    this.setState({ categoryList: this.props.categoryList });
+  getCategoryList = async () => {
+    const { rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
+    let data = {
+      keyword: keyword,
+      pageSize: rowsPerPage,
+      pageNo: page,
+      field: sortingField,
+      order: sortingOrder
+    }
+    await this.props.categoryListApi(data);
+    this.setState({ categoryList: this.props.categoryList.result, count: this.props.categoryList.count });
   };
-  handleChangePage = (event, newPage) => {
-    this.setState({ page: newPage });
+  handleSearchKeyword = async (event) => {
+    await this.setState({ keyword: event.target.value });
+    this.getCategoryList();
+  }
+  handleSortingOrder = async (fieldName, order) => {
+    await this.setState({ sortingField: fieldName, sortingOrder: order === 'asc' ? 'desc' : 'asc' });
+    this.getCategoryList();
+  }
+  handleChangePage = async (event, newPage) => {
+    await this.setState({ page: newPage });
+    this.getCategoryList();
   };
-  handleChangeRowsPerPage = (event) => {
-    this.setState({ rowsPerPage: event.target.value });
+  handleChangeRowsPerPage = async (event) => {
+    await this.setState({ rowsPerPage: event.target.value });
+    this.getCategoryList();
   };
 
   //to delete Category
@@ -165,7 +190,7 @@ class category extends Component {
         }
       }
       // this.props.setLoader(false);
-      
+
     }
   };
   UpdateCategory = async () => {
@@ -213,7 +238,7 @@ class category extends Component {
         }
       }
       // this.props.setLoader(false);
-     
+
     }
   };
   handleChange = (event) => {
@@ -224,6 +249,9 @@ class category extends Component {
     const {
       page,
       rowsPerPage,
+      sortingOrder,
+      keyword,
+      sortingField, count,
       categoryList,
       categoryName,
       type,
@@ -242,46 +270,101 @@ class category extends Component {
           />
         </div>
         <div className="py-12" >
-        <Card elevation={6} className="px-24 pt-20 h-100">
+          <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
-              <div className="card-title">Category Infromation</div>
-              <Button
-                className="capitalize text-white bg-circle-primary"
-                onClick={() => this.setModel("new")}
-              >
-                Add Category
+              <div className="card-title">Category Information</div>
+              <div>
+                <TextField style={{ width: '300px' }}
+                  className="mr-16"
+                  placeholder="Search..."
+
+                  type="search"
+                  name="keyword"
+                  value={keyword}
+                  onChange={this.handleSearchKeyword}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                <Button
+                  className="capitalize text-white bg-circle-primary"
+                  onClick={() => this.setModel("new")}
+                >
+                  Add Category
             </Button>
+              </div>
             </div>
             <TableContainer style={{ maxHeight: "405px" }}>
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" width="15%">Sr.No</TableCell>
-                    <TableCell className="px-0" width="30%">Category Name</TableCell>
-                    <TableCell className="px-0" width="20%">Serial No</TableCell>
-                    <TableCell className="px-0" width="20%">Active/Not Active</TableCell>
-                    <TableCell className="px-0">Action</TableCell>
+                    <TableCell className="px-0 py-8" width="15%">
+
+                      Sr.No</TableCell>
+                    <TableCell className="px-0 py-8" width="30%">
+                      <TableSortLabel
+                        active={sortingField === 'categoryName'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("categoryName", sortingOrder)}
+                      >
+                        Category Name
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell className="px-0 py-8" width="20%">
+                      <TableSortLabel
+                        active={sortingField === 'serialNo'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("serialNo", sortingOrder)}
+                      >
+                        Serial No
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell className="px-0 py-8" width="20%">
+                      <TableSortLabel
+                        active={sortingField === 'isActive'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("isActive", sortingOrder)}
+                      >
+                        Active/Not Active
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell className="px-0 py-8" width="20%">
+                      <TableSortLabel
+                        active={sortingField === 'createdDate'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("createdDate", sortingOrder)}
+                      >
+                        Created Date
+                      </TableSortLabel>
+                    </TableCell>
+
+                    <TableCell className="px-0 py-8" >Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {categoryList && categoryList !== [] ? categoryList
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((category, index) => (
                       <TableRow key={index}>
                         <TableCell className="p-0" >
-                          {index + 1}
+                        {page * rowsPerPage + index + 1}
+
                         </TableCell>
                         <TableCell className="p-0">
                           {category.categoryName}
                         </TableCell>
                         <TableCell className="p-0">
-                        <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
+                          <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
                             {category.serialNo}
                           </small>
                         </TableCell>
                         <TableCell className="p-0">
                           {category.isActive ? (
-                            <small  className="border-radius-4 bg-primary text-white px-8 py-2 ">
+                            <small className="border-radius-4 bg-primary text-white px-8 py-2 ">
                               Active
                           </small >
                           ) : (
@@ -292,7 +375,7 @@ class category extends Component {
                         </TableCell>
                         <TableCell className="p-0">
                           <IconButton className="p-8">
-                            <Icon 
+                            <Icon
                               color="primary"
                               onClick={() => this.setModel("edit", category)}
                             >
@@ -300,7 +383,7 @@ class category extends Component {
                           </Icon>
                           </IconButton>
                           <IconButton className="p-8">
-                            <Icon 
+                            <Icon
                               color="error"
                               onClick={() =>
                                 this.deleteCategoryClicked(category.categoryToken)
@@ -311,7 +394,7 @@ class category extends Component {
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                    )) : 
+                    )) :
                     <h1>
                       No Data is there!
                       </h1>}
@@ -320,9 +403,9 @@ class category extends Component {
             </TableContainer>
             <TablePagination
               className="px-16"
-              rowsPerPageOptions={[8, 16, 24]}
+              rowsPerPageOptions={[10, 20, 30]}
               component="div"
-              count={categoryList ? categoryList.length : 0}
+              count={count ? count : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{
@@ -389,7 +472,7 @@ class category extends Component {
                     name="categoryName"
                     value={categoryName}
                     validators={["required", "minStringLength: 2"]}
-                    errorMessages={["this field is required","category name more then 2 character"]}
+                    errorMessages={["this field is required", "category name more then 2 character"]}
                     style={{ width: "-webkit-fill-available" }}
                     variant="outlined"
                   />

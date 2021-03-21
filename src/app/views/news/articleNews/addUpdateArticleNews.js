@@ -31,11 +31,11 @@ import DoneIcon from '@material-ui/icons/Done';
 import {
   videoNewsListApi,
   deleteVideoNewsApi,
+  newsTypeNameListApi,
   addArticleNewsApi,
   updateArticleNewsApi,
   getSingleArticleNewsApi,
-  newsTypeListApi,
-  categoryListApi,
+  categoryNameListApi,
   getsubCateByCategoryListApi,
   countryListApi,
   getAdminNameListApi,
@@ -77,8 +77,8 @@ class addUpdateArticleNews extends Component {
     tags: [],
     content: "",
     type: this.props.location.state.type,
-    newsTypeList: [],
-    categoryList: [],
+    newsTypeNameList: [],
+    categoryNameList: [],
     countryList: [],
     subCategoryList: [],
     stateList: [],
@@ -93,8 +93,8 @@ class addUpdateArticleNews extends Component {
 
   componentDidMount = async () => {
     await this.getArticleNewsData();
-    await this.newsTypeList();
-    await this.categoryList();
+    await this.newsTypeNameList();
+    await this.categoryNameList();
     await this.setSubCategory(this.state.categoryToken);
     await this.getCountryList();
     await this.getAdminUserList();
@@ -102,13 +102,13 @@ class addUpdateArticleNews extends Component {
     await this.getCityListByState(this.state.state);
   }
 
-  newsTypeList = async () => {
-    await this.props.newsTypeListApi();
-    this.setState({ newsTypeList: this.props.newsTypeList })
+  newsTypeNameList = async () => {
+    await this.props.newsTypeNameListApi();
+    this.setState({ newsTypeNameList: this.props.newsTypeNameList })
   };
-  categoryList = async () => {
-    await this.props.categoryListApi();
-    this.setState({ categoryList: this.props.categoryList });
+  categoryNameList = async () => {
+    await this.props.categoryNameListApi();
+    this.setState({ categoryNameList: this.props.categoryNameList });
   };
   getSubCatByCategory = (category) => {
     this.setState({ category: category.categoryName, categoryToken: category.categoryToken })
@@ -278,7 +278,6 @@ class addUpdateArticleNews extends Component {
 
   render() {
     let {
-      file,
       title,
       newsType,
       category,
@@ -292,15 +291,14 @@ class addUpdateArticleNews extends Component {
       critical,
       tags,
       content,
-      newsTypeList,
-      categoryList,
+      newsTypeNameList,
+      categoryNameList,
       subCategoryList,
       countryList,
       stateList,
       cityList,
       adminUserList,
       selectedFile,
-      fileName
     } = this.state;
     return (
       <div className="m-sm-30">
@@ -317,7 +315,7 @@ class addUpdateArticleNews extends Component {
                 <Switch onClick={() => this.setState({
                   publish:
                     !publish
-                })} name="publish" checked={publish} />
+                })} name="publish" color="primary" checked={publish} />
               }
               label="Publish This News"
             />
@@ -325,7 +323,7 @@ class addUpdateArticleNews extends Component {
           <div>
             <FormControlLabel
               control={
-                <Switch color="primary" onClick={() => this.setState({
+                <Switch  onClick={() => this.setState({
                   critical:
                     !critical
                 })} name="critical" checked={critical} />
@@ -338,7 +336,7 @@ class addUpdateArticleNews extends Component {
               className="capitalize text-white bg-circle-primary"
               onClick={(e) => this.handleSubmit(e)}
             ><Icon>add</Icon>
-              {this.state.type === "add" ? 'Add News' : 'Update News'}
+              {this.state.type === "add" ? "Add News" : "Update News"}
             </Button>
           </div>
         </div>
@@ -440,7 +438,7 @@ class addUpdateArticleNews extends Component {
                         displayEmpty
                         onBlur={() => this.validator.showMessageFor("newsType")}
                       >
-                        {newsTypeList.map((newsType, index) => {
+                        {newsTypeNameList.map((newsType, index) => {
                           return (
                             <MenuItem value={newsType.newsTypeName} key={index} >
 
@@ -518,7 +516,7 @@ class addUpdateArticleNews extends Component {
                         displayEmpty
                         onBlur={() => this.validator.showMessageFor("category")}
                       >
-                        {categoryList.map((category, index) => {
+                        {categoryNameList.map((category, index) => {
                           return (
                             <MenuItem value={category.categoryName} key={index} onClick={() => this.getSubCatByCategory(category)}>
                               <div style={{ alignItems: "center", display: "flex" }}>
@@ -738,22 +736,22 @@ class addUpdateArticleNews extends Component {
 
 const mapStateToProps = (state) => {
   // const { } = state.videoNews;
-  const { categoryList } = state.category;
+  const { categoryNameList } = state.category;
   const { subCategoryList } = state.subCategory;
-  const { newsTypeList } = state.newsType;
+  const { newsTypeNameList } = state.newsType;
   const { countryList, stateList, cityList } = state.location;
   const { adminUserList } = state.adminUser;
   return {
-    categoryList,
+    categoryNameList,
     subCategoryList,
     countryList,
-    newsTypeList,
+    newsTypeNameList,
     adminUserList,
     stateList,
     cityList
   };
 };
 
-export default connect(mapStateToProps, { addArticleNewsApi, categoryListApi, getsubCateByCategoryListApi, newsTypeListApi, countryListApi, stateListApi, cityListApi, getAdminNameListApi })(
+export default connect(mapStateToProps, { addArticleNewsApi, categoryNameListApi, getsubCateByCategoryListApi, newsTypeNameListApi, countryListApi, stateListApi, cityListApi, getAdminNameListApi })(
   addUpdateArticleNews
 );

@@ -2,9 +2,9 @@ import { getVideoNewsList } from "../index";
 import { api } from "../../../api/api";
 
 
-export const videoNewsListApi = () => {
+export const videoNewsListApi = (data) => {
   return async (dispatch) => {
-    await api("video/getTableData", {}, "get")
+    await api("video/search", data, "post")
       .then((res) => {
         dispatch(getVideoNewsList(res.data.data));
       })

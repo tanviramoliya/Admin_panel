@@ -3,9 +3,9 @@ import {
   } from "../index";
   import { api } from '../../../api/api';
 
-  export const subscriberListApi = () => {
+  export const subscriberListApi = (data) => {
     return async (dispatch) => {
-      await api('subscription/getAll', {}, 'get')
+      await api('subscription/search', data, 'post')
         .then((res) => {
           dispatch(getSubscriberList(res.data.data));
         })
