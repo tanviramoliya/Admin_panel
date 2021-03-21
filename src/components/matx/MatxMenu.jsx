@@ -4,7 +4,7 @@ import Menu from "@material-ui/core/Menu";
 const MatxMenu = props => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const children = React.Children.toArray(props.children);
-  let { shouldCloseOnItemClick = true, horizontalPosition = "left" } = props;
+  let { shouldCloseOnItemClick = true, horizontalPosition = "right" } = props;
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
