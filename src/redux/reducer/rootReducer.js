@@ -20,6 +20,7 @@ import SocialMediaReducer from "./settingModule/socialMedia/socialMediaReducer";
 import AboutUsReducer from "./settingModule/aboutUs/aboutUsReducer";
 import InquiryReducer from "./inquiry/inquiryReducer";
 import footerReducer from "./settingModule/footer/footerReducer";
+import profileReducer from "./profile/profileReducer";
 
 
 const RootReducer = combineReducers({
@@ -43,7 +44,8 @@ const RootReducer = combineReducers({
   aboutUs : AboutUsReducer,
   inquiry : InquiryReducer,
   aclRole : AclRoleReducer,
-  footer : footerReducer
+  footer : footerReducer,
+  profile : profileReducer
 });
 
 export default RootReducer;

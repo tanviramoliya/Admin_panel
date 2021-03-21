@@ -6,6 +6,7 @@ import {
   MenuItem,
   withStyles,
   MuiThemeProvider,
+  Avatar
 } from "@material-ui/core";
 import { connect } from "react-redux";
 import { setLayoutSettings } from "redux/actions/LayoutActions";
@@ -14,6 +15,7 @@ import { PropTypes } from "prop-types";
 import { MatxMenu } from "../../../components/matx/index";
 import { isMdScreen } from "utils";
 import { Link } from "react-router-dom";
+import { deepOrange, deepPurple } from '@material-ui/core/colors';
 
 const styles = (theme) => ({
   root: {
@@ -71,7 +73,7 @@ class Layout1Topbar extends Component {
               style
             )}
           >
-            <div className="flex flex-space-between flex-middle h-100">
+            <div className="flex flex-end h-100">
               <div className="flex">
                 <IconButton
                   onClick={this.handleSidebarToggle}
@@ -82,35 +84,30 @@ class Layout1Topbar extends Component {
                 <div className="flex flex-middle">
                   <MatxMenu
                     menuButton={
-                      <img
-                        className="mx-8 text-middle circular-image-small cursor-pointer"
-                        src="/assets/images/face-6.jpg"
-                        alt="user"
-                      />
+                      <Avatar>H</Avatar>
                     }
                   >
                     <MenuItem style={{ minWidth: 185 }}>
-                      <Link className="flex flex-middle" to="/">
-                        <Icon> home </Icon>
-                        <span className="pl-16"> Home </span>
-                      </Link>
-                    </MenuItem>
-                    <MenuItem style={{ minWidth: 185 }}>
                       <Link
                         className="flex flex-middle"
-                        to="/page-layouts/user-profile"
+                        to="/profile"
                       >
                         <Icon> person </Icon>
                         <span className="pl-16"> Profile </span>
                       </Link>
                     </MenuItem>
-                    <MenuItem
+                    {/* <MenuItem
                       className="flex flex-middle"
                       style={{ minWidth: 185 }}
                     >
-                      <Icon> settings </Icon>
-                      <span className="pl-16"> Settings </span>
-                    </MenuItem>
+                       <Link
+                        className="flex flex-middle"
+                        to="/profile"
+                      >
+                      <Icon> vpn_key </Icon>
+                      <span className="pl-16"> Change Password </span>
+                      </Link>
+                    </MenuItem> */}
                     <MenuItem
                       onClick={this.handleSignOut}
                       className="flex flex-middle"
