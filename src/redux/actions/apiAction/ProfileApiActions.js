@@ -4,7 +4,7 @@ import { api } from "../../../api/api";
 
 export const getAdminInfo = (data) => {
   return async (dispatch) => {
-    await api("admin/search", data , "post")
+    await api("profile/get", {} , "get")
       .then((res) => {
         dispatch(getAdminProfileInfo(res.data.data));
       })
@@ -16,13 +16,23 @@ export const getAdminInfo = (data) => {
 };
 
 export const updateAdminInfo = async (data) => {
-  const updateAdminUser = await api(
-    `admin/updateAdmin`,
+  const updateAdminInfo = await api(
+    `profile/update`,
     data,
     "put"
   );
-  if (updateAdminUser) {
-    return updateAdminUser;
+  if (updateAdminInfo) {
+    return updateAdminInfo;
+  }
+};
+export const changeAdminPassApi = async (data) => {
+  const changePass = await api(
+    `profile/changePassword`,
+    data,
+    "post"
+  );
+  if (changePass) {
+    return changePass;
   }
 };
 

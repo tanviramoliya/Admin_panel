@@ -225,7 +225,7 @@ class AdminUser extends Component {
       adminToken, firstName, lastName, role, email, contactNumber } = this.state;
     if (type === "edit") {
       if (
-        this.validator.allValid()
+        this.validator.message("firstName")
 
       ) {
         let data = {
