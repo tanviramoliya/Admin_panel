@@ -1,4 +1,4 @@
-import { getAclRoleList } from "../index";
+import { getAclRoleList,getAclRoleNameList } from "../index";
 import { api } from "../../../api/api";
 
 
@@ -7,6 +7,19 @@ export const aclRoleListApi = () => {
     await api("ACL/getAll", {}, "get")
       .then((res) => {
         dispatch(getAclRoleList(res.data.data));
+      })
+      .catch((error) => {
+        console.log(error);
+        // toastr.error('Can not able to get lesson list');
+      });
+  };
+};
+
+export const aclRoleNameListApi = () => {
+  return async (dispatch) => {
+    await api("ACL/getAclRoleNameList", {}, "get")
+      .then((res) => {
+        dispatch(getAclRoleNameList(res.data.data));
       })
       .catch((error) => {
         console.log(error);

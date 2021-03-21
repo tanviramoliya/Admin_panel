@@ -420,7 +420,7 @@ class addUpdateArticleNews extends Component {
               <Grid item xl={12}>
                 <Grid container >
                   <Grid item lg={6} md={6} sm={12} xs={12}>
-                    <FormControl className="mb-16 pr-16 w-100" error={this.validator.message(
+                    <FormControl className="mb-16 pr-16 w-100"  error={this.validator.message(
                       "newsType",
                       newsType,
                       "required"
@@ -429,7 +429,6 @@ class addUpdateArticleNews extends Component {
                         News Type
                   </InputLabel>
                       <Select
-
                         labelId="newsType"
                         id="newsType"
                         name="newsType"

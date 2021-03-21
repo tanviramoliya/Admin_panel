@@ -63,9 +63,9 @@ class subscriber extends Component {
       order: sortingOrder
     }
     await this.props.subscriberListApi(data);
-    this.setState({ subscriberList: this.props.subscriberList.result, count : this.props.subscriberList.count });
+    this.setState({ subscriberList: this.props.subscriberList.result, count: this.props.subscriberList.count });
   };
-  
+
   handleSearchKeyword = async (event) => {
     await this.setState({ keyword: event.target.value });
     this.getSubscriberList();
@@ -187,7 +187,7 @@ class subscriber extends Component {
                   )}
               </div>
               <div>
-              <TextField style={{ width: '300px' }}
+                <TextField style={{ width: '300px' }}
                   className="mr-16"
                   placeholder="Search..."
 
@@ -229,7 +229,7 @@ class subscriber extends Component {
                 <TableHead>
                   <TableRow>
                     <TableCell className="px-0 py-8">
-                      <Checkbox style={{paddingTop:0,paddingBottom:0}}
+                      <Checkbox style={{ paddingTop: 0, paddingBottom: 0 }}
                         indeterminate={
                           selected.length > 0 &&
                           selected.length < subscriberList.length
@@ -247,7 +247,7 @@ class subscriber extends Component {
                       <TableSortLabel>Sr.No</TableSortLabel>
                     </TableCell>
                     <TableCell className="px-0 py-8" width="30%" >
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'userName'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("userName", sortingOrder)}
@@ -256,7 +256,7 @@ class subscriber extends Component {
                       </TableSortLabel>
                     </TableCell>
                     <TableCell className="px-0 py-8" width="30%">
-                      
+
                       <TableSortLabel
                         active={sortingField === 'emailId'}
                         direction={sortingOrder}
@@ -266,14 +266,14 @@ class subscriber extends Component {
                       </TableSortLabel>
                     </TableCell>
                     <TableCell className="px-0 py-8" width="20%">
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'subscriptionDate'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("subscriptionDate", sortingOrder)}
                       >
                         Subscription Date
                       </TableSortLabel>
-                      
+
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -308,7 +308,7 @@ class subscriber extends Component {
                           <TableCell
                             className="p-0"
                           >
-                                                      {page * rowsPerPage + index + 1}
+                            {page * rowsPerPage + index + 1}
 
                           </TableCell>
                           <TableCell

@@ -4,10 +4,12 @@ import {
   ADD_ACL_ROLE,
   DELETE_ACL_ROLE,
   UPDATE_ACL_ROLE,
+  GET_ACL_ROLE_NAME_LIST
   } from "../../actions/aclRole/index";
   
   const initialState = {
-    aclRoleList: []
+    aclRoleList: [],
+    aclRoleNameList : []
   };
   
   const AclRoleReducer = function(state = initialState, action) {
@@ -16,6 +18,13 @@ import {
         return {
           ...state,
           aclRoleList: action.payload
+        };
+      }
+      
+      case GET_ACL_ROLE_NAME_LIST : {
+        return {
+          ...state,
+          aclRoleNameList: action.payload
         };
       }
       case GET_ACL_ROLE : {

@@ -3,10 +3,18 @@ export const GET_ACL_ROLE = "GET_ACL_ROLE";
 export const ADD_ACL_ROLE = "ADD_ACL_ROLE";
 export const DELETE_ACL_ROLE = "DELETE_ACL_ROLE";
 export const UPDATE_ACL_ROLE = "UPDATE_ACL_ROLE";
+export const GET_ACL_ROLE_NAME_LIST = "GET_ACL_ROLE_NAME_LIST";
+
 
 export const getAclRoleList = (value) => {
   return {
     type: GET_ACL_ROLE_LIST,
+    payload: value,
+  };
+};
+export const getAclRoleNameList = (value) => {
+  return {
+    type: GET_ACL_ROLE_NAME_LIST,
     payload: value,
   };
 };

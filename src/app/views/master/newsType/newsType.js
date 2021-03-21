@@ -32,8 +32,13 @@ import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from '../../../../utility/config';
 import { toastr } from 'react-redux-toastr';
 import { Search } from "@material-ui/icons";
+import SimpleReactValidator from "simple-react-validator";
 
 class newsType extends Component {
+  constructor(props) {
+    super(props);
+    this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+  }
   state = {
     newsTypeList: [],
     count: "",
@@ -143,80 +148,80 @@ class newsType extends Component {
   AddNewsType = async () => {
     const { type, newsTypeName, isActive } = this.state;
     if (type === "new") {
-      if (!newsTypeName) {
-        toastr.error("News type is required");
-        return;
-      }
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
-      let data = {
-        newsTypeName: newsTypeName,
-        isActive: isActive === 'active' ? true : false
-      };
-      const createNewsType = await addNewsTypeApi(data);
-      if (createNewsType) {
-        if (createNewsType.status === status.success) {
-          if (createNewsType.data.code === status.success) {
-            toastr.success(createNewsType.data.message);
-            this.newsTypeList();
-            this.setState({
-              newsTypeName: "",
-              openModal: false,
-              newsTypeToken: "",
-              type: "new",
-              isActive: "active"
-            });
-          } else {
-            toastr.warning(createNewsType.data.message);
-          }
-        } else {
-          toastr.error(createNewsType.data.message);
-        }
-      }
-      // this.props.setLoader(false);
+      if (
+        this.validator.allValid()
 
+      ) {
+        let data = {
+          newsTypeName: newsTypeName,
+          isActive: isActive === 'active' ? true : false
+        };
+        const createNewsType = await addNewsTypeApi(data);
+        if (createNewsType) {
+          if (createNewsType.status === status.success) {
+            if (createNewsType.data.code === status.success) {
+              toastr.success(createNewsType.data.message);
+              this.newsTypeList();
+              this.setState({
+                newsTypeName: "",
+                openModal: false,
+                newsTypeToken: "",
+                type: "new",
+                isActive: "active"
+              });
+            } else {
+              toastr.warning(createNewsType.data.message);
+            }
+          } else {
+            toastr.error(createNewsType.data.message);
+          }
+        }
+        // this.props.setLoader(false);
+
+      }
+      else {
+        this.validator.showMessages();
+      }
     }
   };
   UpdateNewsType = async () => {
     const { type, newsTypeName, newsTypeToken, isActive } = this.state;
     if (type === "edit") {
-      if (!newsTypeName) {
-        toastr.error("News Type is required");
-        return;
-      }
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
-      let data = {
-        newsTypeName: newsTypeName,
-        newsTypeToken: newsTypeToken,
-        isActive: isActive === 'active' ? true : false
-      };
-      const updateNewsType = await updateNewsTypeApi(data);
-      if (updateNewsType) {
-        if (updateNewsType.status === status.success) {
-          if (updateNewsType.data.code === status.success) {
-            toastr.success(updateNewsType.data.message);
-            this.newsTypeList();
-            this.setState({
-              newsTypeName: "",
-              openModal: false,
-              newsTypeToken: "",
-              type: "new",
-              isActive: "active"
-            });
-          } else {
-            toastr.warning(updateNewsType.data.message);
-          }
-        } else {
-          toastr.error(updateNewsType.data.message);
-        }
-      }
-      // this.props.setLoader(false);
+      if (
+        this.validator.allValid()
 
+      ) {
+        let data = {
+          newsTypeName: newsTypeName,
+          newsTypeToken: newsTypeToken,
+          isActive: isActive === 'active' ? true : false
+        };
+        const updateNewsType = await updateNewsTypeApi(data);
+        if (updateNewsType) {
+          if (updateNewsType.status === status.success) {
+            if (updateNewsType.data.code === status.success) {
+              toastr.success(updateNewsType.data.message);
+              this.newsTypeList();
+              this.setState({
+                newsTypeName: "",
+                openModal: false,
+                newsTypeToken: "",
+                type: "new",
+                isActive: "active"
+              });
+            } else {
+              toastr.warning(updateNewsType.data.message);
+            }
+          } else {
+            toastr.error(updateNewsType.data.message);
+          }
+        }
+        // this.props.setLoader(false);
+
+      }
+    }
+    else {
+      this.validator.showMessages();
     }
   };
   handleChange = (event) => {
@@ -243,8 +248,8 @@ class newsType extends Component {
           <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
               <div className="card-title">News Type Infromation</div>
-              <div>            
-              <TextField style={{ width: '300px' }}
+              <div>
+                <TextField style={{ width: '300px' }}
                   className="mr-16"
                   placeholder="Search..."
 
@@ -261,10 +266,10 @@ class newsType extends Component {
                   }}
                 />
                 <Button
-                className="capitalize text-white bg-circle-primary"
-                onClick={() => this.setModel("new")}
-              >
-                Add News type
+                  className="capitalize text-white bg-circle-primary"
+                  onClick={() => this.setModel("new")}
+                >
+                  Add News type
             </Button>
               </div>
             </div>
@@ -275,7 +280,7 @@ class newsType extends Component {
                   <TableRow>
                     <TableCell className="px-0 py-8">Sr.No</TableCell>
                     <TableCell className="px-0 py-8">
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'newsTypeName'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("newsTypeName", sortingOrder)}
@@ -283,15 +288,15 @@ class newsType extends Component {
                         NEWS Type
                       </TableSortLabel></TableCell>
                     <TableCell className="px-0 py-8">
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'isActive'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("isActive", sortingOrder)}
                       >
-                      Active/Not Active
+                        Active/Not Active
                       </TableSortLabel></TableCell>
                     <TableCell className="px-0 py-8">
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'createdDate'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("createdDate", sortingOrder)}
@@ -308,7 +313,7 @@ class newsType extends Component {
                       (newsType, index) => (
                         <TableRow key={index}>
                           <TableCell className="p-0">
-                          {page * rowsPerPage + index + 1}
+                            {page * rowsPerPage + index + 1}
 
                           </TableCell>
                           <TableCell className="p-0">
@@ -386,18 +391,30 @@ class newsType extends Component {
                 onSubmit={type === "new" ? this.AddNewsType : this.UpdateNewsType}
                 onError={(errors) => null}
               >
-                <TextValidator
-                  variant="outlined"
-                  className="mb-16"
+                <TextField
+                  className="mb-16 w-100"
                   label="News Type"
                   onChange={this.handleChange}
                   type="text"
                   name="newsTypeName"
                   value={newsTypeName}
-                  validators={["required", "minStringLength: 2"]}
-                  errorMessages={["this field is required"]}
-                  style={{ width: "-webkit-fill-available" }}
+                  placeholder="Enter News Type"
+                  variant="outlined"
+
+                  error={this.validator.message(
+                    "newsTypeName",
+                    newsTypeName,
+                    "required"
+                  )}
+                  helperText={this.validator.message(
+                    "newsTypeName",
+                    newsTypeName,
+                    "required"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("newsTypeName")}
                 />
+
+
                 <RadioGroup
                   value={isActive}
                   name="isActive"

@@ -3,7 +3,7 @@ import {
   adminUserListApi,
   deleteAdminUserApi,
   addAdminUserApi,
-  updateAdminUserApi,
+  updateAdminUserApi, aclRoleNameListApi, aclRoleListApi
 } from "../../../redux/actions/index";
 import { status } from "../../../utility/config";
 import { toastr } from "react-redux-toastr";
@@ -11,17 +11,24 @@ import { Breadcrumb } from "../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, TextField, TableSortLabel
+  Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, TextField, TableSortLabel, InputLabel, Select, MenuItem, FormHelperText
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import { PhoneIphone, Email, Person, GroupAdd, Search } from '@material-ui/icons';
+import SimpleReactValidator from "simple-react-validator";
+
 
 
 class AdminUser extends Component {
+  constructor(props) {
+    super(props);
+    this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+  }
   state = {
     adminUserList: [],
+    aclRoleNameList: [],
     count: "",
     sortingField: "updatedTime",
     sortingOrder: "asc",
@@ -47,7 +54,13 @@ class AdminUser extends Component {
 
   componentDidMount = async () => {
     await this.getAdminUserList();
+    await this.getAclRoleList();
     // custom rule will have name 'isPasswordMatch'
+  };
+
+  getAclRoleList = async () => {
+    await this.props.aclRoleNameListApi();
+    this.setState({ aclRoleNameList: this.props.aclRoleNameList });
   };
 
   getAdminUserList = async () => {
@@ -159,67 +172,51 @@ class AdminUser extends Component {
   };
   AddAdminUser = async () => {
     const { type, firstName, lastName, role, email, contactNumber } = this.state;
+
     if (type === "new") {
-      if (!firstName) {
-        toastr.error("firstName is required");
-        return;
-      }
-      if (!lastName) {
-        toastr.error("lastName is required");
-        return;
-      }
-      if (!role) {
-        toastr.error("role is required");
-        return;
-      }
-      if (!email) {
-        toastr.error("email is required");
-        return;
-      }
-      if (!contactNumber) {
-        toastr.error("contactNumber is required");
-        return;
-      }
+      if (
+        this.validator.allValid()
 
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
-      let data = {
-        firstName: firstName,
-        lastName: lastName,
-        role: role,
-        email: email,
-        contactNumber: contactNumber
-      };
-      const createAdminUser = await addAdminUserApi(data);
-      if (createAdminUser) {
-        if (createAdminUser.status === status.success) {
-          if (createAdminUser.data.code === status.success) {
-            toastr.success(createAdminUser.data.message);
-            this.getAdminUserList();
-            this.setState({
-              openModal: false,
-              type: "new",
-              adminId: "",
-              adminToken: "",
-              firstName: "",
-              lastName: "",
-              role: "",
-              roleToken: "",
-              email: "",
-              contactNumber: ""
+      ) {
+        let data = {
+          firstName: firstName,
+          lastName: lastName,
+          role: role,
+          email: email,
+          contactNumber: contactNumber
+        };
+        const createAdminUser = await addAdminUserApi(data);
+        if (createAdminUser) {
+          if (createAdminUser.status === status.success) {
+            if (createAdminUser.data.code === status.success) {
+              toastr.success(createAdminUser.data.message);
+              this.getAdminUserList();
+              this.setState({
+                openModal: false,
+                type: "new",
+                adminId: "",
+                adminToken: "",
+                firstName: "",
+                lastName: "",
+                role: "",
+                roleToken: "",
+                email: "",
+                contactNumber: ""
 
-            });
+              });
+            } else {
+              toastr.warning(createAdminUser.data.message);
+            }
           } else {
-            toastr.warning(createAdminUser.data.message);
+            toastr.error(createAdminUser.data.message);
           }
-        } else {
-          toastr.error(createAdminUser.data.message);
         }
-      }
-      // this.props.setLoader(false);
+        // this.props.setLoader(false);
 
+      }
+      else {
+        this.validator.showMessages();
+      }
     }
   };
   UpdateAdminUser = async () => {
@@ -227,73 +224,49 @@ class AdminUser extends Component {
       type,
       adminToken, firstName, lastName, role, email, contactNumber } = this.state;
     if (type === "edit") {
-      if (!firstName) {
-        toastr.error("firstName is required");
-        return;
-      }
-      if (!lastName) {
-        toastr.error("lastName is required");
-        return;
-      }
-      if (!role) {
-        toastr.error("role is required");
-        return;
-      }
-      if (!email) {
-        toastr.error("email is required");
-        return;
-      }
-      if (!contactNumber) {
-        toastr.error("contactNumber is required");
-        return;
-      }
-      // if (!passWord) {
-      //   toastr.error("password is required");
-      //   return;
-      // }
-      // if (!confirmPassWord) {
-      //   toastr.error("confirmPassword is required");
-      //   return;
-      // }
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
-      let data = {
-        adminToken: adminToken,
-        firstName: firstName,
-        lastName: lastName,
-        role: role,
-        email: email,
-        contactNumber: contactNumber
-      };
-      const updateAdminUser = await updateAdminUserApi(data);
-      if (updateAdminUser) {
-        if (updateAdminUser.status === status.success) {
-          if (updateAdminUser.data.code === status.success) {
-            toastr.success(updateAdminUser.data.message);
-            this.getAdminUserList();
-            this.setState({
-              openModal: false,
-              newsText: "",
-              type: "new",
-              adminToken: "",
-              firstName: "",
-              lastName: "",
-              role: "",
-              roleToken: "",
-              email: "",
-              contactNumber: ""
-            });
-          } else {
-            toastr.warning(updateAdminUser.data.message);
-          }
-        } else {
-          toastr.error(updateAdminUser.data.message);
-        }
-      }
-      // this.props.setLoader(false);
+      if (
+        this.validator.allValid()
 
+      ) {
+        let data = {
+          adminToken: adminToken,
+          firstName: firstName,
+          lastName: lastName,
+          role: role,
+          email: email,
+          contactNumber: contactNumber
+        };
+        const updateAdminUser = await updateAdminUserApi(data);
+        if (updateAdminUser) {
+          if (updateAdminUser.status === status.success) {
+            if (updateAdminUser.data.code === status.success) {
+              toastr.success(updateAdminUser.data.message);
+              this.getAdminUserList();
+              this.setState({
+                openModal: false,
+                newsText: "",
+                type: "new",
+                adminToken: "",
+                firstName: "",
+                lastName: "",
+                role: "",
+                roleToken: "",
+                email: "",
+                contactNumber: ""
+              });
+            } else {
+              toastr.warning(updateAdminUser.data.message);
+            }
+          } else {
+            toastr.error(updateAdminUser.data.message);
+          }
+        }
+        // this.props.setLoader(false);
+
+      }
+      else {
+        this.validator.showMessages();
+      }
     }
   };
 
@@ -313,7 +286,8 @@ class AdminUser extends Component {
       adminUserList,
       firstName, lastName, role, email, contactNumber,
       type,
-      openModal
+      openModal,
+      aclRoleNameList
 
     } = this.state;
     return (
@@ -361,7 +335,7 @@ class AdminUser extends Component {
                   <TableRow>
                     <TableCell className="px-0 py-8" width="5%" >Sr.No</TableCell>
                     <TableCell className="px-0 py-8" width="15%" >
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'firstName'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("firstName", sortingOrder)}
@@ -369,7 +343,7 @@ class AdminUser extends Component {
                         UserName
                       </TableSortLabel></TableCell>
                     <TableCell className="px-0 py-8" width="8%" >
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'role'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("role", sortingOrder)}
@@ -377,7 +351,7 @@ class AdminUser extends Component {
                         Role
                       </TableSortLabel></TableCell>
                     <TableCell className="px-0 py-8" width="20%">
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'email'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("email", sortingOrder)}
@@ -385,15 +359,15 @@ class AdminUser extends Component {
                         Email
                       </TableSortLabel></TableCell>
                     <TableCell className="px-0 py-8" width="15%" >
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'contactNumber'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("contactNumber", sortingOrder)}
                       >
                         ContactNumber
                       </TableSortLabel></TableCell>
-                    <TableCell className="px-0 py-8" width="15%"> 
-                    <TableSortLabel
+                    <TableCell className="px-0 py-8" width="15%">
+                      <TableSortLabel
                         active={sortingField === 'createdTime'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("createdTime", sortingOrder)}
@@ -410,7 +384,7 @@ class AdminUser extends Component {
                     .map((AdminUser, index) => (
                       <TableRow key={index}>
                         <TableCell className="p-0" >
-                        {page * rowsPerPage + index + 1}
+                          {page * rowsPerPage + index + 1}
                         </TableCell>
                         <TableCell className="p-0" >
                           {AdminUser.firstName + " " + AdminUser.lastName}
@@ -497,7 +471,7 @@ class AdminUser extends Component {
             fullWidth={true} maxWidth="sm"
           >
             <DialogTitle id="form-dialog-title" >
-              {type === "new" ? <div style={{ display: "contents" }}><GroupAdd fontSize="large" />Add a Admin User</div> : "Edit Admin User"}
+              {type === "new" ? "Add a Admin User" : "Edit Admin User"}
             </DialogTitle>
             <DialogContent>
               <ValidatorForm
@@ -509,7 +483,35 @@ class AdminUser extends Component {
               >
                 <Grid container spacing={1} >
                   <Grid item lg={6} md={6} sm={12} xs={12}>
-                    <TextValidator
+                    <TextField
+                      className="mb-16 w-100"
+                      label="First Name"
+                      onChange={this.handleChange}
+                      type="text"
+                      name="firstName"
+                      placeholder="Enter First Name"
+                      value={firstName}
+                      variant="outlined"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Person />
+                          </InputAdornment>
+                        ),
+                      }}
+                      error={this.validator.message(
+                        "firstName",
+                        firstName,
+                        "required"
+                      )}
+                      helperText={this.validator.message(
+                        "firstName",
+                        firstName,
+                        "required"
+                      )}
+                      onBlur={() => this.validator.showMessageFor("firstName")}
+                    />
+                    {/* <TextValidator
                       className="mb-16 "
                       label="first Name"
 
@@ -530,20 +532,18 @@ class AdminUser extends Component {
                           </InputAdornment>
                         ),
                       }}
-                    />
+                    /> */}
                   </Grid>
                   <Grid item lg={6} md={6} sm={12} xs={12}>
-                    <TextValidator
-                      className="mb-16 "
-                      label="last Name"
+
+                    <TextField
+                      className="mb-16 w-100"
+                      label="Last Name"
                       onChange={this.handleChange}
-                      placeholder="Enter Last Name"
                       type="text"
                       name="lastName"
                       value={lastName}
-                      validators={["required"]}
-                      errorMessages={["this field is required"]}
-                      style={{ width: "-webkit-fill-available" }}
+                      placeholder="Enter Last Name"
                       variant="outlined"
                       InputProps={{
                         startAdornment: (
@@ -552,33 +552,64 @@ class AdminUser extends Component {
                           </InputAdornment>
                         ),
                       }}
+                      error={this.validator.message(
+                        "lastName",
+                        lastName,
+                        "required"
+                      )}
+                      helperText={this.validator.message(
+                        "lastName",
+                        lastName,
+                        "required"
+                      )}
+                      onBlur={() => this.validator.showMessageFor("lastName")}
                     />
+
+
                   </Grid>
                 </Grid>
-                <TextValidator
-                  className="mb-16 "
-                  label="role"
-                  onChange={this.handleChange}
-                  type="text"
-                  name="role"
-                  value={role}
-                  validators={["required"]}
-                  errorMessages={["this field is required"]}
-                  style={{ width: "-webkit-fill-available" }}
-                  variant="outlined"
-                />
+                <FormControl className="mb-16 w-100" variant="outlined" error={this.validator.message(
+                  "role",
+                  role,
+                  "required"
+                )}>
+                  <InputLabel id="role">
+                    Role
+                  </InputLabel>
+                  <Select
+                    labelId="role"
+                    label="Role"
+                    id="role"
+                    name="role"
+                    value={role}
+                    onChange={this.handleChange}
+                    displayEmpty
+                    onBlur={() => this.validator.showMessageFor("role")}
+                  >
+                    {aclRoleNameList.map((roleType, index) => {
+                      return (
+                        <MenuItem value={roleType} key={index} >
+                          {roleType}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                  <FormHelperText style={{ color: 'red' }}>{this.validator.message(
+                    "role",
+                    role,
+                    "required"
+                  )}</FormHelperText>
+                </FormControl>
 
-                <TextValidator
-                  className="mb-16 "
-                  label="email"
-                  placeholder="Enter Email"
+
+                <TextField
+                  className="mb-16 w-100"
+                  label="Email Address"
                   onChange={this.handleChange}
                   type="email"
                   name="email"
                   value={email}
-                  validators={["required", "isEmail"]}
-                  errorMessages={["this field is required", "Enter valid email"]}
-                  style={{ width: "-webkit-fill-available" }}
+                  placeholder="Enter Email Address"
                   variant="outlined"
                   InputProps={{
                     startAdornment: (
@@ -587,19 +618,28 @@ class AdminUser extends Component {
                       </InputAdornment>
                     ),
                   }}
+                  error={this.validator.message(
+                    "email",
+                    email,
+                    "required|email"
+                  )}
+                  helperText={this.validator.message(
+                    "email",
+                    email,
+                    "required|email"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("email")}
                 />
-                <TextValidator
-                  className="mb-16 "
-                  label="contact Number"
+
+
+                <TextField
+                  className="mb-16 w-100"
+                  label="Contact Number"
                   onChange={this.handleChange}
-                  type="number"
+                  type="text"
                   name="contactNumber"
-                  placeholder="Enter Contact Number"
                   value={contactNumber}
-                  validators={["required", "minStringLength:10",
-                    "maxStringLength: 10"]}
-                  errorMessages={["this field is required", "Contact Number must contains 10 digits", "Contact Number must contains 10 digits"]}
-                  style={{ width: "-webkit-fill-available" }}
+                  placeholder="Enter Contact Number"
                   variant="outlined"
                   InputProps={{
                     startAdornment: (
@@ -608,46 +648,64 @@ class AdminUser extends Component {
                       </InputAdornment>
                     ),
                   }}
+                  error={this.validator.message(
+                    "contactNumber",
+                    contactNumber,
+                    "required|integer|min:10|max:10"
+                  )}
+                  helperText={this.validator.message(
+                    "contactNumber",
+                    contactNumber,
+                    "required|integer|min:10|max:10"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("contactNumber")}
                 />
 
-                <DialogActions className="p-0">
-                  <div className="swiper-container-no-flexbox">
-                    <Tooltip title="Password will generated by The System" placement="right">
 
-                      <IconButton className="p-0">
-                        <Icon>info_outlined</Icon>
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                  <Button onClick={this.handleClose} color="primary">
-                    Cancel
+                <DialogActions className="p-0" style={{ display: "block" }}>
+                  <div className="flex flex-middle flex-space-between">
+                    <div>
+                      <Tooltip title="Password will generated by The System" placement="right">
+
+                        <IconButton className="p-0">
+                          <Icon>info_outlined</Icon>
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                    <div>
+                      <Button onClick={this.handleClose} className="mr-8" color="primary">
+                        Cancel
                         </Button>
-                  {type === "new" ? (
-                    <Button color="primary" type="submit">
-                      Add
+                      {type === "new" ? (
+                        <Button color="primary" type="submit">
+                          Add
                           </Button>
-                  ) : (
-                      <Button color="primary" type="submit">
-                        Save
+                      ) : (
+                          <Button color="primary" type="submit">
+                            Save
                           </Button>
-                    )}
+                        )}
+                    </div>
+                  </div>
                 </DialogActions>
               </ValidatorForm>
             </DialogContent>
           </Dialog>
         </div>
-      </div>
+      </div >
     );
   }
 }
 const mapStateToProps = (state) => {
   const { adminUserList, firstName, lastName, role, email, contactNumber } = state.adminUser;
+  const { aclRoleNameList } = state.aclRole;
+
   return {
-    adminUserList, firstName, lastName, role, email, contactNumber
+    adminUserList, aclRoleNameList, firstName, lastName, role, email, contactNumber
 
   };
 };
 
-export default connect(mapStateToProps, { adminUserListApi, addAdminUserApi })(
+export default connect(mapStateToProps, { adminUserListApi, aclRoleNameListApi, addAdminUserApi })(
   AdminUser
 );
