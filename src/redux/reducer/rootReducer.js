@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import LoginReducer from "./LoginReducer";
+import LoginReducer from "./auth/loginReducer";
 import UserReducer from "./UserReducer";
 import LayoutReducer from "./LayoutReducer";
 import ScrumBoardReducer from "./ScrumBoardReducer";

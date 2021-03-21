@@ -514,8 +514,8 @@ class inquiry extends Component {
                                 <VisibilityIcon />
                               </Icon>
                             </IconButton>
-                            <IconButton
-                              className="p-0"
+                            <IconButton className="p-8"
+                              
                               onClick={() => this.setReplyModel(inquiryUpdate)
                               }
                               disabled={inquiryUpdate.read}

@@ -7,6 +7,7 @@ import {
   addSubCategoryApi,
   updateSubCategoryApi,
   categoryListApi,
+  categoryNameListApi
 } from "../../../../redux/actions/index";
 import { connect } from "react-redux";
 import {
@@ -54,7 +55,7 @@ class subCategory extends Component {
     page: 0,
     deleteModal: false,
     deleteSubCategoryToken: null,
-    categoryList: [],
+    categoryNameList: [],
     openModal: false,
     subCategoryName: "",
     subCategoryToken: "",
@@ -80,8 +81,8 @@ class subCategory extends Component {
     this.setState({ subCategoryList: this.props.subCategoryList.result, count: this.props.subCategoryList.count });
   };
   categoryList = async () => {
-    await this.props.categoryListApi();
-    this.setState({ categoryList: this.props.categoryList.result });
+    await this.props.categoryNameListApi();
+    this.setState({ categoryNameList: this.props.categoryNameList });
   };
   handleSearchKeyword = async (event) => {
     await this.setState({ keyword: event.target.value });
@@ -284,7 +285,7 @@ class subCategory extends Component {
       openModal,
       subCategoryName,
       type,
-      categoryList,
+      categoryNameList,
       categoryName,
       isActive
     } = this.state;
@@ -492,7 +493,7 @@ class subCategory extends Component {
                     value={categoryName}
                     label="Category"
                   >
-                    {categoryList ? categoryList.map((category, index) => {
+                    {categoryNameList ? categoryNameList.map((category, index) => {
                       return (
                         <MenuItem
                           value={category.categoryName}
@@ -563,14 +564,16 @@ class subCategory extends Component {
 
 const mapStateToProps = (state) => {
   const { subCategoryList } = state.subCategory;
-  const { categoryList } = state.category;
+  const { categoryList,categoryNameList } = state.category;
   return {
     subCategoryList,
     categoryList,
+    categoryNameList
   };
 };
 
 export default connect(mapStateToProps, {
   subCategoryListApi,
   categoryListApi,
+  categoryNameListApi
 })(subCategory);

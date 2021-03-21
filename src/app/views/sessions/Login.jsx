@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { withRouter } from "react-router-dom";
 
-import { loginWithEmailAndPassword } from "../../../redux/actions/LoginActions";
+import { loginApi } from "../../../redux/actions/LoginActions";
 
 const styles = (theme) => ({
   wrapper: {
@@ -29,11 +29,21 @@ const styles = (theme) => ({
   },
 });
 
-class SignIn extends Component {
+class LogIn extends Component {
   state = {
     email: "",
     password: "",
-    agreement: "",
+    remember: false,
+  };
+  componentDidMount = () => {
+    // this.props.setLoader(false);
+    let data= JSON.parse(localStorage.getItem('remember'));
+    if(data){
+      this.setState({ email : data.email, password : data.password})
+      if(data.email){
+        this.setState({ remember : true})
+      }
+    }
   };
   handleChange = (event) => {
     event.persist();
@@ -41,14 +51,34 @@ class SignIn extends Component {
       [event.target.name]: event.target.value,
     });
   };
-  handleFormSubmit = (event) => {
-    this.props.loginWithEmailAndPassword({ ...this.state });
-  };
-  render() {
+  handleFormSubmit = async (event) => {
     let { email, password } = this.state;
+    let  loginData = new FormData();
+    loginData.append("credential", email);
+    loginData.append("password", password);
+
+    if(this.state.remember){
+      localStorage.setItem('remember',JSON.stringify({ email : email, password : password}))
+    }else{
+      localStorage.setItem('remember',JSON.stringify({ email : "", password : ""}))
+    }
+    await this.props.loginApi(loginData);
+  };
+  handleRemember = () => {
+    const { remember, email, password } = this.state;
+    this.setState({ remember : !remember});
+    if(!remember){
+      localStorage.setItem('remember',JSON.stringify({ email : email, password : password}))
+    }else{
+      localStorage.setItem('remember',JSON.stringify({ email : "", password : ""}))
+    }
+  }
+  render() {
+    let { email, password ,remember} = this.state;
     let { classes } = this.props;
     return (
-      <div className="signup flex flex-center w-100 h-100vh">
+      <div className="signup flex flex-center w-100 h-100vh" >
+        
         <div className="p-8">
           <Card className="signup-card position-relative y-center">
             <Grid container>
@@ -87,33 +117,36 @@ class SignIn extends Component {
                     />
                     <FormControlLabel
                       className="mb-8"
-                      name="agreement"
-                      onChange={this.handleChange}
-                      control={<Checkbox checked />}
+                      name="remember"
+                      checked = {remember}
+                      onChange={this.handleRemember}
+                      control={<Checkbox />}
                       label="Remember me"
                     />
-                    <div className="flex flex-middle mb-8">
-                      <div className={classes.wrapper}>
+                    <div className="flex flex-middle flex-space-between">
+
+                      <div className={styles.wrapper}>
                         <Button
                           variant="contained"
                           color="primary"
-                          disabled={this.props.login.loading}
+                          // disabled={this.props.login.loading}
                           type="submit"
                         >
                           Sign in
                         </Button>
-                        {this.props.login.loading && (
+                        {/* {this.props.login.loading && (
                           <CircularProgress
                             size={24}
                             className={classes.buttonProgress}
                           />
-                        )}
+                        )} */}
                       </div>
                       <Button
-                      style={{marginLeft : "84px"}}
+                      variant="outlined"
+                      //style={{marginLeft : "84px"}}
                       className="text-primary"
                       onClick={() =>
-                        this.props.history.push("/session/forgot-password")
+                        this.props.history.push("/forgot-password")
                       }
                     >
                       Forgot password?
@@ -129,11 +162,7 @@ class SignIn extends Component {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  loginWithEmailAndPassword: PropTypes.func.isRequired,
-  login: state.login,
-});
-export default withStyles(styles, { withTheme: true })(
-  withRouter(connect(mapStateToProps, { loginWithEmailAndPassword })(SignIn))
-);
+const mapStateToProps = (state) => {
+  return {};
+};
+export default connect(mapStateToProps, { loginApi })(LogIn);
