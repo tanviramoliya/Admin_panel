@@ -3,19 +3,19 @@ import { withRouter } from "react-router-dom";
 import {
   Icon,
   IconButton,
-  Badge,
   MenuItem,
   withStyles,
   MuiThemeProvider,
-  Menu,
+  Avatar
 } from "@material-ui/core";
 import { connect } from "react-redux";
-import { setLayoutSettings } from "../../../redux/actions/LayoutActions";
-import { logoutUser } from "../../../redux/actions/UserActions";
+import { setLayoutSettings } from "redux/actions/LayoutActions";
+import { logoutUser } from "redux/actions/UserActions";
 import { PropTypes } from "prop-types";
+import { MatxMenu } from "../../../components/matx/index";
 import { isMdScreen } from "utils";
 import { Link } from "react-router-dom";
-import { AccountCircle } from "@material-ui/icons";
+import { deepOrange, deepPurple } from '@material-ui/core/colors';
 
 const styles = (theme) => ({
   root: {
@@ -24,7 +24,7 @@ const styles = (theme) => ({
 });
 
 class Layout1Topbar extends Component {
-  state = { anchorEl: null, open: false };
+  state = {};
 
   updateSidebarMode = (sidebarSettings) => {
     let { settings, setLayoutSettings } = this.props;
@@ -58,15 +58,6 @@ class Layout1Topbar extends Component {
     this.props.logoutUser();
   };
 
-  handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    this.setState({
-      anchorEl: event.currentTarget,
-      open: true,
-    });
-  };
-  handleClose = () => {
-    this.setState({ anchorEl: null, open: false });
-  };
   render() {
     let { theme, settings, className, style } = this.props;
     const topbarTheme =
@@ -82,35 +73,51 @@ class Layout1Topbar extends Component {
               style
             )}
           >
-            <div className="flex flex-middle">
-              <div className="pr-16">
+            <div className="flex flex-end h-100">
+              <div className="flex">
                 <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit"
+                  onClick={this.handleSidebarToggle}
+                  className="hide-on-lg"
                 >
-                  <AccountCircle />
+                  <Icon>menu</Icon>
                 </IconButton>
-                <Menu style={{paddingRight:'100px'}}
-                  id="menu-appbar"
-                  anchorEl={this.state.anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={this.state.open}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
-                </Menu>
+                <div className="flex flex-middle">
+                  <MatxMenu
+                    menuButton={
+                      <Avatar>H</Avatar>
+                    }
+                  >
+                    <MenuItem style={{ minWidth: 185 }}>
+                      <Link
+                        className="flex flex-middle"
+                        to="/profile"
+                      >
+                        <Icon> person </Icon>
+                        <span className="pl-16"> Profile </span>
+                      </Link>
+                    </MenuItem>
+                    {/* <MenuItem
+                      className="flex flex-middle"
+                      style={{ minWidth: 185 }}
+                    >
+                       <Link
+                        className="flex flex-middle"
+                        to="/profile"
+                      >
+                      <Icon> vpn_key </Icon>
+                      <span className="pl-16"> Change Password </span>
+                      </Link>
+                    </MenuItem> */}
+                    <MenuItem
+                      onClick={this.handleSignOut}
+                      className="flex flex-middle"
+                      style={{ minWidth: 185 }}
+                    >
+                      <Icon> power_settings_new </Icon>
+                      <span className="pl-16"> Logout </span>
+                    </MenuItem>
+                  </MatxMenu>
+                </div>
               </div>
             </div>
           </div>

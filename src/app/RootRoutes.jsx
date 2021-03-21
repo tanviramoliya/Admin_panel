@@ -17,6 +17,8 @@ import settingRoutes from "./views/settingModule/settingRoutes";
 import inquiryRoutes from "./views/inquiry/inquiryRoutes";
 import aclRoleRoutes from "./views/aclRole/aclRoleRoutes";
 
+import Profile from './views/Profile/profile';
+
 
 
 
@@ -27,6 +29,13 @@ const redirectRoute = [
     component: () => <Redirect to="/dashboard" />
   }
 ];
+const profileRoute = [
+  {
+    path : '/profile',
+    exact : true,
+    component : () => <Profile/>
+  }
+]
 
 const errorRoute = [
   {
@@ -46,6 +55,7 @@ const routes = [
   ...inquiryRoutes,
   ...utilitiesRoutes,
   ...formsRoutes,
+  ...profileRoute,
   ...redirectRoute,
   ...newsRoutes,
   ...errorRoute,
