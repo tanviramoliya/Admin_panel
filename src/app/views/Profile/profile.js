@@ -97,7 +97,14 @@ class Profile extends Component {
     await this.getCurrentAdmin();
   };
   canclePass = () => {
-    this.setState({ showCard: false })
+    this.validator.hideMessageFor("oldPass")
+    this.validator.hideMessageFor("newPass")
+    this.validator.hideMessageFor("confirmPass")
+    this.setState({ showCard: false,oldPass: "",
+    newPass: "",
+    confirmPass: "", })
+  
+
   }
   handleSubmit = async () => {
     console.log('handle submit');
@@ -439,6 +446,7 @@ class Profile extends Component {
                         oldPass,
                         "required|min:8|max:15|regex"
                       )}
+                     
                       onBlur={() => this.validator.showMessageFor("oldPass")}
                     />
                   </Grid>

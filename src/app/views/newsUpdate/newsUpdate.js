@@ -18,7 +18,12 @@ import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import { Search, Clear } from "@material-ui/icons";
+import SimpleReactValidator from "simple-react-validator";
 class newsUpdate extends Component {
+  constructor(props) {
+    super(props);
+    this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+  }
   state = {
     newsList: [],
     count: "",
@@ -44,7 +49,6 @@ class newsUpdate extends Component {
   };
   getNewsList = async () => {
     const { rowsPerPage, page, sortingField, sortingOrder,keyword } = this.state;
-    console.log(rowsPerPage, "----", page);
     let data = {
       keyword: keyword,
       pageSize: rowsPerPage,
@@ -137,23 +141,18 @@ class newsUpdate extends Component {
       newsLink: "",
       newsToken: "",
     });
+    this.validator.hideMessageFor("newsLink");
+    this.validator.hideMessageFor("newsText");
+
   };
+  
   AddNews = async () => {
     const { type, newsText, newsLink } = this.state;
     if (type === "new") {
-      if (!newsText) {
-        toastr.error("NewsText is required");
-        return;
-      }
-      if (!newsLink) {
-        toastr.error("NewsLink is required");
-        return;
-      }
+      if (
+        this.validator.allValid()
 
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
+      ) {
       let data = {
         newsText: newsText,
         newsLink: newsLink
@@ -172,6 +171,8 @@ class newsUpdate extends Component {
               published: false,
               newsToken: ""
             });
+            this.validator.hideMessageFor("newsLink");
+            this.validator.hideMessageFor("newsText");
           } else {
             toastr.warning(createNews.data.message);
           }
@@ -182,6 +183,10 @@ class newsUpdate extends Component {
       // this.props.setLoader(false);
 
     }
+    else {
+      this.validator.showMessages();
+    }
+  }
   };
   UpdateNews = async () => {
     const {
@@ -190,18 +195,10 @@ class newsUpdate extends Component {
       newsToken
     } = this.state;
     if (type === "edit") {
-      if (!newsText) {
-        toastr.error("NewsText is required");
-        return;
-      }
-      if (!newsLink) {
-        toastr.error("NewsLink is required");
-        return;
-      }
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
+      if (
+        this.validator.allValid()
+
+      ) {
       let data = {
         newsText: newsText,
         newsLink: newsLink,
@@ -221,6 +218,8 @@ class newsUpdate extends Component {
               type: "new",
               newsToken: ""
             });
+            this.validator.hideMessageFor("newsLink");
+            this.validator.hideMessageFor("newsText");
           } else {
             toastr.warning(updateNews.data.message);
           }
@@ -231,6 +230,10 @@ class newsUpdate extends Component {
       // this.props.setLoader(false);
 
     }
+    else {
+      this.validator.showMessages();
+    }
+  }
   };
   handleChange = (event) => {
     event.persist();
@@ -460,29 +463,53 @@ class newsUpdate extends Component {
                 onError={(errors) => null}
               >
 
-                <TextValidator
-                  className="mb-16 "
+                <TextField
+                  className="mb-16 w-100"
                   label="News Text"
                   onChange={this.handleChange}
                   type="text"
                   name="newsText"
                   value={newsText}
-                  validators={["required", "minStringLength: 2"]}
-                  errorMessages={["this field is required"]}
-                  style={{ width: "-webkit-fill-available" }}
+                  placeholder="Enter News Text"
                   variant="outlined"
+
+                  error={this.validator.message(
+                    "newsText",
+                    newsText,
+                    "required"
+                  )}
+                  helperText={this.validator.message(
+                    "newsText",
+                    newsText,
+                    "required"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("newsText")}
                 />
-                <TextValidator
-                  className="mb-16 "
+
+                
+                {/* Regexp:(?:http|https):\\/\\/((?:[\\w-]+)(?:\\.[\\w-]+)+)(?:[\\w.,@?^=%&amp;:\\/~+#-]*[\\w@?^=%&amp;\\/~+#-])?"]} */}
+
+                 <TextField
+                  className="mb-16 w-100"
                   label="News Link"
                   onChange={this.handleChange}
-                  type="text"
+                  type="url"
                   name="newsLink"
                   value={newsLink}
-                  validators={["required", "matchRegexp:(?:http|https):\\/\\/((?:[\\w-]+)(?:\\.[\\w-]+)+)(?:[\\w.,@?^=%&amp;:\\/~+#-]*[\\w@?^=%&amp;\\/~+#-])?"]}
-                  errorMessages={["this field is required", "enter valid URL"]}
-                  style={{ width: "-webkit-fill-available" }}
+                  placeholder="Enter News Link"
                   variant="outlined"
+
+                  error={this.validator.message(
+                    "newsLink",
+                    newsLink,
+                    "required|url"
+                  )}
+                  helperText={this.validator.message(
+                    "newsLink",
+                    newsLink,
+                    "required|url"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("newsLink")}
                 />
 
                 <DialogActions className="p-0">

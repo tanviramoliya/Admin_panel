@@ -27,7 +27,8 @@ import {
   DialogContent,
   TextField,
   InputAdornment,
-  TableSortLabel
+  TableSortLabel,
+  Grid
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ReplyIcon from "@material-ui/icons/Reply";
@@ -35,12 +36,18 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { connect } from "react-redux";
 import { green } from "@material-ui/core/colors";
-import { GroupAdd, TextFormat, Search } from "@material-ui/icons";
+import { GroupAdd, TextFormat, Search, Person, Email, DateRange, Phone, Subject, Message } from "@material-ui/icons";
 import RichTextEditor from "components/matx/RichTextEditor";
 import { ValidatorForm } from "react-material-ui-form-validator";
 import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
+import "./style.css";
+import SimpleReactValidator from "simple-react-validator";
 
 class inquiry extends Component {
+  constructor(props) {
+    super(props);
+    this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+  }
   state = {
     inquiryList: [],
     count: "",
@@ -58,11 +65,13 @@ class inquiry extends Component {
     subject: "",
     message: "",
     contactNumber: "",
+    inquiryDate: "",
+
     read: false,
     openReadModal: false,
     openReplyModal: false,
-    replyMessage: undefined,
-    replySubject: undefined,
+    replyMessage: "",
+    replySubject: "",
   };
 
   componentDidMount = async () => {
@@ -152,13 +161,13 @@ class inquiry extends Component {
       subject: data.subject,
       message: data.message,
       contactNumber: data.contactNumber,
+      inquiryDate: data.inquiryDate,
       replyMessage: data.inquiryReply !== null ? data.inquiryReply.replyMessage : null,
       replySubject: data.inquiryReply !== null ? data.inquiryReply.subject : null,
       read: data.read
     });
   };
   setReplyModel = (data) => {
-    console.log("DATA", data);
     this.setState({ openReplyModal: true });
     this.setState({
       userName: data.userName,
@@ -181,60 +190,61 @@ class inquiry extends Component {
       subject: "",
       message: "",
       contactNumber: "",
-      read: false
+      replyMessage:"",
+      replySubject:""
+      //read: false
     });
+    this.validator.hideMessageFor("replyMessage");
+    this.validator.hideMessageFor("replySubject");
+
   };
   replySubmit = async () => {
     const { replyMessage, replySubject, token } = this.state;
-    if (!replyMessage) {
-      toastr.error("replyMessage is required");
-      return;
-    }
-    if (!replySubject) {
-      toastr.error("replySubject is required");
-      return;
-    }
+    if (
+      this.validator.allValid()
 
+    ) {
+      let data = {
 
-    // this.props.setLoader(true);
-    // this.setState({
-    //   addOrg: false,
-    // });
-    let data = {
+        replyMessage: replyMessage,
+        subject: replySubject,
+        inquiryToken: token
+      };
+      const submitReply = await submitReplyApi(data);
+      if (submitReply) {
+        if (submitReply.status === status.success) {
+          if (submitReply.data.code === status.success) {
+            toastr.success(submitReply.data.message);
+            this.getInquiryList();
+            this.setState({
+              openReadModal: false,
+              openReplyModal: false,
+              userName: "",
+              emailId: "",
+              token: "",
+              subject: "",
+              message: "",
+              replyMessage: "",
+              replySubject: "",
+              contactNumber: "",
+              read: false
 
-      replyMessage: replyMessage,
-      subject: replySubject,
-      inquiryToken: token
-    };
-    const submitReply = await submitReplyApi(data);
-    if (submitReply) {
-      if (submitReply.status === status.success) {
-        if (submitReply.data.code === status.success) {
-          toastr.success(submitReply.data.message);
-          this.getInquiryList();
-          this.setState({
-            openReadModal: false,
-            openReplyModal: false,
-            userName: "",
-            emailId: "",
-            token: "",
-            subject: "",
-            message: "",
-            replyMessage: undefined,
-            replySubject: undefined,
-            contactNumber: "",
-            read: false
-
-          });
+            });
+            this.validator.hideMessageFor("replyMessage");
+            this.validator.hideMessageFor("replySubject");
+          } else {
+            toastr.warning(submitReply.data.message);
+          }
         } else {
-          toastr.warning(submitReply.data.message);
+          toastr.error(submitReply.data.message);
         }
-      } else {
-        toastr.error(submitReply.data.message);
+
+        // this.props.setLoader(false);
+
       }
-
-      // this.props.setLoader(false);
-
+    }
+    else {
+      this.validator.showMessages();
     }
   };
 
@@ -243,12 +253,10 @@ class inquiry extends Component {
 
   //all checked
   handleSelectAllClick = (event) => {
-    console.log(" Called");
     const { inquiryList } = this.state;
     if (event.target.checked) {
       const newSelecteds = inquiryList ? inquiryList.map((n) => n.token) : null;
       this.setState({ selected: newSelecteds });
-      console.log("In ALL selected", newSelecteds);
       return;
     }
     this.setState({ selected: [] });
@@ -289,6 +297,7 @@ class inquiry extends Component {
       subject,
       message,
       contactNumber,
+      inquiryDate,
       openReadModal,
       openReplyModal,
       replyMessage,
@@ -405,19 +414,19 @@ class inquiry extends Component {
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("emailId", sortingOrder)}
                       >
-                        User Email                      
+                        User Email
                         </TableSortLabel>
 
                     </TableCell>
                     <TableCell className="px-0 py-8" width="10%">
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'contactNumber'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("contactNumber", sortingOrder)}
                       >
-                         Contact Number                     
+                        Contact Number
                         </TableSortLabel>
-                     
+
                     </TableCell>
                     <TableCell className="px-0 py-8" width="8%">
                       Action
@@ -460,7 +469,7 @@ class inquiry extends Component {
                             }
                             className="p-0"
                           >
-                                                      {page * rowsPerPage + index + 1}
+                            {page * rowsPerPage + index + 1}
 
                           </TableCell>
                           <TableCell
@@ -515,7 +524,7 @@ class inquiry extends Component {
                               </Icon>
                             </IconButton>
                             <IconButton className="p-8"
-                              
+
                               onClick={() => this.setReplyModel(inquiryUpdate)
                               }
                               disabled={inquiryUpdate.read}
@@ -575,102 +584,131 @@ class inquiry extends Component {
           >
             <DialogTitle id="customized-dialog-title">User Inquiry</DialogTitle>
             <DialogContent dividers>
-              <TableContainer>
-                <TableBody>
-                  <TableRow>
-                    <TableCell
-                      width="10%"
-                      style={{ paddingRight: "10px", fontWeight: "bold" }}
-                    >
-                      UserName
-                    </TableCell>
-                    <TableCell width="60%">{userName}</TableCell>
-                    <TableCell
-                      width="10%"
-                      style={{ paddingRight: "10px", fontWeight: "bold" }}
-                    >
-                      Date
-                    </TableCell>
-                    <TableCell width="20%">{Date.now()}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      width="5%"
-                      style={{ paddingRight: "10px", fontWeight: "bold" }}
-                    >
-                      EmailId
-                    </TableCell>
-                    <TableCell width="45%">{emailId}</TableCell>
-                    <TableCell
-                      width="5%"
-                      style={{ paddingRight: "10px", fontWeight: "bold" }}
-                    >
-                      ContactNo
-                    </TableCell>
-                    <TableCell width="45%">{contactNumber}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      style={{ paddingRight: "10px", fontWeight: "bold" }}
-                    >
-                      Subject
-                    </TableCell>
-                    <TableCell colSpan={3}>{subject}</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      style={{ paddingRight: "10px", fontWeight: "bold" }}
-                    >
-                      Message
-                    </TableCell>
-                    <TableCell style={{ wordBreak: "break-word" }} colSpan={3}>
-                      {message}
-                    </TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                  {(replySubject !== null && replyMessage !== null) ?
-                    <>
-                      <TableRow>
-                        <TableCell
-                          style={{ paddingRight: "10px", fontWeight: "bold" }}
-                        >
-                          Replied Subject
-                    </TableCell>
-                        <TableCell colSpan={3}>{replySubject}</TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell
-                          style={{ paddingRight: "10px", fontWeight: "bold" }}
-                        >
-                          Replied Message
-                    </TableCell>
-                        <TableCell style={{ wordBreak: "break-word" }} colSpan={3}>
-                          {replyMessage}
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                      </TableRow> </> : null}
-                </TableBody>
-              </TableContainer>
-            </DialogContent>
-            {
-              read ? null :
-                <DialogActions>
-                  <IconButton
-                    className="p-8"
-                    onClick={() => this.setState({ openReplyModal: true })}
+              <Grid container spacing={3}>
+                <Grid item lg={6} md={6} sm={12} xs={12}>
+                  <TextField
+                    className="mb-16 w-100"
+                    label="User Name"
+                    type="text"
+                    name="userName"
+                    value={userName}
+                    disabled={true}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Person />
+                        </InputAdornment>
+                      ),
+                    }}
+
+                  />
+                  <TextField
+                    className="mb-16 w-100"
+                    label="User Email"
+                    type="text"
+                    name="emailId"
+                    value={emailId}
+                    disabled={true}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Email />
+                        </InputAdornment>
+                      ),
+                    }}
+
+                  />
+
+
+                </Grid>
+                <Grid item lg={6} md={6} sm={12} xs={12}>
+                  <TextField
+                    className="mb-16 w-100"
+                    label="Inquiry Data"
+                    type="text"
+                    name="inquiryDate"
+                    value={inquiryDate}
+                    disabled={true}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <DateRange />
+                        </InputAdornment>
+                      ),
+                    }}
+
+                  />
+                  <TextField
+                    className="mb-16 w-100"
+                    label="User Contact Number"
+                    type="text"
+                    name="contactNumber"
+                    value={contactNumber}
+                    disabled={true}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Phone />
+                        </InputAdornment>
+                      ),
+                    }}
+
+                  />
+                </Grid>
+              </Grid>
+              <TextField
+                className="mb-16 w-100"
+                label="Subject"
+                type="text"
+                name="subject"
+                value={subject}
+                disabled={true}
+
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Subject />
+                    </InputAdornment>
+                  ),
+                }}
+
+              />
+              <TextField
+                className="mb-16 w-100"
+                label="message"
+                type="text"
+                multiline
+                name="message"
+                value={message}
+                disabled={true}
+
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Message />
+                    </InputAdornment>
+                  ),
+                }}
+
+              />
+
+              <DialogActions className="p-0" style={{ display: "block" }}>
+                <div className="flex flex-end">
+
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    endIcon={!read ? <Icon>send</Icon> : <Icon>visibility</Icon>}
+                    onClick={() => this.setState({ openReplyModal: true, openReadModal: false })}
                   >
-                    <Icon color="primary">send</Icon>
-                  </IconButton>
-                </DialogActions>
+                    {!read ? "Send Reply" : "View Reply"}
+                  </Button>
+                </div>
+              </DialogActions>
 
-            }
 
+            </DialogContent>
           </Dialog>
           <Dialog
             open={openReplyModal}
@@ -680,76 +718,136 @@ class inquiry extends Component {
             <DialogTitle id="customized-dialog-title">
               <ReplyIcon color="primary" /> Send Reply
             </DialogTitle>
+
             <DialogContent dividers>
-              <TableRow>
-                <TableCell
-                  width="10%"
-                  style={{ paddingRight: "10px", fontWeight: "bold" }}
-                >
-                  UserName
-                </TableCell>
-                <TableCell width="40%" style={{ wordBreak: "break-word" }}>
-                  {userName}
-                </TableCell>
-                <TableCell
-                  width="10%"
-                  style={{ paddingRight: "10px", fontWeight: "bold" }}
-                >
-                  To
-                </TableCell>
-                <TableCell width="40%" style={{ wordBreak: "break-word" }}>
-                  {emailId}
-                </TableCell>
-              </TableRow>
+              <Grid container spacing={3}>
+                <Grid item lg={6} md={6} sm={12} xs={12}>
+                  <TextField
+                    className="mb-16 w-100"
+                    label="User Name"
+                    type="text"
+                    name="userName"
+                    value={userName}
+                    disabled={true}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Person />
+                        </InputAdornment>
+                      ),
+                    }}
+
+                  />
+                </Grid>
+                <Grid item lg={6} md={6} sm={12} xs={12}>
+
+                  <TextField
+                    className="mb-16 w-100"
+                    label="User Email"
+                    type="text"
+                    name="emailId"
+                    value={emailId}
+                    disabled={true}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Email />
+                        </InputAdornment>
+                      ),
+                    }}
+
+                  />
+
+
+                </Grid>
+              </Grid>
               <ValidatorForm
                 ref="form"
                 onSubmit={this.replySubmit}
                 onError={(errors) => null}
               >
+
                 <TextField
-                  id="outlined-basic"
-                  variant="outlined"
                   className="mb-16 w-100"
-                  label="Subject"
+                  label="Reply Subject"
                   onChange={this.handleChange}
                   type="text"
                   name="replySubject"
                   value={replySubject}
-                  error={replySubject === ""}
-                  helperText={
-                    replySubject === "" ? "this field is required" : ""
-                  }
+                  placeholder="Enter Subject"
+                  variant={!read ? "outlined" : "standard"}
+                  disabled={!read ? false : true}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Subject />
+                      </InputAdornment>
+                    ),
+                  }}
+                  error={this.validator.message(
+                    "replySubject",
+                    replySubject,
+                    "required"
+                  )}
+                  helperText={this.validator.message(
+                    "replySubject",
+                    replySubject,
+                    "required"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("replySubject")}
                 />
+
                 <TextField
-                  error={replyMessage === ""}
-                  id="outlined-basic"
-                  multiline
-                  rows={6}
-                  variant="outlined"
                   className="mb-16 w-100"
-                  label="Reply message"
+                  label="Reply Message"
                   onChange={this.handleChange}
-                  type="textarea"
+                  type="text"
+                  multiline
+                
                   name="replyMessage"
                   value={replyMessage}
-                  helperText={
-                    replyMessage === "" ? "this field is required" : ""
-                  }
+                  placeholder="Enter Reply Message"
+                  variant={!read ? "outlined" : "standard"}            
+                  disabled={!read ? false : true}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Message />
+                      </InputAdornment>
+                    ),
+                  }}
+
+                  error={this.validator.message(
+                    "replyMessage",
+                    replyMessage,
+                    "required"
+                  )}
+                  helperText={this.validator.message(
+                    "replyMessage",
+                    replyMessage,
+                    "required"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("replyMessage")}
                 />
 
-
-                <DialogActions style={{ paddingRight: "24px" }}>
-                  <Button onClick={this.handleClose} variant="outlined">
-                    Cancel
-              </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                    endIcon={<Icon>send</Icon>}
-                  >
-                    Send
-              </Button>
+                <DialogActions className="p-0" style={{ display: "block" }}>
+                  <div className="flex flex-end">
+                    <Button onClick={this.handleClose} className="mr-8" variant="outlined">
+                      Cancel
+                    </Button>
+                    {read ? null :
+                      <>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          type="submit"
+                          endIcon={<Icon>send</Icon>}
+                        >
+                          Send
+                      </Button>
+                      </>
+                    }
+                  </div>
                 </DialogActions>
               </ValidatorForm>
             </DialogContent>

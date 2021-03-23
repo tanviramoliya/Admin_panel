@@ -137,6 +137,7 @@ class newsType extends Component {
   };
   //for close a modal
   handleClose = () => {
+    
     this.setState({
       openModal: false,
       newsTypeName: "",
@@ -144,6 +145,8 @@ class newsType extends Component {
       newsTypeToken: "",
       isActive: "active"
     });
+    this.validator.hideMessageFor("newsTypeName");
+
   };
   AddNewsType = async () => {
     const { type, newsTypeName, isActive } = this.state;
@@ -169,6 +172,8 @@ class newsType extends Component {
                 type: "new",
                 isActive: "active"
               });
+              this.validator.hideMessageFor("newsTypeName");
+
             } else {
               toastr.warning(createNewsType.data.message);
             }
@@ -209,6 +214,8 @@ class newsType extends Component {
                 type: "new",
                 isActive: "active"
               });
+              this.validator.hideMessageFor("newsTypeName");
+
             } else {
               toastr.warning(updateNewsType.data.message);
             }

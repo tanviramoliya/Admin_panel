@@ -36,6 +36,7 @@ import {
   TextField,
   InputAdornment,
   TableSortLabel,
+  FormHelperText,
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
@@ -43,8 +44,13 @@ import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from "../../../../utility/config";
 import { toastr } from "react-redux-toastr";
 import { Search } from "@material-ui/icons";
+import SimpleReactValidator from "simple-react-validator";
 
 class subCategory extends Component {
+  constructor(props) {
+    super(props);
+    this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+  }
   state = {
     subCategoryList: [],
     count: "",
@@ -154,6 +160,7 @@ class subCategory extends Component {
   };
   //for close a modal
   handleClose = () => {
+    
     this.setState({
       openModal: false,
       subCategoryName: "",
@@ -163,6 +170,8 @@ class subCategory extends Component {
       categoryToken: "",
       isActive: "active"
     });
+    this.validator.hideMessageFor("categoryName");
+    this.validator.hideMessageFor("subCategoryName");
   };
   AddSubCategory = async () => {
     const {
@@ -172,47 +181,46 @@ class subCategory extends Component {
       isActive
     } = this.state;
     if (type === "new") {
-      if (!categoryToken) {
-        toastr.error("Category is required");
-        return;
-      }
-      if (!subCategoryName) {
-        toastr.error("Sub Category is required");
-        return;
-      }
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
-      let data = {
-        subCategoryName: subCategoryName,
-        categoryToken: categoryToken,
-        isActive: isActive === "active" ? true : false
-      };
-      const createSubCategory = await addSubCategoryApi(data);
-      if (createSubCategory) {
-        if (createSubCategory.status === status.success) {
-          if (createSubCategory.data.code === status.success) {
-            toastr.success(createSubCategory.data.message);
-            this.subCategoryList();
-            this.setState({
-              categoryName: "",
-              openModal: false,
-              categoryToken: "",
-              type: "new",
-              subCategoryName: "",
-              subCategoryToken: "",
-              isActive: "active"
-            });
-          } else {
-            toastr.warning(createSubCategory.data.message);
-          }
-        } else {
-          toastr.error(createSubCategory.data.message);
-        }
-      }
-      // this.props.setLoader(false);
+      if (
+        this.validator.allValid()
 
+      ) {
+        let data = {
+          subCategoryName: subCategoryName,
+          categoryToken: categoryToken,
+          isActive: isActive === "active" ? true : false
+        };
+        const createSubCategory = await addSubCategoryApi(data);
+        if (createSubCategory) {
+          if (createSubCategory.status === status.success) {
+            if (createSubCategory.data.code === status.success) {
+              toastr.success(createSubCategory.data.message);
+              this.subCategoryList();
+             
+              this.setState({
+                categoryName: "",
+                openModal: false,
+                categoryToken: "",
+                type: "new",
+                subCategoryName: "",
+                subCategoryToken: "",
+                isActive: "active"
+              });
+              this.validator.hideMessageFor("categoryName");
+              this.validator.hideMessageFor("subCategoryName");
+            } else {
+              toastr.warning(createSubCategory.data.message);
+            }
+          } else {
+            toastr.error(createSubCategory.data.message);
+          }
+        }
+        // this.props.setLoader(false);
+
+      }
+      else {
+        this.validator.showMessages();
+      }
     }
   };
   UpdateSubCategory = async () => {
@@ -224,44 +232,47 @@ class subCategory extends Component {
       isActive
     } = this.state;
     if (type === "edit") {
-      if (!categoryToken) {
-        toastr.error("Category is required");
-        return;
-      }
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
-      let data = {
-        subCategoryName: subCategoryName,
-        categoryToken: categoryToken,
-        subCategoryToken: subCategoryToken,
-        isActive: isActive === "active" ? true : false
-      };
-      const updateSubCategory = await updateSubCategoryApi(data);
-      if (updateSubCategory) {
-        if (updateSubCategory.status === status.success) {
-          if (updateSubCategory.data.code === status.success) {
-            toastr.success(updateSubCategory.data.message);
-            this.subCategoryList();
-            this.setState({
-              categoryName: "",
-              openModal: false,
-              categoryToken: "",
-              type: "new",
-              subCategoryToken: "",
-              subCategoryName: "",
-              isActive: "active"
-            });
-          } else {
-            toastr.warning(updateSubCategory.data.message);
-          }
-        } else {
-          toastr.error(updateSubCategory.data.message);
-        }
-      }
-      // this.props.setLoader(false);
+      if (
+        this.validator.allValid()
 
+      ) {
+        let data = {
+          subCategoryName: subCategoryName,
+          categoryToken: categoryToken,
+          subCategoryToken: subCategoryToken,
+          isActive: isActive === "active" ? true : false
+        };
+        const updateSubCategory = await updateSubCategoryApi(data);
+        if (updateSubCategory) {
+          if (updateSubCategory.status === status.success) {
+            if (updateSubCategory.data.code === status.success) {
+              toastr.success(updateSubCategory.data.message);
+
+              this.subCategoryList();
+              
+              this.setState({
+                categoryName: "",
+                openModal: false,
+                categoryToken: "",
+                type: "new",
+                subCategoryToken: "",
+                subCategoryName: "",
+                isActive: "active"
+              });
+              this.validator.hideMessageFor("categoryName");
+              this.validator.hideMessageFor("subCategoryName");
+            } else {
+              toastr.warning(updateSubCategory.data.message);
+            }
+          } else {
+            toastr.error(updateSubCategory.data.message);
+          }
+        }
+        // this.props.setLoader(false);
+
+      }
+    } else {
+      this.validator.showMessages();
     }
   };
   handleChange = (event) => {
@@ -334,7 +345,7 @@ class subCategory extends Component {
                   <TableRow>
                     <TableCell className="px-0 py-8" width="10%">Sr.No</TableCell>
                     <TableCell className="px-0 py-8" width="25%">
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'categoryName'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("categoryName", sortingOrder)}
@@ -342,7 +353,7 @@ class subCategory extends Component {
                         Category Name
                       </TableSortLabel></TableCell>
                     <TableCell className="px-0 py-8" width="25%">
-                    <TableSortLabel
+                      <TableSortLabel
                         active={sortingField === 'subCategoryName'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("subCategoryName", sortingOrder)}
@@ -350,33 +361,33 @@ class subCategory extends Component {
                         SubCategory Name
                       </TableSortLabel></TableCell>
                     <TableCell className="px-0 py-8" width="15%">
-                     <TableSortLabel
-                     active={sortingField === 'isActive'}
-                     direction={sortingOrder}
-                     onClick={() => this.handleSortingOrder("isActive", sortingOrder)}
-                   >
-                     Active/Not Active
+                      <TableSortLabel
+                        active={sortingField === 'isActive'}
+                        direction={sortingOrder}
+                        onClick={() => this.handleSortingOrder("isActive", sortingOrder)}
+                      >
+                        Active/Not Active
                    </TableSortLabel></TableCell>
-                   <TableCell className="px-0 py-8" width="15%">
-                    <TableSortLabel
+                    <TableCell className="px-0 py-8" width="15%">
+                      <TableSortLabel
                         active={sortingField === 'createdDate'}
                         direction={sortingOrder}
                         onClick={() => this.handleSortingOrder("createdDate", sortingOrder)}
                       >
-                         Created Date                    
+                        Created Date
                         </TableSortLabel>
-                     
+
                     </TableCell>
                     <TableCell className="px-0 py-8">Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {subCategoryList && subCategoryList !== [] ? subCategoryList
-                   // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((subCategory, index) => (
                       <TableRow key={index}>
                         <TableCell className="p-0" >
-                        {page * rowsPerPage + index + 1}
+                          {page * rowsPerPage + index + 1}
 
                         </TableCell>
                         <TableCell className="p-0">
@@ -431,10 +442,10 @@ class subCategory extends Component {
               </Table>
             </TableContainer>
             <TablePagination
-             className="px-16"
-             rowsPerPageOptions={[10, 20, 30]}
-             component="div"
-             count={count ? count : 0}
+              className="px-16"
+              rowsPerPageOptions={[10, 20, 30]}
+              component="div"
+              count={count ? count : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               backIconButtonProps={{
@@ -479,47 +490,67 @@ class subCategory extends Component {
                 }
                 onError={(errors) => null}
               >
-                <FormControl
-                  style={{ width: "-webkit-fill-available" }}
-                  error={categoryName === ""}
-                  variant="outlined"
-                >
-                  <InputLabel htmlFor="grouped-select" id="category">
+                <FormControl className="mb-16 w-100" variant="outlined" error={this.validator.message(
+                  "categoryName",
+                  categoryName,
+                  "required"
+                )}>
+                  <InputLabel id="categoryName">
                     Category
-                    </InputLabel>
+                  </InputLabel>
                   <Select
-                    name="categoryName"
-                    labelId="category"
-                    value={categoryName}
+                    labelId="categoryName"
                     label="Category"
+                    id="categoryName"
+                    name="categoryName"
+                    value={categoryName}
+                    onChange={this.handleChange}
+                    displayEmpty
+                    onBlur={() => this.validator.showMessageFor("categoryName")}
                   >
-                    {categoryNameList ? categoryNameList.map((category, index) => {
+                    {categoryNameList.map((category, index) => {
                       return (
-                        <MenuItem
-                          value={category.categoryName}
-                          key={index}
-                          onClick={() => this.handleChangeCategory(category)}
-                        >
-                          {category.categoryName}
+                        <MenuItem value={category.categoryName} key={index} onClick={() => this.handleChangeCategory(category)}>
+                          <div style={{ alignItems: "center", display: "flex" }}>
+                            <div className={category.isActive ? "activeDot" : "inActiveDot"}></div>
+                            <div className="pl-4">{category.categoryName}</div>
+                          </div>
                         </MenuItem>
                       );
-                    }) : null}
+                    })}
                   </Select>
+                  <FormHelperText style={{ color: 'red' }}>{this.validator.message(
+                    "categoryName",
+                    categoryName,
+                    "required"
+                  )}</FormHelperText>
                 </FormControl>
-                <div style={{ marginTop: "25px" }}>
-                  <TextValidator
-                    className="mb-16"
-                    variant="outlined"
-                    label="Sub Category Name"
-                    onChange={this.handleChange}
-                    type="text"
-                    name="subCategoryName"
-                    value={subCategoryName}
-                    validators={["required", "minStringLength: 2"]}
-                    errorMessages={["this field is required"]}
-                    style={{ width: "-webkit-fill-available" }}
-                  />
-                </div>
+
+
+                <TextField
+                  className="mb-16 w-100"
+                  label="Sub Category Name"
+                  onChange={this.handleChange}
+                  type="text"
+                  name="subCategoryName"
+                  value={subCategoryName}
+                  placeholder="Enter Sub category name"
+                  variant="outlined"
+
+                  error={this.validator.message(
+                    "subCategoryName",
+                    subCategoryName,
+                    "required"
+                  )}
+                  helperText={this.validator.message(
+                    "subCategoryName",
+                    subCategoryName,
+                    "required"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("subCategoryName")}
+                />
+
+
                 <RadioGroup
                   value={isActive}
                   name="isActive"
@@ -564,7 +595,7 @@ class subCategory extends Component {
 
 const mapStateToProps = (state) => {
   const { subCategoryList } = state.subCategory;
-  const { categoryList,categoryNameList } = state.category;
+  const { categoryList, categoryNameList } = state.category;
   return {
     subCategoryList,
     categoryList,

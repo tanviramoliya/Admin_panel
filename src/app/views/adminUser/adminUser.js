@@ -156,6 +156,7 @@ class AdminUser extends Component {
   };
   //for close a modal
   handleClose = () => {
+   
     this.setState({
       openModal: false,
       type: "new",
@@ -169,6 +170,11 @@ class AdminUser extends Component {
       contactNumber: ""
 
     });
+    this.validator.hideMessageFor("firstName");
+    this.validator.hideMessageFor("lastName");
+    this.validator.hideMessageFor("role");
+    this.validator.hideMessageFor("email");
+    this.validator.hideMessageFor("contactNumber");
   };
   AddAdminUser = async () => {
     const { type, firstName, lastName, role, email, contactNumber } = this.state;
@@ -204,6 +210,11 @@ class AdminUser extends Component {
                 contactNumber: ""
 
               });
+              this.validator.hideMessageFor("firstName");
+              this.validator.hideMessageFor("lastName");
+              this.validator.hideMessageFor("role");
+              this.validator.hideMessageFor("email");
+              this.validator.hideMessageFor("contactNumber");
             } else {
               toastr.warning(createAdminUser.data.message);
             }
@@ -225,7 +236,7 @@ class AdminUser extends Component {
       adminToken, firstName, lastName, role, email, contactNumber } = this.state;
     if (type === "edit") {
       if (
-        this.validator.message("firstName")
+        this.validator.allValid()
 
       ) {
         let data = {
@@ -254,6 +265,11 @@ class AdminUser extends Component {
                 email: "",
                 contactNumber: ""
               });
+              this.validator.hideMessageFor("firstName");
+              this.validator.hideMessageFor("lastName");
+              this.validator.hideMessageFor("role");
+              this.validator.hideMessageFor("email");
+              this.validator.hideMessageFor("contactNumber");
             } else {
               toastr.warning(updateAdminUser.data.message);
             }
@@ -492,6 +508,7 @@ class AdminUser extends Component {
                       placeholder="Enter First Name"
                       value={firstName}
                       variant="outlined"
+                      disabled={type==="edit"}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
@@ -545,6 +562,7 @@ class AdminUser extends Component {
                       value={lastName}
                       placeholder="Enter Last Name"
                       variant="outlined"
+                      disabled={type==="edit"}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
@@ -611,6 +629,7 @@ class AdminUser extends Component {
                   value={email}
                   placeholder="Enter Email Address"
                   variant="outlined"
+                  disabled={type==="edit"}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -641,6 +660,7 @@ class AdminUser extends Component {
                   value={contactNumber}
                   placeholder="Enter Contact Number"
                   variant="outlined"
+                  disabled={type==="edit"}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
