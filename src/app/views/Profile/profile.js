@@ -228,13 +228,12 @@ class Profile extends Component {
                     className="mr-4"
                     variant="contained"
                     onClick={this.changeEdit}
+                    startIcon={<Icon>edit</Icon>}
                   >
-                    <Icon>edit</Icon>
-                    <span className="pl-8 capitalize">Edit Info</span>
+                    Edit Info
                   </Button>
-                  <Button variant="contained" onClick={this.changeShow}>
-                    <Icon>vpn_key</Icon>
-                    <span className="pl-8 capitalize">Change Password</span>
+                  <Button variant="contained" onClick={this.changeShow} startIcon={<Icon>vpn_key</Icon>}>
+                  Change Password
                   </Button>
                 </div>
               </div>
@@ -401,18 +400,17 @@ class Profile extends Component {
               </Grid>
               {edit ? (
                 <>
-                  <Button color="primary" variant="contained" type="submit">
-                    <Icon>edit</Icon>
-                    <span className="pl-8 capitalize">Update</span>
+                  <Button color="primary" variant="contained" type="submit"
+                  startIcon={<Icon>edit</Icon>}>Update
                   </Button>
                   <Button
                     color="secondary"
                     variant="contained"
                     type="reset"
                     className="ml-4"
-                  >
-                    <Icon>highlight_off</Icon>
-                    <span className="pl-8 capitalize">Cancle</span>
+                    startIcon={
+                    <Icon>highlight_off</Icon>}
+                    >Cancle
                   </Button>
                 </>
               ) : null}
@@ -499,18 +497,16 @@ class Profile extends Component {
                 </Grid>
 
                 <>
-                  <Button color="primary" variant="contained" type="submit">
-                    <Icon>edit</Icon>
-                    <span className="pl-8 capitalize">Update</span>
+                  <Button color="primary" variant="contained" type="submit" startIcon={<Icon>edit</Icon>}>
+                    Update
                   </Button>
                   <Button
                     color="secondary"
                     variant="contained"
                     type="reset"
                     className="ml-4"
-                  >
-                    <Icon>highlight_off</Icon>
-                    <span className="pl-8 capitalize">Cancle</span>
+                    startIcon={<Icon>highlight_off</Icon>}
+                  >Cancle
                   </Button>
                 </>
               </ValidatorForm>
