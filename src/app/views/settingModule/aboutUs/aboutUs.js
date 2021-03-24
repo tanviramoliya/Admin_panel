@@ -23,6 +23,7 @@ import { toastr } from "react-redux-toastr";
 import { status } from "../../../../utility/config";
 import UploadService from "./uploadService";
 import SimpleReactValidator from "simple-react-validator";
+import "../style.css";
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -161,7 +162,17 @@ class aboutUs extends Component {
   };
   reset = async () => {
     this.setState({ infoEdit: false });
+    this.validator.hideMessages();
+    this.validator.hideMessageFor("goal");
+    this.validator.hideMessageFor("mission");
+    this.validator.hideMessageFor("vision");
+    this.validator.hideMessageFor("objective");
+    this.validator.hideMessageFor("heading");
+    this.validator.hideMessageFor("abstraction");
+
     await this.getAboutUsList();
+    
+
   };
   fileCancle = async () => {
     this.setState({ fileEdit: false });
@@ -245,7 +256,7 @@ class aboutUs extends Component {
           <div className="py-12">
             <Card elevation={6} className="px-20 pt-12 h-100">
               <div className="flex flex-middle flex-space-between pb-12">
-                <div className="card-title">About Us Information</div>
+                <div className="card-title">GNTV About Us Information</div>
                 <div>
                   <Button
                     color="primary"

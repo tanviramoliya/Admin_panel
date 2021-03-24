@@ -170,6 +170,8 @@ class AdminUser extends Component {
       contactNumber: ""
 
     });
+    this.validator.hideMessages();
+
     this.validator.hideMessageFor("firstName");
     this.validator.hideMessageFor("lastName");
     this.validator.hideMessageFor("role");
@@ -210,6 +212,8 @@ class AdminUser extends Component {
                 contactNumber: ""
 
               });
+              this.validator.hideMessages();
+
               this.validator.hideMessageFor("firstName");
               this.validator.hideMessageFor("lastName");
               this.validator.hideMessageFor("role");
@@ -265,6 +269,7 @@ class AdminUser extends Component {
                 email: "",
                 contactNumber: ""
               });
+              this.validator.hideMessages();
               this.validator.hideMessageFor("firstName");
               this.validator.hideMessageFor("lastName");
               this.validator.hideMessageFor("role");

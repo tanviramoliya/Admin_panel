@@ -141,6 +141,7 @@ class newsUpdate extends Component {
       newsLink: "",
       newsToken: "",
     });
+    this.validator.hideMessages();
     this.validator.hideMessageFor("newsLink");
     this.validator.hideMessageFor("newsText");
 
@@ -171,6 +172,7 @@ class newsUpdate extends Component {
               published: false,
               newsToken: ""
             });
+            this.validator.hideMessages();
             this.validator.hideMessageFor("newsLink");
             this.validator.hideMessageFor("newsText");
           } else {
@@ -218,6 +220,7 @@ class newsUpdate extends Component {
               type: "new",
               newsToken: ""
             });
+            this.validator.hideMessages();
             this.validator.hideMessageFor("newsLink");
             this.validator.hideMessageFor("newsText");
           } else {

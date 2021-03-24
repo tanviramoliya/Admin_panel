@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-import { Button, Icon, Grid, InputAdornment, Card } from "@material-ui/core";
+import { Button, Icon, Grid, InputAdornment, Card, TextField } from "@material-ui/core";
 import { Breadcrumb } from "../../../../components/matx/index";
 
 import {
@@ -18,8 +18,13 @@ import {
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
 import { status } from "../../../../utility/config";
+import SimpleReactValidator from "simple-react-validator";
 
 class socialMedia extends Component {
+  constructor(props) {
+    super(props);
+    this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+  }
   state = {
     facebook: "",
     twitter: "",
@@ -51,55 +56,53 @@ class socialMedia extends Component {
       twitter,
       linkedin,
     } = this.state;
-    let data = [
-      {
-        socialMediaName: "facebook",
-        socialMediaLink: facebook,
-      },
-      {
-        socialMediaName: "instagram",
-        socialMediaLink: instagram,
-      },
-      {
-        socialMediaName: "youTube",
-        socialMediaLink: youTube,
-      },
-      {
-        socialMediaName: "email",
-        socialMediaLink: email,
-      },
-      {
-        socialMediaName: "twitter",
-        socialMediaLink: twitter,
-      },
-      {
-        socialMediaName: "linkedin",
-        socialMediaLink: linkedin,
-      },
-    ];
-    const updateSocialMedia = await updateSocialMediaApi(data);
-    if (updateSocialMedia) {
-      if (updateSocialMedia.status === status.success) {
-        if (updateSocialMedia.data.code === status.success) {
-          toastr.success(updateSocialMedia.data.message);
-          this.getSocialMediaList();
-          this.setState({ edit : false})
+    if (
+      this.validator.allValid()
+    ) {
+      let data = [
+        {
+          socialMediaName: "facebook",
+          socialMediaLink: facebook,
+        },
+        {
+          socialMediaName: "instagram",
+          socialMediaLink: instagram,
+        },
+        {
+          socialMediaName: "youTube",
+          socialMediaLink: youTube,
+        },
+        {
+          socialMediaName: "email",
+          socialMediaLink: email,
+        },
+        {
+          socialMediaName: "twitter",
+          socialMediaLink: twitter,
+        },
+        {
+          socialMediaName: "linkedin",
+          socialMediaLink: linkedin,
+        },
+      ];
+      const updateSocialMedia = await updateSocialMediaApi(data);
+      if (updateSocialMedia) {
+        if (updateSocialMedia.status === status.success) {
+          if (updateSocialMedia.data.code === status.success) {
+            toastr.success(updateSocialMedia.data.message);
+            this.getSocialMediaList();
+            this.setState({ edit: false })
+          } else {
+            toastr.warning(updateSocialMedia.data.message);
+          }
         } else {
-          toastr.warning(updateSocialMedia.data.message);
+          toastr.error(updateSocialMedia.data.message);
         }
-      } else {
-        toastr.error(updateSocialMedia.data.message);
       }
     }
-    // this.props.setLoader(false);
-    this.setState({
-      facebook: "",
-      instagram: "",
-      youTube: "",
-      email: "",
-      twitter: "",
-      linkedin: "",
-    });
+    else {
+      this.validator.showMessages();
+    }
   };
 
   handleChange = (event) => {
@@ -107,10 +110,19 @@ class socialMedia extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
   changeEdit = () => {
-    this.setState({ edit : true})
+    this.setState({ edit: true })
   }
-  reset = () => {
-    this.setState({ edit : false})
+  reset = async () => {
+    this.setState({ edit: false })
+    this.validator.hideMessages();
+    this.validator.hideMessageFor("facebook");
+    this.validator.hideMessageFor("instagram");
+    this.validator.hideMessageFor("youTube");
+    this.validator.hideMessageFor("email");
+    this.validator.hideMessageFor("twitter");
+    this.validator.hideMessageFor("linkedin");
+    await this.getSocialMediaList();
+
   }
   render() {
     const {
@@ -133,24 +145,42 @@ class socialMedia extends Component {
               ]}
             />
           </div>
+          <div className="py-12">
+            <Card elevation={6} className="px-20 pt-12 h-100">
+              <div className="flex flex-middle flex-space-between pb-12">
+                <div className="card-title">GNTV Social Media Information</div>
+                <div>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className="mr-4"
+                    onClick={this.changeEdit}
+                    startIcon={<Icon>edit</Icon>}
+                  >Edit Info
+                  </Button>
+
+                </div>
+              </div>
+            </Card>
+          </div>
           <Card elevation={6} className="p-24 h-100">
             <ValidatorForm
               ref="form"
-              onSubmit={edit ? this.handleSubmit : this.changeEdit}
+              onSubmit={this.handleSubmit}
               onReset={this.reset}
               onError={(errors) => null}
             >
               <Grid container spacing={6}>
                 <Grid item lg={6} md={6} sm={12} xs={12}>
-                  <TextValidator
+
+                  <TextField
                     className="mb-16 w-100"
-                    label="instagram"
+                    label="Instagram"
                     onChange={this.handleChange}
-                    type="textArea"
-                    disabled={!edit}
+                    type="url"
                     name="instagram"
                     value={instagram}
-                    validators={["required"]}
+                    disabled={!edit}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -158,17 +188,28 @@ class socialMedia extends Component {
                         </InputAdornment>
                       ),
                     }}
-                    errorMessages={["this field is required"]}
+                    error={this.validator.message(
+                      "instagram",
+                      this.state.instagram,
+                      "required|url"
+                    )}
+                    helperText={this.validator.message(
+                      "instagram",
+                      this.state.instagram,
+                      "required|url"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("instagram")}
                   />
-                  <TextValidator
+
+
+                  <TextField
                     className="mb-16 w-100"
-                    label="youTube"
+                    label="YouTube"
                     onChange={this.handleChange}
                     type="url"
                     name="youTube"
                     value={youTube}
-                    validators={["required"]}
-                    errorMessages={["this field is required"]}
+                    disabled={!edit}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -176,23 +217,29 @@ class socialMedia extends Component {
                         </InputAdornment>
                       ),
                     }}
-                    disabled={!edit}
+                    error={this.validator.message(
+                      "youTube",
+                      this.state.youTube,
+                      "required|url"
+                    )}
+                    helperText={this.validator.message(
+                      "youTube",
+                      this.state.youTube,
+                      "required|url"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("youTube")}
                   />
-                  <TextValidator
+
+                  {/* "matchRegexp:^(http://|https://)?(?:www.)?twitter.com/(?:#!/)?@?([^?#]*)(?:[?#].*)?$", */}
+
+                  <TextField
                     className="mb-16 w-100"
                     label="Twitter"
                     onChange={this.handleChange}
                     type="url"
                     name="twitter"
                     value={twitter}
-                    validators={[
-                      "required",
-                      "matchRegexp:^(http://|https://)?(?:www.)?twitter.com/(?:#!/)?@?([^?#]*)(?:[?#].*)?$",
-                    ]}
-                    errorMessages={[
-                      "this field is required",
-                      "Please enter valid Twitter URL",
-                    ]}
+                    disabled={!edit}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -200,20 +247,28 @@ class socialMedia extends Component {
                         </InputAdornment>
                       ),
                     }}
-                    disabled={!edit}
+                    error={this.validator.message(
+                      "twitter",
+                      this.state.twitter,
+                      "required|url"
+                    )}
+                    helperText={this.validator.message(
+                      "twitter",
+                      this.state.twitter,
+                      "required|url"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("twitter")}
                   />
-                  <TextValidator
+
+
+                  <TextField
                     className="mb-16 w-100"
                     label="Email"
                     onChange={this.handleChange}
-                    type="text"
+                    type="email"
                     name="email"
                     value={email}
-                    validators={["required", "isEmail"]}
-                    errorMessages={[
-                      "this field is required",
-                      "Please enter valid email",
-                    ]}
+                    disabled={!edit}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -221,20 +276,30 @@ class socialMedia extends Component {
                         </InputAdornment>
                       ),
                     }}
-                    disabled={!edit}
+                    error={this.validator.message(
+                      "email",
+                      this.state.email,
+                      "required|email"
+                    )}
+                    helperText={this.validator.message(
+                      "email",
+                      this.state.email,
+                      "required|email"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("email")}
                   />
                 </Grid>
 
                 <Grid item lg={6} md={6} sm={12} xs={12}>
-                  <TextValidator
+
+                  <TextField
                     className="mb-16 w-100"
                     label="Facebook"
                     onChange={this.handleChange}
                     type="url"
                     name="facebook"
                     value={facebook}
-                    validators={["required"]}
-                    errorMessages={["this field is required"]}
+                    disabled={!edit}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -242,17 +307,27 @@ class socialMedia extends Component {
                         </InputAdornment>
                       ),
                     }}
-                    disabled={!edit}
+                    error={this.validator.message(
+                      "facebook",
+                      this.state.facebook,
+                      "required|url"
+                    )}
+                    helperText={this.validator.message(
+                      "facebook",
+                      this.state.facebook,
+                      "required|url"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("facebook")}
                   />
-                  <TextValidator
+
+                  <TextField
                     className="mb-16 w-100"
                     label="LinkedIn"
                     onChange={this.handleChange}
                     type="url"
                     name="linkedin"
                     value={linkedin}
-                    validators={["required"]}
-                    errorMessages={["this field is required"]}
+                    disabled={!edit}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -260,27 +335,32 @@ class socialMedia extends Component {
                         </InputAdornment>
                       ),
                     }}
-                    disabled={!edit}
+                    error={this.validator.message(
+                      "linkedin",
+                      this.state.linkedin,
+                      "required|url"
+                    )}
+                    helperText={this.validator.message(
+                      "linkedin",
+                      this.state.linkedin,
+                      "required|url"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("linkedin")}
                   />
+
                 </Grid>
               </Grid>
               {edit ? (
                 <>
-                  <Button color="primary" variant="contained" type="submit">
-                    <Icon>edit</Icon>
-                    <span className="pl-8 capitalize">Update</span>
+                  <Button color="primary" variant="contained" type="submit"
+                    startIcon={<Icon>edit</Icon>}>
+                    Update
                   </Button>
-                  <Button color="secondary" variant="contained" type="reset" className="ml-4">
-                    <Icon>highlight_off</Icon>
-                    <span className="pl-8 capitalize">Cancle</span>
+                  <Button color="secondary" variant="contained" type="reset" className="ml-4" startIcon={<Icon>highlight_off</Icon>}>
+                    Cancle
                   </Button>
                 </>
-              ) : (
-                <Button color="primary" variant="contained" type="submit">
-                  <Icon>edit</Icon>
-                  <span className="pl-8 capitalize">Edit</span>
-                </Button>
-              )}
+              ) : null}
             </ValidatorForm>
           </Card>
         </div>

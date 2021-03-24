@@ -21,7 +21,8 @@ import {
   TableRow,
   Typography,
   Tooltip,
-  Box
+  Box,
+  TextField
 } from "@material-ui/core";
 import { red } from "@material-ui/core/colors";
 import Paper from "@material-ui/core/Paper";
@@ -39,6 +40,7 @@ import {
   updateAclRoleApi,
 } from "../../../redux/actions/index";
 import { status } from "../../../utility/config";
+import SimpleReactValidator from "simple-react-validator";
 
 const theme = createMuiTheme({
   palette: {
@@ -47,6 +49,10 @@ const theme = createMuiTheme({
 });
 
 class AclRole extends Component {
+  constructor(props) {
+    super(props);
+    this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+  }
   state = {
     aclRoleList: [],
     rowsPerPage: 8,
@@ -143,94 +149,111 @@ class AclRole extends Component {
       roleType: "",
       createdDate: "",
       updateDate: "",
-      // permission: "",
+      permission: [
+        { key: "Dashboard", value: "N/A" },
+        { key: "Administrator", value: "N/A" },
+        { key: "News_headline", value: "N/A" },
+        { key: "News", value: "N/A" },
+        { key: "Publish", value: "N/A" },
+        { key: "Comments", value: "N/A" },
+        { key: "Menu_serial_no", value: "N/A" },
+        { key: "Master", value: "N/A" },
+        { key: "Settings", value: "N/A" },
+        { key: "Subscription", value: "N/A" },
+        { key: "Role", value: "N/A" },
+      ],
     });
+    this.validator.hideMessages();
+    this.validator.hideMessageFor("roleType");
   };
   AddAclRole = async () => {
     const { type, roleType, permission } = this.state;
     if (type === "new") {
-      if (!roleType) {
-        toastr.error("roleType is required");
-        return;
-      }
-      if (!permission) {
-        toastr.error("permission is required");
-        return;
-      }
+      if (
+        this.validator.allValid()
+      ) {
 
-      // this.props.setLoader(true);
-      let data = {
-        roleType: roleType,
-        permission: permission,
-      };
-      const createAclRole = await addAclRoleApi(data);
-      if (createAclRole) {
-        if (createAclRole.status === status.success) {
-          if (createAclRole.data.code === status.success) {
-            toastr.success(createAclRole.data.message);
-            this.getAclRoleList();
-            this.setState({
-              openModal: false,
-              deleteModal: false,
-              deleteAclRoleToken: null,
-              roleToken: "",
-              roleType: "",
-              type: "new",
-            });
+        // this.props.setLoader(true);
+        let data = {
+          roleType: roleType,
+          permission: permission,
+        };
+        const createAclRole = await addAclRoleApi(data);
+        if (createAclRole) {
+          if (createAclRole.status === status.success) {
+            if (createAclRole.data.code === status.success) {
+              toastr.success(createAclRole.data.message);
+              this.getAclRoleList();
+              this.setState({
+                openModal: false,
+                deleteModal: false,
+                deleteAclRoleToken: null,
+                roleToken: "",
+                roleType: "",
+                type: "new",
+              });
+              this.validator.hideMessages();
+              this.validator.hideMessageFor("roleType");
+            } else {
+              toastr.warning(createAclRole.data.message);
+            }
           } else {
-            toastr.warning(createAclRole.data.message);
+            toastr.error(createAclRole.data.message);
           }
-        } else {
-          toastr.error(createAclRole.data.message);
         }
+        // this.props.setLoader(false);
       }
-      // this.props.setLoader(false);
-    }
+      else {
+        this.validator.showMessages();
+  
+      }
+    } 
   };
   UpdateAclRole = async () => {
     const { type, roleToken, roleType, permission } = this.state;
     if (type === "edit") {
-      if (!roleType) {
-        toastr.error("roleType is required");
-        return;
-      }
-      if (!permission) {
-        toastr.error("permission is required");
-        return;
-      }
+      if (
+        this.validator.allValid()
+      ) {
 
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
-      let data = {
-        roleToken: roleToken,
-        roleType: roleType,
-        permission: permission,
-      };
-      const updateAclRole = await updateAclRoleApi(data);
-      if (updateAclRole) {
-        if (updateAclRole.status === status.success) {
-          if (updateAclRole.data.code === status.success) {
-            toastr.success(updateAclRole.data.message);
-            this.getAclRoleList();
-            this.setState({
-              openModal: false,
-              type: "new",
-              roleToken: "",
-              roleType: "",
-            });
+        let data = {
+          roleToken: roleToken,
+          roleType: roleType,
+          permission: permission,
+        };
+        const updateAclRole = await updateAclRoleApi(data);
+        if (updateAclRole) {
+          if (updateAclRole.status === status.success) {
+            if (updateAclRole.data.code === status.success) {
+              toastr.success(updateAclRole.data.message);
+              this.getAclRoleList();
+              this.setState({
+                openModal: false,
+                type: "new",
+                roleToken: "",
+                roleType: "",
+              });
+              this.validator.hideMessages();
+              this.validator.hideMessageFor("roleType");
+            } else {
+              toastr.warning(updateAclRole.data.message);
+            }
           } else {
-            toastr.warning(updateAclRole.data.message);
+            toastr.error(updateAclRole.data.message);
           }
-        } else {
-          toastr.error(updateAclRole.data.message);
         }
+        // this.props.setLoader(false);
       }
-      // this.props.setLoader(false);
+      else {
+        this.validator.showMessages();
+  
+      }
     }
   };
-
+  handleTypeChange = (event) =>{
+      event.persist();
+      this.setState({ [event.target.name]: event.target.value });
+    };
   handleChange = (event, key) => {
     let name = event.target.name;
     let value = event.target.checked;
@@ -303,7 +326,7 @@ class AclRole extends Component {
                             edit
                           </Icon>
                         </IconButton>
-                        <IconButton className="p-8">
+                        {/* <IconButton className="p-8">
                           <Icon
                             color="error"
                             onClick={() =>
@@ -312,7 +335,7 @@ class AclRole extends Component {
                           >
                             delete
                           </Icon>
-                        </IconButton>
+                        </IconButton> */}
                       </div>
                     </div>
                     <Divider />
@@ -357,13 +380,13 @@ class AclRole extends Component {
                   </CardContent>
                   <Divider />
                   <CardActions>
-                   <div style={{display:"flex"}}>
+                    <div style={{ display: "flex" }}>
 
                       <Box fontWeight="fontWeightRegular" marginLeft="16px">
                         Last Modified Date :
                       </Box>
-                      <Box fontStyle="italic"> {AclRole.updatedTime}</Box> 
-                    
+                      <Box fontStyle="italic"> {AclRole.updatedTime}</Box>
+
                     </div>
                   </CardActions>
                 </Card>
@@ -391,14 +414,13 @@ class AclRole extends Component {
             maxWidth="sm"
           >
             <DialogTitle id="form-dialog-title">
-              {type === "new" ? (
-                <div style={{ display: "contents" }}>
-                  <GroupAdd fontSize="large" />
-                  Add a Admin Role
-                </div>
-              ) : (
+
+              <div style={{ display: "contents" }}>
+                {type === "new" ? "Add a Admin Role"
+                  :
                   "Edit Admin Role"
-                )}
+                }
+              </div>
             </DialogTitle>
             <DialogContent>
               <ValidatorForm
@@ -408,21 +430,26 @@ class AclRole extends Component {
               >
                 <Grid container spacing={1}>
                   <Grid item lg={12}>
-                    <TextValidator
-                      className="mb-16 "
+
+                    <TextField
+                      variant="outlined"
+                      className="mb-16 w-100"
                       label="Role Type"
-                      onChange={(e) =>
-                        this.setState({ roleType: e.target.value })
-                      }
+                      onChange={this.handleTypeChange}
                       type="text"
                       name="roleType"
-                      placeholder="Enter Role Type"
                       value={roleType}
-                      validators={["required", "minStringLength: 2"]}
-                      errorMessages={["this field is required"]}
-                      style={{ width: "-webkit-fill-available" }}
-                      variant="outlined"
-                      size="medium"
+                      error={this.validator.message(
+                        "roleType",
+                        roleType,
+                        "required|min:2"
+                      )}
+                      helperText={this.validator.message(
+                        "roleType",
+                        roleType,
+                        "required|min:2"
+                      )}
+                      onBlur={() => this.validator.showMessageFor("roleType")}
                     />
                     <TableContainer component={Paper}>
                       <Table size="small" aria-label="a dense table">
