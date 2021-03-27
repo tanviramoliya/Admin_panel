@@ -362,7 +362,7 @@ class inquiry extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0 py-8">
+                    <TableCell className="px-0 py-8" width="5%">
                       <Checkbox style={{ paddingTop: 0, paddingBottom: 0 }}
                         indeterminate={
                           selected.length > 0 &&
@@ -380,7 +380,7 @@ class inquiry extends Component {
                     <TableCell className="px-0 py-8" width="5%">
                       Sr.No
                     </TableCell>
-                    <TableCell className="px-0 py-8" width="15%">
+                    <TableCell className="px-0 py-8" width="13%">
                       <TableSortLabel
                         active={sortingField === 'userName'}
                         direction={sortingOrder}
@@ -389,7 +389,7 @@ class inquiry extends Component {
                         User Name
                       </TableSortLabel>
                     </TableCell>
-                    <TableCell className="px-0 py-8" width="20%">
+                    <TableCell className="px-0 py-8" width="18%">
                       <TableSortLabel
                         active={sortingField === 'subject'}
                         direction={sortingOrder}
@@ -399,7 +399,7 @@ class inquiry extends Component {
                       </TableSortLabel>
 
                     </TableCell>
-                    <TableCell className="px-0 py-8" width="23%">
+                    <TableCell className="px-0 py-8" width="22%">
                       <TableSortLabel
                         active={sortingField === 'message'}
                         direction={sortingOrder}
@@ -408,7 +408,7 @@ class inquiry extends Component {
                         Message
                       </TableSortLabel>
                     </TableCell>
-                    <TableCell className="px-0 py-8" width="15%">
+                    <TableCell className="px-0 py-8" width="16%">
                       <TableSortLabel
                         active={sortingField === 'emailId'}
                         direction={sortingOrder}
@@ -428,7 +428,7 @@ class inquiry extends Component {
                         </TableSortLabel>
 
                     </TableCell>
-                    <TableCell className="px-0 py-8" width="8%">
+                    <TableCell className="px-0 py-8" width="10%">
                       Action
                     </TableCell>
                   </TableRow>
