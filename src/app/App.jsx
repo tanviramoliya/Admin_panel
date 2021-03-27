@@ -6,16 +6,16 @@ import MatxTheme from "./MatxLayout/MatxTheme/MatxTheme";
 import AppContext from "./appContext";
 import history from "../history";
 
-import routes from "./RootRoutes";
+import GetRoutes from "./RootRoutes";
 import {Store}  from "../redux/Store";
 import Auth from "./auth/Auth";
 import MatxLayout from "./MatxLayout/MatxLayout";
 import AuthGuard from "./auth/AuthGuard";
 import ReduxToastr from 'react-redux-toastr'
 
-// const route = routes();
+const routes = GetRoutes();
 const App = () => {
-  console.log(routes);
+  console.log(GetRoutes());
   return (
     <AppContext.Provider value={{ routes }}>
       <Provider store={Store}>
