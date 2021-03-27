@@ -13,7 +13,9 @@ import MatxLayout from "./MatxLayout/MatxLayout";
 import AuthGuard from "./auth/AuthGuard";
 import ReduxToastr from 'react-redux-toastr'
 
+// const route = routes();
 const App = () => {
+  console.log(routes);
   return (
     <AppContext.Provider value={{ routes }}>
       <Provider store={Store}>
