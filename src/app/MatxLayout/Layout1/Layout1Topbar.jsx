@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { connect } from "react-redux";
 import { setLayoutSettings } from "redux/actions/LayoutActions";
-import { logoutUser } from "redux/actions/UserActions";
+import { logoutApi } from "redux/actions/LoginActions";
 import { PropTypes } from "prop-types";
 import { MatxMenu } from "../../../components/matx/index";
 import { isMdScreen } from "utils";
@@ -55,7 +55,7 @@ class Layout1Topbar extends Component {
   };
 
   handleSignOut = () => {
-    this.props.logoutUser();
+    this.props.logoutApi();
   };
 
   render() {
@@ -141,6 +141,6 @@ const mapStateToProps = (state) => ({
 
 export default withStyles(styles, { withTheme: true })(
   withRouter(
-    connect(mapStateToProps, { setLayoutSettings, logoutUser })(Layout1Topbar)
+    connect(mapStateToProps, { setLayoutSettings, logoutApi })(Layout1Topbar)
   )
 );

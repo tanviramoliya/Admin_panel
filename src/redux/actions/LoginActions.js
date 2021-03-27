@@ -88,45 +88,12 @@ export const resetPasswordApi = async (data) => {
 
 export const logoutApi = (value) => {
   return async (dispatch, store) => {
-    dispatch(setLoginUser(value));
-    localStorage.removeItem("GNTV");
-    dispatch(setLoginFlag(false));
-    history.push("/login");
+    await  api("userUtility/logout", {}, "get").then((res) => {
+      dispatch(setLoginUser(value));
+      localStorage.removeItem("GNTV");
+      dispatch(setLoginFlag(false));
+      history.push("/login");
+      toastr.success(res.data.message);
+    })
   };
 };
-// export function loginWithEmailAndPassword({ email, password }) {
-//   return dispatch => {
-//     dispatch({
-//       type: LOGIN_LOADING
-//     });
-
-//     jwtAuthService
-//       .loginWithEmailAndPassword(email, password)
-//       .then(user => {
-//         dispatch(setUserData(user));
-
-//         history.push({
-//           pathname: "/"
-//         });
-
-//         return dispatch({
-//           type: LOGIN_SUCCESS
-//         });
-//       })
-//       .catch(error => {
-//         return dispatch({
-//           type: LOGIN_ERROR,
-//           payload: error
-//         });
-//       });
-//   };
-// }
-
-// export function resetPassword({ email }) {
-//   return dispatch => {
-//     dispatch({
-//       payload: email,
-//       type: RESET_PASSWORD
-//     });
-//   };
-// }
