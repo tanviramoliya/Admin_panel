@@ -13,6 +13,7 @@ import { api } from "../../api/api";
 import { toastr } from "react-redux-toastr";
 import  history  from "../../history";
 import { status } from "../../utility/config";
+import Cookies from "js-cookie";
 
 
 
@@ -23,10 +24,20 @@ export const loginApi = (loginData) => {
   await  api("userUtility/authenticate", loginData, "post").then((res) => {
     console.log(res);
       if (res.data.code === status.success) {
-      
-          dispatch(setLoginUser(res.data.data));
-          localStorage.setItem("GNTV", JSON.stringify(res.data.data));
-          dispatch(setLoginFlag(true));
+          // data={
+          //   code:
+          //   status:
+          //   data:{
+          //     userToken:,
+          //     sessionid:""
+          //   }
+          // }
+          //GNTV-SESSIONID
+          Cookies.set('JSESSIONID',res.data.data);
+          Cookies.set('GNTV-SESSIONID',res.data.data);
+          // dispatch(setLoginUser(res.data.data));
+          // localStorage.setItem("GNTV", JSON.stringify(res.data.data));
+          // dispatch(setLoginFlag(true));
           //dispatch(changeRole(res.data.data.role));
           toastr.success("Logged in successfully");
           history.replace('/dashboard');
@@ -42,6 +53,11 @@ export const loginApi = (loginData) => {
   };
 };
 
+ export const isSession = () =>{
+  return {
+    status: true,
+  }
+ }
 
 export const checkEmailApi = async (data) => {
   const checkMail = await api(
@@ -88,45 +104,13 @@ export const resetPasswordApi = async (data) => {
 
 export const logoutApi = (value) => {
   return async (dispatch, store) => {
-    dispatch(setLoginUser(value));
-    localStorage.removeItem("GNTV");
-    dispatch(setLoginFlag(false));
-    history.push("/login");
+    await  api("userUtility/logout", {}, "get").then((res) => {
+      dispatch(setLoginUser(value));
+      localStorage.removeItem("GNTV");
+      Cookies.remove('GNTV-SESSIONID')
+      dispatch(setLoginFlag(false));
+      history.push("/login");
+      toastr.success(res.data.message);
+    })
   };
 };
-// export function loginWithEmailAndPassword({ email, password }) {
-//   return dispatch => {
-//     dispatch({
-//       type: LOGIN_LOADING
-//     });
-
-//     jwtAuthService
-//       .loginWithEmailAndPassword(email, password)
-//       .then(user => {
-//         dispatch(setUserData(user));
-
-//         history.push({
-//           pathname: "/"
-//         });
-
-//         return dispatch({
-//           type: LOGIN_SUCCESS
-//         });
-//       })
-//       .catch(error => {
-//         return dispatch({
-//           type: LOGIN_ERROR,
-//           payload: error
-//         });
-//       });
-//   };
-// }
-
-// export function resetPassword({ email }) {
-//   return dispatch => {
-//     dispatch({
-//       payload: email,
-//       type: RESET_PASSWORD
-//     });
-//   };
-// }

@@ -1,10 +1,11 @@
 // import { store } from '../redux/store/store';
-import  history  from '../history';
+import Cookies from "js-cookie";
+import history from "../history";
 // import { setLoginFlag, setLoginUser } from '../redux/action/auth/loginAction';
 // import { getToken } from './getToken';
-import { mainUrl, status } from '../utility/config';
+import { mainUrl, status } from "../utility/config";
 
-const axios = require('axios');
+const axios = require("axios");
 
 const handleError = (err) => {
   const { unAuthorized, forbidden, unAvailable } = status;
@@ -24,17 +25,18 @@ const handleError = (err) => {
 
 export const api = async (endpoint, data, type) => {
   let res;
-  if (type !== 'postWithoutToken') {
+  if (type !== "postWithoutToken") {
     // var token = await getToken();
   }
 
   switch (type) {
-    case 'post':
+    case "post":
       await axios({
         data: data,
-        method: 'post',
+        method: "post",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "JSESSIONID": Cookies.get("JSESSIONID"),
           // 'x-auth': token,
         },
         url: mainUrl + endpoint,
@@ -46,11 +48,12 @@ export const api = async (endpoint, data, type) => {
           res = handleError(err);
         });
       break;
-    case 'get':
+    case "get":
       await axios({
-        method: 'get',
+        method: "get",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "JSESSIONID": Cookies.get("JSESSIONID"),
           // 'x-auth': token,
         },
         url: mainUrl + endpoint,
@@ -62,12 +65,13 @@ export const api = async (endpoint, data, type) => {
           res = handleError(err);
         });
       break;
-    case 'put':
+    case "put":
       await axios({
-        method: 'put',
+        method: "put",
         data: data,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "JSESSIONID": Cookies.get("JSESSIONID"),
           // "Content-Type": "application/x-www-form-urlencoded",
           // 'x-auth': token,
         },
@@ -81,13 +85,14 @@ export const api = async (endpoint, data, type) => {
         });
       break;
 
-    case 'putUrlEncode':
+    case "putUrlEncode":
       await axios({
-        method: 'put',
+        method: "put",
         data: data,
         headers: {
           // "Content-Type": "application/json",
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
+          "JSESSIONID": Cookies.get("JSESSIONID"),
           // 'x-auth': token,
         },
         url: mainUrl + endpoint,
@@ -99,12 +104,13 @@ export const api = async (endpoint, data, type) => {
           res = handleError(err);
         });
       break;
-    case 'delete':
+    case "delete":
       await axios({
         data: data,
-        method: 'delete',
+        method: "delete",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "JSESSIONID": Cookies.get("JSESSIONID"),
           // 'x-auth': token,
         },
         url: mainUrl + endpoint,
@@ -116,15 +122,16 @@ export const api = async (endpoint, data, type) => {
           res = handleError(err);
         });
       break;
-    case 'postWithoutToken':
+    case "postWithoutToken":
       await axios({
-        method: 'post',
+        method: "post",
         data: data,
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
+          "JSESSIONID": Cookies.get("JSESSIONID"),
         },
         // url: authUrl + endpoint,
-        url: endpoint
+        url: endpoint,
       })
         .then(function (response) {
           res = response;
@@ -133,17 +140,18 @@ export const api = async (endpoint, data, type) => {
           res = err.response;
         });
       break;
-    case 'postwithToken':
+    case "postwithToken":
       await axios({
-        method: 'post',
+        method: "post",
         data: data,
         headers: {
-          'Content-Type': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "JSESSIONID": Cookies.get("JSESSIONID"),
           // 'x-auth': token,
         },
         // url: authUrl + endpoint,
-        url : endpoint
+        url: endpoint,
       })
         .then(function (response) {
           res = response;
@@ -153,11 +161,14 @@ export const api = async (endpoint, data, type) => {
         });
       break;
 
-    case 'postWithUrlEncoded':
+    case "postWithUrlEncoded":
       await axios({
-        method: 'post',
+        method: "post",
         data: data,
-        headers: {'Content-Type': 'multipart/form-data' },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "JSESSIONID": Cookies.get("JSESSIONID"),
+        },
         url: mainUrl + endpoint,
       })
         .then(function (response) {
