@@ -40,25 +40,30 @@ const errorRoute = [
     component: () => <Redirect to="/session/404" />,
   },
 ];
+const PageNotFoundRoute = [
+  {
+    component: () => <Redirect to="/404" />,
+  },
+];
 
 
 
 
 const routes =
    [
-      ...sessionRoutes,
-      ...adminUserRoutes,
-      ...aclRoleRoutes,
-      ...masterRoutes,
-      ...settingRoutes,
-      ...dashboardRoutes,
-      ...newsUpdateRoutes,
-      ...subscriberRoutes,
-      ...inquiryRoutes,
-      ...utilitiesRoutes,
-      ...formsRoutes,
-      ...profileRoute,
-      ...newsRoutes,
+     ...adminUserRoutes,
+     ...aclRoleRoutes,
+     ...masterRoutes,
+     ...settingRoutes,
+     ...dashboardRoutes,
+     ...newsUpdateRoutes,
+     ...subscriberRoutes,
+     ...inquiryRoutes,
+     ...utilitiesRoutes,
+     ...formsRoutes,
+     ...profileRoute,
+     ...newsRoutes,
+     ...sessionRoutes,
       ...redirectRoute,
       ...errorRoute,
     ];
@@ -68,8 +73,8 @@ const routes =
         return routes;
       }
       else{
-        history.push('/login');
-        return [ ...sessionRoutes, ...redirectRoute, ...errorRoute]
+        // history.push('/login');
+        return [ ...sessionRoutes, ...redirectRoute, ...PageNotFoundRoute]
       }
     }
 

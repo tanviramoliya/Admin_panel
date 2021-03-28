@@ -33,10 +33,6 @@ export const loginApi = (loginData) => {
         //GNTV-SESSIONID
         Cookies.set("JSESSIONID", res.data.data);
         Cookies.set("GNTV-SESSIONID", res.data.data);
-        // dispatch(setLoginUser(res.data.data));
-        // localStorage.setItem("GNTV", JSON.stringify(res.data.data));
-        // dispatch(setLoginFlag(true));
-        //dispatch(changeRole(res.data.data.role));
         toastr.success("Logged in successfully");
         history.push("/dashboard");
       } else if (res && res.data.code === status.badRequest) {
@@ -45,7 +41,6 @@ export const loginApi = (loginData) => {
         toastr.error(res.data.message);
       }
     });
-    // dispatch(setLoader(false));
   };
 };
 

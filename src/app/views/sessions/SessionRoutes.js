@@ -1,6 +1,7 @@
 import LogIn from "./Login";
 import ForgotPassword from "./ForgotPassword";
 import NotFound from './NotFound';
+import PageNotFound from './PageNotFound';
 
 const settings = {
   activeLayout: "layout1",
@@ -41,6 +42,11 @@ const sessionRoutes = [
     component: NotFound,
     settings,
   },
+  {
+    path : '/404',
+    component : PageNotFound,
+    settings
+  }
 ];
 
 export default sessionRoutes;
