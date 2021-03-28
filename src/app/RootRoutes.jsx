@@ -19,7 +19,7 @@ import aclRoleRoutes from "./views/aclRole/aclRoleRoutes";
 import Profile from "./views/Profile/profile";
 import { isSession, logoutApi } from "redux/actions/LoginActions";
 import Cookies from "js-cookie";
-
+import history from "../history";
 const redirectRoute = [
   {
     path: "/",
@@ -41,31 +41,36 @@ const errorRoute = [
   },
 ];
 
-const routes = [
-  ...sessionRoutes,
-  ...adminUserRoutes,
-  ...aclRoleRoutes,
-  ...masterRoutes,
-  ...settingRoutes,
-  ...dashboardRoutes,
-  ...newsUpdateRoutes,
-  ...subscriberRoutes,
-  ...inquiryRoutes,
-  ...utilitiesRoutes,
-  ...formsRoutes,
-  ...profileRoute,
-  ...newsRoutes,
-  ...redirectRoute,
-  ...errorRoute,
-];
 
-const GetRoutes = () => {
-  if (Cookies.get("GNTV-SESSIONID")) {
-    return routes;
-  } else {
-    logoutApi();
-    return [...sessionRoutes, ...redirectRoute, ...errorRoute];
-  }
-};
 
-export default routes;
+
+const routes =
+   [
+      ...sessionRoutes,
+      ...adminUserRoutes,
+      ...aclRoleRoutes,
+      ...masterRoutes,
+      ...settingRoutes,
+      ...dashboardRoutes,
+      ...newsUpdateRoutes,
+      ...subscriberRoutes,
+      ...inquiryRoutes,
+      ...utilitiesRoutes,
+      ...formsRoutes,
+      ...profileRoute,
+      ...newsRoutes,
+      ...redirectRoute,
+      ...errorRoute,
+    ];
+
+     const GetRoutes = () =>{
+      if(Cookies.get('GNTV-SESSIONID')){
+        return routes;
+      }
+      else{
+        history.push('/login');
+        return [ ...sessionRoutes, ...redirectRoute, ...errorRoute]
+      }
+    }
+
+export default GetRoutes;
