@@ -20,5 +20,6 @@ export * from "./apiAction/footerApiAction";
 export * from "./news/index";
 export * from "./apiAction/videoNewsApiAction";
 export * from "./apiAction/articleNewsApiAction";
-export * from "./profile/profileAction"
+export * from "./profile/profileAction";
+export * from "./apiAction/dashBoardApiAction";
 
