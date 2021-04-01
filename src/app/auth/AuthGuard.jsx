@@ -52,7 +52,7 @@ class AuthGuard extends Component {
     const { pathname } = location;
 
     history.push({
-      pathname: "/session/signin",
+      pathname: "/login",
       state: { redirectUrl: pathname }
     });
   }
