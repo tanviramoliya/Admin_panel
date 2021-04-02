@@ -62,8 +62,8 @@ class LogIn extends Component {
     }else{
       localStorage.setItem('remember',JSON.stringify({ email : "", password : ""}))
     }
-    await this.props.loginApi(loginData);
-  };
+   await this.props.loginApi(loginData);  
+};
   handleRemember = () => {
     const { remember, email, password } = this.state;
     this.setState({ remember : !remember});

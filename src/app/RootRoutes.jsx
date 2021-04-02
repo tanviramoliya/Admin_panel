@@ -74,7 +74,7 @@ const routes =
       }
       else{
         // history.push('/login');
-        return [ ...sessionRoutes, ...redirectRoute, ...PageNotFoundRoute]
+   return [ ...sessionRoutes, ...redirectRoute, ...PageNotFoundRoute]
       }
     }
 

@@ -31,10 +31,12 @@ export const loginApi = (loginData) => {
         //   }
         // }
         //GNTV-SESSIONID
+        history.push("/dashboard");
         Cookies.set("JSESSIONID", res.data.data);
         Cookies.set("GNTV-SESSIONID", res.data.data);
         toastr.success("Logged in successfully");
-        history.push("/dashboard");
+        dispatch(setLoginFlag(true));
+        history.push("/dashboard")
       } else if (res && res.data.code === status.badRequest) {
         toastr.warning(res.data.message);
       } else {
