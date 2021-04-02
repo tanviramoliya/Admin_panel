@@ -17,9 +17,7 @@ import inquiryRoutes from "./views/inquiry/inquiryRoutes";
 import aclRoleRoutes from "./views/aclRole/aclRoleRoutes";
 
 import Profile from "./views/Profile/profile";
-import { isSession, logoutApi } from "redux/actions/LoginActions";
 import Cookies from "js-cookie";
-import history from "../history";
 const redirectRoute = [
   {
     path: "/",
