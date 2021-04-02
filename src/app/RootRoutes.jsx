@@ -46,36 +46,31 @@ const PageNotFoundRoute = [
   },
 ];
 
+const routes = [
+  ...dashboardRoutes,
+  ...adminUserRoutes,
+  ...aclRoleRoutes,
+  ...masterRoutes,
+  ...settingRoutes,
+  ...newsUpdateRoutes,
+  ...subscriberRoutes,
+  ...inquiryRoutes,
+  ...utilitiesRoutes,
+  ...formsRoutes,
+  ...profileRoute,
+  ...newsRoutes,
+  ...sessionRoutes,
+  ...redirectRoute,
+  ...errorRoute,
+];
 
-
-
-const routes =
-   [
-     ...adminUserRoutes,
-     ...aclRoleRoutes,
-     ...masterRoutes,
-     ...settingRoutes,
-     ...dashboardRoutes,
-     ...newsUpdateRoutes,
-     ...subscriberRoutes,
-     ...inquiryRoutes,
-     ...utilitiesRoutes,
-     ...formsRoutes,
-     ...profileRoute,
-     ...newsRoutes,
-     ...sessionRoutes,
-      ...redirectRoute,
-      ...errorRoute,
-    ];
-
-     const GetRoutes = () =>{
-      if(Cookies.get('GNTV-SESSIONID')){
-        return routes;
-      }
-      else{
-        // history.push('/login');
-        return [ ...sessionRoutes, ...redirectRoute, ...PageNotFoundRoute]
-      }
-    }
+const GetRoutes = () => {
+  if (Cookies.get("GNTV-SESSIONID")) {
+    return routes;
+  } else {
+    // history.push('/login');
+    return [...sessionRoutes, ...redirectRoute, ...PageNotFoundRoute];
+  }
+};
 
 export default GetRoutes;
