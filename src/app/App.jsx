@@ -13,7 +13,8 @@ import MatxLayout from "./MatxLayout/MatxLayout";
 import AuthGuard from "./auth/AuthGuard";
 import ReduxToastr from 'react-redux-toastr'
 
-const routes = GetRoutes();
+
+const routes = GetRoutes(); 
 const App = () => {
   console.log(GetRoutes());
   return (

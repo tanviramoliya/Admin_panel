@@ -1,3 +1,8 @@
+
+const permission =  JSON.parse(localStorage.getItem("permission"));
+
+permission.map((i)=> console.log(i.key));
+
 export const navigations = [
   {
     name: "Dashboard",

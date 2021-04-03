@@ -41,6 +41,7 @@ import {
 } from "../../../redux/actions/index";
 import { status } from "../../../utility/config";
 import SimpleReactValidator from "simple-react-validator";
+import AccessDeniedPage from "../sessions/accessdeniedPage";
 
 const theme = createMuiTheme({
   palette: {
@@ -62,23 +63,28 @@ class AclRole extends Component {
     openModal: false,
     roleToken: "",
     roleType: "",
+    isPermission:true,
     permission: [
       { key: "Dashboard", value: "N/A" },
-      { key: "Administrator", value: "N/A" },
-      { key: "News_headline", value: "N/A" },
       { key: "News", value: "N/A" },
-      { key: "Publish", value: "N/A" },
+      { key: "News_headline", value: "N/A" },
       { key: "Comments", value: "N/A" },
-      { key: "Menu_serial_no", value: "N/A" },
-      { key: "Master", value: "N/A" },
-      { key: "Settings", value: "N/A" },
-      { key: "Subscription", value: "N/A" },
+      { key: "Administrator", value: "N/A" },
       { key: "Role", value: "N/A" },
+      { key: "Subscription", value: "N/A" },
+      { key: "Inquiry", value: "N/A" },
+      { key: "Master", value: "N/A" },
+      { key: "Settings", value: "N/A" }
     ],
     type: "new",
   };
 
   componentDidMount = async () => {
+    const perData = JSON.parse(localStorage.getItem("permission"));
+    if(perData[5].key === 'Role' && perData[5].value === "N/A"){      
+      this.setState({isPermission:false});
+      return false;
+    }
     await this.getAclRoleList();
     // custom rule will have name 'isPasswordMatch'
   };
@@ -151,16 +157,15 @@ class AclRole extends Component {
       updateDate: "",
       permission: [
         { key: "Dashboard", value: "N/A" },
-        { key: "Administrator", value: "N/A" },
-        { key: "News_headline", value: "N/A" },
         { key: "News", value: "N/A" },
-        { key: "Publish", value: "N/A" },
+        { key: "News_headline", value: "N/A" },
         { key: "Comments", value: "N/A" },
-        { key: "Menu_serial_no", value: "N/A" },
-        { key: "Master", value: "N/A" },
-        { key: "Settings", value: "N/A" },
-        { key: "Subscription", value: "N/A" },
+        { key: "Administrator", value: "N/A" },
         { key: "Role", value: "N/A" },
+        { key: "Subscription", value: "N/A" },
+        { key: "Inquiry", value: "N/A" },
+        { key: "Master", value: "N/A" },
+        { key: "Settings", value: "N/A" }
       ],
     });
     this.validator.hideMessages();
@@ -281,8 +286,18 @@ class AclRole extends Component {
   };
 
   render() {
-    const { aclRoleList, roleType, type, openModal } = this.state;
+    const { aclRoleList, roleType, type, openModal,isPermission } = this.state;
+    if (!isPermission) {
+      return (
+        <AccessDeniedPage/>
+      )
+    }
+    else {
+
+   
     return (
+      
+
       <div className="m-sm-30">
         <div className="mb-sm-30">
           <Breadcrumb routeSegments={[{ name: "User Role", path: "/" }]} />
@@ -516,6 +531,7 @@ class AclRole extends Component {
       </div>
     );
   }
+}
 }
 const mapStateToProps = (state) => {
   const { aclRoleList, roleType } = state.aclRole;

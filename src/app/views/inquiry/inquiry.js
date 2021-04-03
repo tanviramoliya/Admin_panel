@@ -42,6 +42,8 @@ import { ValidatorForm } from "react-material-ui-form-validator";
 import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
 import "./style.css";
 import SimpleReactValidator from "simple-react-validator";
+import AccessDeniedPage from "../sessions/accessdeniedPage";
+
 
 class inquiry extends Component {
   constructor(props) {
@@ -72,9 +74,16 @@ class inquiry extends Component {
     openReplyModal: false,
     replyMessage: "",
     replySubject: "",
+    permission: true
+
   };
 
   componentDidMount = async () => {
+    const perData = JSON.parse(localStorage.getItem("permission"));
+    if (perData[7].key === 'Inquiry' && perData[7].value === "N/A") {
+      this.setState({ permission: false });
+      return false;
+    }
     await this.getInquiryList();
   };
   getInquiryList = async () => {
@@ -190,8 +199,8 @@ class inquiry extends Component {
       subject: "",
       message: "",
       contactNumber: "",
-      replyMessage:"",
-      replySubject:""
+      replyMessage: "",
+      replySubject: ""
       //read: false
     });
     this.validator.hideMessageFor("replyMessage");
@@ -303,480 +312,375 @@ class inquiry extends Component {
       replyMessage,
       replySubject,
       read,
+      permission
     } = this.state;
-    return (
-      <div className="m-sm-30">
-        <div className="mb-sm-30">
-          <Breadcrumb routeSegments={[{ name: "Inquiry", path: "/inquiry" }]} />
-        </div>
-        <div className="py-12">
-          <Card elevation={6} className="px-24 pt-12 h-100">
-            <div className="flex flex-middle flex-space-between pb-12">
-              <div className="card-title">
+    if (!permission) {
+      return (
+        <AccessDeniedPage />
+      )
+    }
+    else {
 
-                {selected.length > 0 ? (
-                  <span>{selected.length} rows selected</span>
-                ) : (
-                    <span>Inquiry Information</span>
+      return (
+        <div className="m-sm-30">
+          <div className="mb-sm-30">
+            <Breadcrumb routeSegments={[{ name: "Inquiry", path: "/inquiry" }]} />
+          </div>
+          <div className="py-12">
+            <Card elevation={6} className="px-24 pt-12 h-100">
+              <div className="flex flex-middle flex-space-between pb-12">
+                <div className="card-title">
 
-                  )}
-              </div>
-              <div>
-                <TextField style={{ width: '300px' }}
-                  className="mr-16"
-                  placeholder="Search..."
+                  {selected.length > 0 ? (
+                    <span>{selected.length} rows selected</span>
+                  ) : (
+                      <span>Inquiry Information</span>
 
-                  type="search"
-                  name="keyword"
-                  value={keyword}
-                  onChange={this.handleSearchKeyword}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-                {selected.length > 0 ? (
-                  <Tooltip title="Delete" >
-                    <IconButton
-                      aria-label="delete" className="p-0"
-                      onClick={() => this.deleteInquiryClicked(selected)}
-                    >
-                      <DeleteIcon color="error" />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                    <Tooltip title="Delete" style={{ padding: "12px" }}>
-                      <Chip
-                        variant="outlined"
-                        color="secondary"
-                        label={inquiryList.length + " Inquiries"}
-                      />
-                    </Tooltip>
-                  )}
-              </div>
-            </div>
-            <TableContainer style={{ maxHeight: "465px" }}>
-              <Table style={{ whiteSpace: "pre" }} stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell className="px-0 py-8" width="5%">
-                      <Checkbox style={{ paddingTop: 0, paddingBottom: 0 }}
-                        indeterminate={
-                          selected.length > 0 &&
-                          selected.length < inquiryList.length
-                        }
-                        checked={
-                          inquiryList.length > 0 &&
-                          selected.length === inquiryList.length
-                        }
-                        onChange={this.handleSelectAllClick}
-                        inputProps={{ "aria-label": "select all desserts" }}
-                      />
-                      {/* <FormControlLabel control={<Checkbox onChange={this.handleSelectAllClick} />} /> */}
-                    </TableCell>
-                    <TableCell className="px-0 py-8" width="5%">
-                      Sr.No
-                    </TableCell>
-                    <TableCell className="px-0 py-8" width="13%">
-                      <TableSortLabel
-                        active={sortingField === 'userName'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("userName", sortingOrder)}
-                      >
-                        User Name
-                      </TableSortLabel>
-                    </TableCell>
-                    <TableCell className="px-0 py-8" width="18%">
-                      <TableSortLabel
-                        active={sortingField === 'subject'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("subject", sortingOrder)}
-                      >
-                        Subject
-                      </TableSortLabel>
-
-                    </TableCell>
-                    <TableCell className="px-0 py-8" width="22%">
-                      <TableSortLabel
-                        active={sortingField === 'message'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("message", sortingOrder)}
-                      >
-                        Message
-                      </TableSortLabel>
-                    </TableCell>
-                    <TableCell className="px-0 py-8" width="16%">
-                      <TableSortLabel
-                        active={sortingField === 'emailId'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("emailId", sortingOrder)}
-                      >
-                        User Email
-                        </TableSortLabel>
-
-                    </TableCell>
-                    <TableCell className="px-0 py-8" width="10%">
-                      <TableSortLabel
-                        active={sortingField === 'contactNumber'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("contactNumber", sortingOrder)}
-                      >
-                        Contact Number
-                        </TableSortLabel>
-
-                    </TableCell>
-                    <TableCell className="px-0 py-8" width="10%">
-                      Action
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {inquiryList && inquiryList !== [] ? inquiryList
-                    //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((inquiryUpdate, index) => {
-                      const isItemSelected = this.isSelected(
-                        inquiryUpdate.token
-                      );
-                      const labelId = `enhanced-table-checkbox-${index}`;
-                      return (
-                        <TableRow
-                          hover
-                          role="checkbox"
-                          aria-checked={isItemSelected}
-                          tabIndex={-1}
-                          key={inquiryUpdate.token}
-                          selected={isItemSelected}
-                        >
-                          <TableCell
-                            onClick={(event) =>
-                              this.handleClick(event, inquiryUpdate.token)
-                            }
-                            className="p-0"
-                          >
-                            <Checkbox
-                              checked={isItemSelected}
-                              inputProps={{ "aria-labelledby": labelId }}
-                            />
-                            {/* <FormControlLabel control={<Checkbox />} /> */}
-                          </TableCell>
-                          <TableCell
-                            onClick={(event) =>
-                              this.handleClick(event, inquiryUpdate.token)
-                            }
-                            className="p-0"
-                          >
-                            {page * rowsPerPage + index + 1}
-
-                          </TableCell>
-                          <TableCell
-                            id={labelId}
-                            className="ellipse p-0"
-                            onClick={(event) =>
-                              this.handleClick(event, inquiryUpdate.token)
-                            }
-                          >
-                            {inquiryUpdate.userName}
-                          </TableCell>
-                          <TableCell
-                            className="ellipse p-0"
-                            onClick={(event) =>
-                              this.handleClick(event, inquiryUpdate.token)
-                            }
-                          >
-                            {inquiryUpdate.subject}
-                          </TableCell>
-                          <TableCell
-                            className="ellipse p-0"
-                            onClick={(event) =>
-                              this.handleClick(event, inquiryUpdate.token)
-                            }
-                          >
-                            {inquiryUpdate.message}
-                          </TableCell>
-                          <TableCell
-                            className="ellipse p-0"
-                            onClick={(event) =>
-                              this.handleClick(event, inquiryUpdate.token)
-                            }
-                          >
-                            {inquiryUpdate.emailId}
-                          </TableCell>
-                          <TableCell
-                            className="ellipse p-0"
-                            onClick={(event) =>
-                              this.handleClick(event, inquiryUpdate.token)
-                            }
-                          >
-                            {inquiryUpdate.contactNumber}
-                          </TableCell>
-                          <TableCell className="p-0">
-                            <IconButton className="p-8">
-                              <Icon
-                                onClick={() =>
-                                  this.setReadModel(inquiryUpdate)
-                                }
-                              >
-                                <VisibilityIcon />
-                              </Icon>
-                            </IconButton>
-                            <IconButton className="p-8"
-
-                              onClick={() => this.setReplyModel(inquiryUpdate)
-                              }
-                              disabled={inquiryUpdate.read}
-                            >
-                              <Icon color={inquiryUpdate.read ? "" : "primary"}>send</Icon>
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }) : <h1>
-                      No Data is there!
-                    </h1>}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            <TablePagination
-              className="px-16"
-              rowsPerPageOptions={[10, 20, 30]}
-              component="div"
-              count={count ? count : 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              backIconButtonProps={{
-                "aria-label": "Previous Page",
-              }}
-              nextIconButtonProps={{
-                "aria-label": "Next Page",
-              }}
-              onChangePage={this.handleChangePage}
-              onChangeRowsPerPage={this.handleChangeRowsPerPage}
-            />
-          </Card>
-        </div>
-        <div>
-          <ConfirmationDialog
-            open={this.state.deleteModal}
-            title="Delete Confirmation"
-            message={
-              "are you sure want to delete " +
-              selected.length +
-              " inquiries?"
-            }
-            toggle={this.deleteInquiryClicked}
-            onYesClick={() =>
-              this.yesDeleteClicked(this.state.deleteInquiryToken)
-            }
-            onNoClick={this.noDeleteClicked}
-          />
-        </div>
-        <div>
-          <Dialog
-            open={openReadModal}
-            aria-labelledby="customized-dialog-title"
-            fullWidth="true"
-            onClose={this.handleClose}
-          >
-            <DialogTitle id="customized-dialog-title">User Inquiry</DialogTitle>
-            <DialogContent dividers>
-              <Grid container spacing={3}>
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-                  <TextField
-                    className="mb-16 w-100"
-                    label="User Name"
-                    type="text"
-                    name="userName"
-                    value={userName}
-                    disabled={true}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Person />
-                        </InputAdornment>
-                      ),
-                    }}
-
-                  />
-                  <TextField
-                    className="mb-16 w-100"
-                    label="User Email"
-                    type="text"
-                    name="emailId"
-                    value={emailId}
-                    disabled={true}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Email />
-                        </InputAdornment>
-                      ),
-                    }}
-
-                  />
-
-
-                </Grid>
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-                  <TextField
-                    className="mb-16 w-100"
-                    label="Inquiry Data"
-                    type="text"
-                    name="inquiryDate"
-                    value={inquiryDate}
-                    disabled={true}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <DateRange />
-                        </InputAdornment>
-                      ),
-                    }}
-
-                  />
-                  <TextField
-                    className="mb-16 w-100"
-                    label="User Contact Number"
-                    type="text"
-                    name="contactNumber"
-                    value={contactNumber}
-                    disabled={true}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Phone />
-                        </InputAdornment>
-                      ),
-                    }}
-
-                  />
-                </Grid>
-              </Grid>
-              <TextField
-                className="mb-16 w-100"
-                label="Subject"
-                type="text"
-                name="subject"
-                value={subject}
-                disabled={true}
-
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Subject />
-                    </InputAdornment>
-                  ),
-                }}
-
-              />
-              <TextField
-                className="mb-16 w-100"
-                label="message"
-                type="text"
-                multiline
-                name="message"
-                value={message}
-                disabled={true}
-
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Message />
-                    </InputAdornment>
-                  ),
-                }}
-
-              />
-
-              <DialogActions className="p-0" style={{ display: "block" }}>
-                <div className="flex flex-end">
-
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                    endIcon={!read ? <Icon>send</Icon> : <Icon>visibility</Icon>}
-                    onClick={() => this.setState({ openReplyModal: true, openReadModal: false })}
-                  >
-                    {!read ? "Send Reply" : "View Reply"}
-                  </Button>
+                    )}
                 </div>
-              </DialogActions>
+                <div>
+                  <TextField style={{ width: '300px' }}
+                    className="mr-16"
+                    placeholder="Search..."
 
-
-            </DialogContent>
-          </Dialog>
-          <Dialog
-            open={openReplyModal}
-            aria-labelledby="customized-dialog-title"
-            fullWidth="true"
-          >
-            <DialogTitle id="customized-dialog-title">
-              <ReplyIcon color="primary" /> Send Reply
-            </DialogTitle>
-
-            <DialogContent dividers>
-              <Grid container spacing={3}>
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-                  <TextField
-                    className="mb-16 w-100"
-                    label="User Name"
-                    type="text"
-                    name="userName"
-                    value={userName}
-                    disabled={true}
+                    type="search"
+                    name="keyword"
+                    value={keyword}
+                    onChange={this.handleSearchKeyword}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Person />
+                          <Search />
                         </InputAdornment>
-                      ),
+                      )
                     }}
-
                   />
+                  {selected.length > 0 ? (
+                    <Tooltip title="Delete" >
+                      <IconButton
+                        aria-label="delete" className="p-0"
+                        onClick={() => this.deleteInquiryClicked(selected)}
+                      >
+                        <DeleteIcon color="error" />
+                      </IconButton>
+                    </Tooltip>
+                  ) : (
+                      <Tooltip title="Delete" style={{ padding: "12px" }}>
+                        <Chip
+                          variant="outlined"
+                          color="secondary"
+                          label={inquiryList.length + " Inquiries"}
+                        />
+                      </Tooltip>
+                    )}
+                </div>
+              </div>
+              <TableContainer style={{ maxHeight: "465px" }}>
+                <Table style={{ whiteSpace: "pre" }} stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className="px-0 py-8" width="5%">
+                        <Checkbox style={{ paddingTop: 0, paddingBottom: 0 }}
+                          indeterminate={
+                            selected.length > 0 &&
+                            selected.length < inquiryList.length
+                          }
+                          checked={
+                            inquiryList.length > 0 &&
+                            selected.length === inquiryList.length
+                          }
+                          onChange={this.handleSelectAllClick}
+                          inputProps={{ "aria-label": "select all desserts" }}
+                        />
+                        {/* <FormControlLabel control={<Checkbox onChange={this.handleSelectAllClick} />} /> */}
+                      </TableCell>
+                      <TableCell className="px-0 py-8" width="5%">
+                        Sr.No
+                    </TableCell>
+                      <TableCell className="px-0 py-8" width="13%">
+                        <TableSortLabel
+                          active={sortingField === 'userName'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("userName", sortingOrder)}
+                        >
+                          User Name
+                      </TableSortLabel>
+                      </TableCell>
+                      <TableCell className="px-0 py-8" width="18%">
+                        <TableSortLabel
+                          active={sortingField === 'subject'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("subject", sortingOrder)}
+                        >
+                          Subject
+                      </TableSortLabel>
+
+                      </TableCell>
+                      <TableCell className="px-0 py-8" width="22%">
+                        <TableSortLabel
+                          active={sortingField === 'message'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("message", sortingOrder)}
+                        >
+                          Message
+                      </TableSortLabel>
+                      </TableCell>
+                      <TableCell className="px-0 py-8" width="16%">
+                        <TableSortLabel
+                          active={sortingField === 'emailId'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("emailId", sortingOrder)}
+                        >
+                          User Email
+                        </TableSortLabel>
+
+                      </TableCell>
+                      <TableCell className="px-0 py-8" width="10%">
+                        <TableSortLabel
+                          active={sortingField === 'contactNumber'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("contactNumber", sortingOrder)}
+                        >
+                          Contact Number
+                        </TableSortLabel>
+
+                      </TableCell>
+                      <TableCell className="px-0 py-8" width="10%">
+                        Action
+                    </TableCell>
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {inquiryList && inquiryList !== [] ? inquiryList
+                      //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((inquiryUpdate, index) => {
+                        const isItemSelected = this.isSelected(
+                          inquiryUpdate.token
+                        );
+                        const labelId = `enhanced-table-checkbox-${index}`;
+                        return (
+                          <TableRow
+                            hover
+                            role="checkbox"
+                            aria-checked={isItemSelected}
+                            tabIndex={-1}
+                            key={inquiryUpdate.token}
+                            selected={isItemSelected}
+                          >
+                            <TableCell
+                              onClick={(event) =>
+                                this.handleClick(event, inquiryUpdate.token)
+                              }
+                              className="p-0"
+                            >
+                              <Checkbox
+                                checked={isItemSelected}
+                                inputProps={{ "aria-labelledby": labelId }}
+                              />
+                              {/* <FormControlLabel control={<Checkbox />} /> */}
+                            </TableCell>
+                            <TableCell
+                              onClick={(event) =>
+                                this.handleClick(event, inquiryUpdate.token)
+                              }
+                              className="p-0"
+                            >
+                              {page * rowsPerPage + index + 1}
+
+                            </TableCell>
+                            <TableCell
+                              id={labelId}
+                              className="ellipse p-0"
+                              onClick={(event) =>
+                                this.handleClick(event, inquiryUpdate.token)
+                              }
+                            >
+                              {inquiryUpdate.userName}
+                            </TableCell>
+                            <TableCell
+                              className="ellipse p-0"
+                              onClick={(event) =>
+                                this.handleClick(event, inquiryUpdate.token)
+                              }
+                            >
+                              {inquiryUpdate.subject}
+                            </TableCell>
+                            <TableCell
+                              className="ellipse p-0"
+                              onClick={(event) =>
+                                this.handleClick(event, inquiryUpdate.token)
+                              }
+                            >
+                              {inquiryUpdate.message}
+                            </TableCell>
+                            <TableCell
+                              className="ellipse p-0"
+                              onClick={(event) =>
+                                this.handleClick(event, inquiryUpdate.token)
+                              }
+                            >
+                              {inquiryUpdate.emailId}
+                            </TableCell>
+                            <TableCell
+                              className="ellipse p-0"
+                              onClick={(event) =>
+                                this.handleClick(event, inquiryUpdate.token)
+                              }
+                            >
+                              {inquiryUpdate.contactNumber}
+                            </TableCell>
+                            <TableCell className="p-0">
+                              <IconButton className="p-8">
+                                <Icon
+                                  onClick={() =>
+                                    this.setReadModel(inquiryUpdate)
+                                  }
+                                >
+                                  <VisibilityIcon />
+                                </Icon>
+                              </IconButton>
+                              <IconButton className="p-8"
+
+                                onClick={() => this.setReplyModel(inquiryUpdate)
+                                }
+                                disabled={inquiryUpdate.read}
+                              >
+                                <Icon color={inquiryUpdate.read ? "" : "primary"}>send</Icon>
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }) : <h1>
+                        No Data is there!
+                    </h1>}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              <TablePagination
+                className="px-16"
+                rowsPerPageOptions={[10, 20, 30]}
+                component="div"
+                count={count ? count : 0}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                backIconButtonProps={{
+                  "aria-label": "Previous Page",
+                }}
+                nextIconButtonProps={{
+                  "aria-label": "Next Page",
+                }}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+            </Card>
+          </div>
+          <div>
+            <ConfirmationDialog
+              open={this.state.deleteModal}
+              title="Delete Confirmation"
+              message={
+                "are you sure want to delete " +
+                selected.length +
+                " inquiries?"
+              }
+              toggle={this.deleteInquiryClicked}
+              onYesClick={() =>
+                this.yesDeleteClicked(this.state.deleteInquiryToken)
+              }
+              onNoClick={this.noDeleteClicked}
+            />
+          </div>
+          <div>
+            <Dialog
+              open={openReadModal}
+              aria-labelledby="customized-dialog-title"
+              fullWidth="true"
+              onClose={this.handleClose}
+            >
+              <DialogTitle id="customized-dialog-title">User Inquiry</DialogTitle>
+              <DialogContent dividers>
+                <Grid container spacing={3}>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <TextField
+                      className="mb-16 w-100"
+                      label="User Name"
+                      type="text"
+                      name="userName"
+                      value={userName}
+                      disabled={true}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Person />
+                          </InputAdornment>
+                        ),
+                      }}
+
+                    />
+                    <TextField
+                      className="mb-16 w-100"
+                      label="User Email"
+                      type="text"
+                      name="emailId"
+                      value={emailId}
+                      disabled={true}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Email />
+                          </InputAdornment>
+                        ),
+                      }}
+
+                    />
+
+
+                  </Grid>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <TextField
+                      className="mb-16 w-100"
+                      label="Inquiry Data"
+                      type="text"
+                      name="inquiryDate"
+                      value={inquiryDate}
+                      disabled={true}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <DateRange />
+                          </InputAdornment>
+                        ),
+                      }}
+
+                    />
+                    <TextField
+                      className="mb-16 w-100"
+                      label="User Contact Number"
+                      type="text"
+                      name="contactNumber"
+                      value={contactNumber}
+                      disabled={true}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Phone />
+                          </InputAdornment>
+                        ),
+                      }}
+
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-
-                  <TextField
-                    className="mb-16 w-100"
-                    label="User Email"
-                    type="text"
-                    name="emailId"
-                    value={emailId}
-                    disabled={true}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Email />
-                        </InputAdornment>
-                      ),
-                    }}
-
-                  />
-
-
-                </Grid>
-              </Grid>
-              <ValidatorForm
-                ref="form"
-                onSubmit={this.replySubmit}
-                onError={(errors) => null}
-              >
-
                 <TextField
                   className="mb-16 w-100"
-                  label="Reply Subject"
-                  onChange={this.handleChange}
+                  label="Subject"
                   type="text"
-                  name="replySubject"
-                  value={replySubject}
-                  placeholder="Enter Subject"
-                  variant={!read ? "outlined" : "standard"}
-                  disabled={!read ? false : true}
+                  name="subject"
+                  value={subject}
+                  disabled={true}
+
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -784,31 +688,17 @@ class inquiry extends Component {
                       </InputAdornment>
                     ),
                   }}
-                  error={this.validator.message(
-                    "replySubject",
-                    replySubject,
-                    "required"
-                  )}
-                  helperText={this.validator.message(
-                    "replySubject",
-                    replySubject,
-                    "required"
-                  )}
-                  onBlur={() => this.validator.showMessageFor("replySubject")}
-                />
 
+                />
                 <TextField
                   className="mb-16 w-100"
-                  label="Reply Message"
-                  onChange={this.handleChange}
+                  label="message"
                   type="text"
                   multiline
-                
-                  name="replyMessage"
-                  value={replyMessage}
-                  placeholder="Enter Reply Message"
-                  variant={!read ? "outlined" : "standard"}            
-                  disabled={!read ? false : true}
+                  name="message"
+                  value={message}
+                  disabled={true}
+
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -817,44 +707,172 @@ class inquiry extends Component {
                     ),
                   }}
 
-                  error={this.validator.message(
-                    "replyMessage",
-                    replyMessage,
-                    "required"
-                  )}
-                  helperText={this.validator.message(
-                    "replyMessage",
-                    replyMessage,
-                    "required"
-                  )}
-                  onBlur={() => this.validator.showMessageFor("replyMessage")}
                 />
 
                 <DialogActions className="p-0" style={{ display: "block" }}>
                   <div className="flex flex-end">
-                    <Button onClick={this.handleClose} className="mr-8" variant="outlined">
-                      Cancel
+
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                      endIcon={!read ? <Icon>send</Icon> : <Icon>visibility</Icon>}
+                      onClick={() => this.setState({ openReplyModal: true, openReadModal: false })}
+                    >
+                      {!read ? "Send Reply" : "View Reply"}
                     </Button>
-                    {read ? null :
-                      <>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          type="submit"
-                          endIcon={<Icon>send</Icon>}
-                        >
-                          Send
-                      </Button>
-                      </>
-                    }
                   </div>
                 </DialogActions>
-              </ValidatorForm>
-            </DialogContent>
-          </Dialog>
+
+
+              </DialogContent>
+            </Dialog>
+            <Dialog
+              open={openReplyModal}
+              aria-labelledby="customized-dialog-title"
+              fullWidth="true"
+            >
+              <DialogTitle id="customized-dialog-title">
+                <ReplyIcon color="primary" /> Send Reply
+            </DialogTitle>
+
+              <DialogContent dividers>
+                <Grid container spacing={3}>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <TextField
+                      className="mb-16 w-100"
+                      label="User Name"
+                      type="text"
+                      name="userName"
+                      value={userName}
+                      disabled={true}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Person />
+                          </InputAdornment>
+                        ),
+                      }}
+
+                    />
+                  </Grid>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+
+                    <TextField
+                      className="mb-16 w-100"
+                      label="User Email"
+                      type="text"
+                      name="emailId"
+                      value={emailId}
+                      disabled={true}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Email />
+                          </InputAdornment>
+                        ),
+                      }}
+
+                    />
+
+
+                  </Grid>
+                </Grid>
+                <ValidatorForm
+                  ref="form"
+                  onSubmit={this.replySubmit}
+                  onError={(errors) => null}
+                >
+
+                  <TextField
+                    className="mb-16 w-100"
+                    label="Reply Subject"
+                    onChange={this.handleChange}
+                    type="text"
+                    name="replySubject"
+                    value={replySubject}
+                    placeholder="Enter Subject"
+                    variant={!read ? "outlined" : "standard"}
+                    disabled={!read ? false : true}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Subject />
+                        </InputAdornment>
+                      ),
+                    }}
+                    error={this.validator.message(
+                      "replySubject",
+                      replySubject,
+                      "required"
+                    )}
+                    helperText={this.validator.message(
+                      "replySubject",
+                      replySubject,
+                      "required"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("replySubject")}
+                  />
+
+                  <TextField
+                    className="mb-16 w-100"
+                    label="Reply Message"
+                    onChange={this.handleChange}
+                    type="text"
+                    multiline
+
+                    name="replyMessage"
+                    value={replyMessage}
+                    placeholder="Enter Reply Message"
+                    variant={!read ? "outlined" : "standard"}
+                    disabled={!read ? false : true}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Message />
+                        </InputAdornment>
+                      ),
+                    }}
+
+                    error={this.validator.message(
+                      "replyMessage",
+                      replyMessage,
+                      "required"
+                    )}
+                    helperText={this.validator.message(
+                      "replyMessage",
+                      replyMessage,
+                      "required"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("replyMessage")}
+                  />
+
+                  <DialogActions className="p-0" style={{ display: "block" }}>
+                    <div className="flex flex-end">
+                      <Button onClick={this.handleClose} className="mr-8" variant="outlined">
+                        Cancel
+                    </Button>
+                      {read ? null :
+                        <>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            endIcon={<Icon>send</Icon>}
+                          >
+                            Send
+                      </Button>
+                        </>
+                      }
+                    </div>
+                  </DialogActions>
+                </ValidatorForm>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 }
 const mapStateToProps = (state) => {

@@ -25,6 +25,8 @@ import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
 import { PhoneIphone, Email } from "@material-ui/icons";
 import SimpleReactValidator from "simple-react-validator";
 import "../style.css"
+import AccessDeniedPage from "../../sessions/accessdeniedPage";
+
 
 class footer extends Component {
   constructor(props) {
@@ -43,8 +45,14 @@ class footer extends Component {
     message: "",
     token: "",
     footerEdit: false,
+    permission:true
   };
   componentDidMount = async () => {
+    const perData = JSON.parse(localStorage.getItem("permission"));
+    if (perData[9].key === 'Settings' && perData[9].value === "N/A") {
+      this.setState({ permission: false });
+      return false;
+    }
     await this.getFooterList();
   };
   getFooterList = async () => {
@@ -86,7 +94,7 @@ class footer extends Component {
         if (updateFooter.status === status.success) {
           if (updateFooter.data.code === status.success) {
             toastr.success(updateFooter.data.message);
-            this.setState({footerEdit:false})
+            this.setState({ footerEdit: false })
             this.getFooterList();
           } else {
             toastr.warning(updateFooter.data.message);
@@ -107,11 +115,11 @@ class footer extends Component {
 
     this.setState({ [event.target.name]: event.target.value });
   };
-  footerEditChick = () =>{
-    this.setState({footerEdit : true})
+  footerEditChick = () => {
+    this.setState({ footerEdit: true })
   }
-  reset = async () =>{
-    this.setState({footerEdit : false})
+  reset = async () => {
+    this.setState({ footerEdit: false })
     this.validator.hideMessages();
     this.validator.hideMessageFor("aboutUs");
     this.validator.hideMessageFor("address");
@@ -130,203 +138,211 @@ class footer extends Component {
       email,
       optionalContact,
       footerList: [],
-      footerEdit
+      footerEdit,
+      permission
 
     } = this.state;
-    return (
-      <div className="m-sm-30">
-        <div className="mb-sm-30">
-          <Breadcrumb
-            routeSegments={[
-              { name: "Setting", path: "/" },
-              { name: "Footer" },
-            ]}
-          />
-        </div>
-        <div className="py-12">
-          <Card elevation={6} className="px-20 pt-12 h-100">
-            <div className="flex flex-middle flex-space-between pb-12">
-              <div className="card-title">GNTV Footer Information</div>
-              <div>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  className="mr-4"
-                  onClick={this.footerEditChick}
-                  startIcon={<Icon>edit</Icon>}
-                >Edit Info
+    if (!permission) {
+      return (
+        <AccessDeniedPage />
+      )
+    }
+    else {
+      return (
+        <div className="m-sm-30">
+          <div className="mb-sm-30">
+            <Breadcrumb
+              routeSegments={[
+                { name: "Setting", path: "/" },
+                { name: "Footer" },
+              ]}
+            />
+          </div>
+          <div className="py-12">
+            <Card elevation={6} className="px-20 pt-12 h-100">
+              <div className="flex flex-middle flex-space-between pb-12">
+                <div className="card-title">GNTV Footer Information</div>
+                <div>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className="mr-4"
+                    onClick={this.footerEditChick}
+                    startIcon={<Icon>edit</Icon>}
+                  >Edit Info
                   </Button>
 
+                </div>
               </div>
-            </div>
-          </Card>
-        </div>
-        <Card elevation={6} className="p-24 mt-8 h-100">
-          <ValidatorForm
-            ref="form"
-            onSubmit={this.handleSubmit}
-            onReset={this.reset}
-            onError={(errors) => null}
-          >
-            <Grid container spacing={6}>
-              <Grid item lg={6} md={6} sm={12} xs={12}>
-                <TextField
-                  id="outlined-basic"
-                  multiline
-                  rows={3}
-                  variant="outlined"
-                  className="mb-16 w-100"
-                  label="aboutUs"
-                  onChange={this.handleChange}
-                  type="textarea"
-                  name="aboutUs"
-                  value={aboutUs}
-                  disabled={!footerEdit}
-                  error={this.validator.message(
-                    "aboutUs",
-                    this.state.aboutUs,
-                    "required|min:30|max:300"
-                  )}
-                  helperText={this.validator.message(
-                    "aboutUs",
-                    this.state.aboutUs,
-                    "required|min:30|max:300"
-                  )}
-                  onBlur={() => this.validator.showMessageFor("aboutUs")}
-                />
-               <TextField
-                  className="mb-16 w-100"
-                  label="Contact Number"
-                  onChange={this.handleChange}
-                  type="text"
-                  name="contactNumber"
-                  value={contactNumber}
-                  placeholder="Enter Contact Number"
-                  variant="outlined"
-                  disabled={!footerEdit}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PhoneIphone />
-                      </InputAdornment>
-                    ),
-                  }}
-                  error={this.validator.message(
-                    "contactNumber",
-                    contactNumber,
-                    "required|integer|min:10|max:10"
-                  )}
-                  helperText={this.validator.message(
-                    "contactNumber",
-                    contactNumber,
-                    "required|integer|min:10|max:10"
-                  )}
-                  onBlur={() => this.validator.showMessageFor("contactNumber")}
-                />
-                <TextField
-                  id="outlined-basic"
-                  variant="outlined"
-                  className="mb-16 w-100"
-                  label="email"
-                  onChange={this.handleChange}
-                  type="email"
-                  name="email"
-                  value={email}
-                  disabled={!footerEdit}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Email />
-                      </InputAdornment>
-                    ),
-                  }}
-                  error={this.validator.message(
-                    "email",
-                    this.state.email,
-                    "required|email"
-                  )}
-                  helperText={this.validator.message(
-                    "email",
-                    this.state.email,
-                    "required|email"
-                  )}
-                  onBlur={() => this.validator.showMessageFor("email")}
-                />
+            </Card>
+          </div>
+          <Card elevation={6} className="p-24 mt-8 h-100">
+            <ValidatorForm
+              ref="form"
+              onSubmit={this.handleSubmit}
+              onReset={this.reset}
+              onError={(errors) => null}
+            >
+              <Grid container spacing={6}>
+                <Grid item lg={6} md={6} sm={12} xs={12}>
+                  <TextField
+                    id="outlined-basic"
+                    multiline
+                    rows={3}
+                    variant="outlined"
+                    className="mb-16 w-100"
+                    label="aboutUs"
+                    onChange={this.handleChange}
+                    type="textarea"
+                    name="aboutUs"
+                    value={aboutUs}
+                    disabled={!footerEdit}
+                    error={this.validator.message(
+                      "aboutUs",
+                      this.state.aboutUs,
+                      "required|min:30|max:300"
+                    )}
+                    helperText={this.validator.message(
+                      "aboutUs",
+                      this.state.aboutUs,
+                      "required|min:30|max:300"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("aboutUs")}
+                  />
+                  <TextField
+                    className="mb-16 w-100"
+                    label="Contact Number"
+                    onChange={this.handleChange}
+                    type="text"
+                    name="contactNumber"
+                    value={contactNumber}
+                    placeholder="Enter Contact Number"
+                    variant="outlined"
+                    disabled={!footerEdit}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PhoneIphone />
+                        </InputAdornment>
+                      ),
+                    }}
+                    error={this.validator.message(
+                      "contactNumber",
+                      contactNumber,
+                      "required|integer|min:10|max:10"
+                    )}
+                    helperText={this.validator.message(
+                      "contactNumber",
+                      contactNumber,
+                      "required|integer|min:10|max:10"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("contactNumber")}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    variant="outlined"
+                    className="mb-16 w-100"
+                    label="email"
+                    onChange={this.handleChange}
+                    type="email"
+                    name="email"
+                    value={email}
+                    disabled={!footerEdit}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Email />
+                        </InputAdornment>
+                      ),
+                    }}
+                    error={this.validator.message(
+                      "email",
+                      this.state.email,
+                      "required|email"
+                    )}
+                    helperText={this.validator.message(
+                      "email",
+                      this.state.email,
+                      "required|email"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("email")}
+                  />
 
+                </Grid>
+                <Grid item lg={6} md={6} sm={12} xs={12}>
+
+
+                  <TextField
+                    id="outlined-basic"
+                    multiline
+                    rows={3}
+                    variant="outlined"
+                    className="mb-16 w-100"
+                    label="address"
+                    onChange={this.handleChange}
+                    type="textarea"
+                    name="address"
+                    value={address}
+                    disabled={!footerEdit}
+                    error={this.validator.message(
+                      "address",
+                      this.state.address,
+                      "required"
+                    )}
+                    helperText={this.validator.message(
+                      "address",
+                      this.state.address,
+                      "required"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("address")}
+                  />
+                  <TextField
+                    className="mb-16 w-100"
+                    label="Optional Contact"
+                    onChange={this.handleChange}
+                    type="text"
+                    name="optionalContact"
+                    placeholder="Enter Optional Contact"
+                    value={optionalContact}
+                    disabled={!footerEdit}
+                    variant="outlined"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PhoneIphone />
+                        </InputAdornment>
+                      ),
+                    }}
+                    error={this.validator.message(
+                      "optionalContact",
+                      this.state.optionalContact,
+                      "integer|min:10|max:10"
+                    )}
+                    helperText={this.validator.message(
+                      "optionalContact",
+                      this.state.optionalContact,
+                      "integer|min:10|max:10"
+                    )}
+                    onBlur={() => this.validator.showMessageFor("optionalContact")}
+                  />
+
+                </Grid>
               </Grid>
-              <Grid item lg={6} md={6} sm={12} xs={12}>
-
-
-                <TextField
-                  id="outlined-basic"
-                  multiline
-                  rows={3}
-                  variant="outlined"
-                  className="mb-16 w-100"
-                  label="address"
-                  onChange={this.handleChange}
-                  type="textarea"
-                  name="address"
-                  value={address}
-                  disabled={!footerEdit}
-                  error={this.validator.message(
-                    "address",
-                    this.state.address,
-                    "required"
-                  )}
-                  helperText={this.validator.message(
-                    "address",
-                    this.state.address,
-                    "required"
-                  )}
-                  onBlur={() => this.validator.showMessageFor("address")}
-                />
-                <TextField
-                  className="mb-16 w-100"
-                  label="Optional Contact"
-                  onChange={this.handleChange}
-                  type="text"
-                  name="optionalContact"
-                  placeholder="Enter Optional Contact"
-                  value={optionalContact}
-                  disabled={!footerEdit}
-                  variant="outlined"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PhoneIphone />
-                      </InputAdornment>
-                    ),
-                  }}
-                  error={this.validator.message(
-                    "optionalContact",
-                    this.state.optionalContact,
-                    "integer|min:10|max:10"
-                  )}
-                  helperText={this.validator.message(
-                    "optionalContact",
-                    this.state.optionalContact,
-                    "integer|min:10|max:10"
-                  )}
-                  onBlur={() => this.validator.showMessageFor("optionalContact")}
-                />
-                
-              </Grid>
-            </Grid>
-            {footerEdit ?
-            <>
-              <Button color="primary" variant="contained" type="submit" startIcon={
-                <Icon>edit</Icon>}>Update
+              {footerEdit ?
+                <>
+                  <Button color="primary" variant="contained" type="submit" startIcon={
+                    <Icon>edit</Icon>}>Update
             </Button>
-              <Button color="secondary" className="ml-4" variant="contained" type="reset" startIcon={
-                <Icon>highlight_off</Icon>}>Cancle
+                  <Button color="secondary" className="ml-4" variant="contained" type="reset" startIcon={
+                    <Icon>highlight_off</Icon>}>Cancle
             </Button>
-            </>
-            : null}
-          </ValidatorForm>
-        </Card >
-      </div >
-    );
+                </>
+                : null}
+            </ValidatorForm>
+          </Card >
+        </div >
+      );
+    }
   }
 }
 const mapStateToProps = (state) => {

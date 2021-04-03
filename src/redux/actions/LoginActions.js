@@ -22,21 +22,13 @@ export const loginApi = (loginData) => {
     await api("userUtility/authenticate", loginData, "post").then((res) => {
       console.log(res);
       if (res.data.code === status.success) {
-        // data={
-        //   code:
-        //   status:
-        //   data:{
-        //     userToken:,
-        //     sessionid:""
-        //   }
-        // }
-        //GNTV-SESSIONID
-        history.push("/dashboard");
-        Cookies.set("JSESSIONID", res.data.data);
-        Cookies.set("GNTV-SESSIONID", res.data.data);
+        
+        Cookies.set("JSESSIONID", res.data.data.JSESSIONID);
+        Cookies.set("GNTV-SESSIONID", res.data.data.JSESSIONID);
+        localStorage.setItem("permission",JSON.stringify(res.data.data.permission));
         toastr.success("Logged in successfully");
         dispatch(setLoginFlag(true));
-        history.push("/dashboard")
+        history.push("/dashboard");
       } else if (res && res.data.code === status.badRequest) {
         toastr.warning(res.data.message);
       } else {
@@ -83,6 +75,7 @@ export const logoutApi = () => {
   return async (dispatch, store) => {
     await api("userUtility/logout", {}, "get").then((res) => {
       Cookies.remove("GNTV-SESSIONID");
+      localStorage.removeItem("permission");
       dispatch(setLoginFlag(false));
       history.push("/login");
       toastr.success(res.data.message);

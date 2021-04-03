@@ -18,6 +18,7 @@ import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import { PhoneIphone, Email, Person, GroupAdd, Search } from '@material-ui/icons';
 import SimpleReactValidator from "simple-react-validator";
+import AccessDeniedPage from "../sessions/accessdeniedPage";
 
 
 
@@ -48,11 +49,17 @@ class AdminUser extends Component {
     contactNumber: "",
     createdTime: "",
     updatedTime: "",
-    type: "new"
+    type: "new",
+    permission:true
 
   };
 
   componentDidMount = async () => {
+    const perData = JSON.parse(localStorage.getItem("permission"));
+    if(perData[4].key === 'Administrator' && perData[4].value === "N/A"){      
+      this.setState({permission:false});
+      return false;
+    }
     await this.getAdminUserList();
     await this.getAclRoleList();
     // custom rule will have name 'isPasswordMatch'
@@ -308,9 +315,18 @@ class AdminUser extends Component {
       firstName, lastName, role, email, contactNumber,
       type,
       openModal,
-      aclRoleNameList
+      aclRoleNameList,
+      permission
 
     } = this.state;
+    if (!permission) {
+      return (
+        <AccessDeniedPage/>
+      )
+    }
+    else {
+
+     
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
@@ -720,6 +736,7 @@ class AdminUser extends Component {
       </div >
     );
   }
+}
 }
 const mapStateToProps = (state) => {
   const { adminUserList, firstName, lastName, role, email, contactNumber } = state.adminUser;

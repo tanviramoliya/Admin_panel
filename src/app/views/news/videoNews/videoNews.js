@@ -21,6 +21,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import history from "../../../../history";
 import "./style.css";
 import { Theme, makeStyles, withStyles, createStyles } from '@material-ui/core/styles';
+import AccessDeniedPage from "../../sessions/accessdeniedPage";
 
 const StyledBadge = withStyles((theme) => ({
   badge: {
@@ -55,11 +56,17 @@ class videoNews extends Component {
     publish: "",
     critical: "",
     tags: "",
-    type: "new"
+    type: "new",
+    permission: true
   };
 
 
   componentDidMount = async () => {
+    const perData = JSON.parse(localStorage.getItem("permission"));
+    if (perData[1].key === 'News' && perData[1].value === "N/A") {
+      this.setState({ permission: false });
+      return false;
+    }
     await this.getVideoNewsList();
     // custom rule will have name 'isPasswordMatch'
   };
@@ -177,136 +184,144 @@ class videoNews extends Component {
       sortingField, videoNewsList,
       videoNewsId, videoLink, title, description, publishedBy, city, state, country, createdTime, updatedTime, publishedTime, publish, critical, tags,
       type,
-      openModal
+      openModal,
+      permission
 
     } = this.state;
-    return (
-      <div className="m-sm-30">
-        <div className="mb-sm-30">
-          <Breadcrumb
-            routeSegments={[
-              { name: "News", path: "/news/videoNews" },
-              { name: "Video News" },
-            ]}
-          />
-        </div>
-        <div className="py-12">
-          <Card elevation={6} className="px-24 pt-12 h-100">
-            <div className="flex flex-middle flex-space-between pb-12">
-              <div className="card-title">Video News Infromation</div>
-              <div>
-                <TextField style={{ width: '300px' }}
-                  className="mr-16"
-                  placeholder="Search..."
+    if (!permission) {
+      return (
+        <AccessDeniedPage />
+      )
+    }
+    else {
 
-                  type="search"
-                  name="keyword"
-                  value={keyword}
-                  onChange={this.handleSearchKeyword}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-                <Button
-                  className="capitalize text-white bg-circle-primary"
-                  onClick={() => this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'add' } })}
-                >
-                  Add Video News
+      return (
+        <div className="m-sm-30">
+          <div className="mb-sm-30">
+            <Breadcrumb
+              routeSegments={[
+                { name: "News", path: "/news/videoNews" },
+                { name: "Video News" },
+              ]}
+            />
+          </div>
+          <div className="py-12">
+            <Card elevation={6} className="px-24 pt-12 h-100">
+              <div className="flex flex-middle flex-space-between pb-12">
+                <div className="card-title">Video News Infromation</div>
+                <div>
+                  <TextField style={{ width: '300px' }}
+                    className="mr-16"
+                    placeholder="Search..."
+
+                    type="search"
+                    name="keyword"
+                    value={keyword}
+                    onChange={this.handleSearchKeyword}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Search />
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                  <Button
+                    className="capitalize text-white bg-circle-primary"
+                    onClick={() => this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'add' } })}
+                  >
+                    Add Video News
                   </Button>
+                </div>
               </div>
-            </div>
-            <TableContainer style={{ maxHeight: "465px" }}>
-              <Table style={{ whiteSpace: "pre" }} stickyHeader>
-                <TableHead>
-                  <TableRow>
-                  <TableCell className="px-0 py-8" width="13%">
-                      <TableSortLabel
-                        active={sortingField === 'videoNewsId'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("videoNewsId", sortingOrder)}
-                      >
-                        VideoNewsId
+              <TableContainer style={{ maxHeight: "465px" }}>
+                <Table style={{ whiteSpace: "pre" }} stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className="px-0 py-8" width="13%">
+                        <TableSortLabel
+                          active={sortingField === 'videoNewsId'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("videoNewsId", sortingOrder)}
+                        >
+                          VideoNewsId
                       </TableSortLabel></TableCell>
-                    <TableCell className="px-0 py-8" width="18%">
-                      <TableSortLabel
-                        active={sortingField === 'title'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("title", sortingOrder)}
-                      >
-                        Title
+                      <TableCell className="px-0 py-8" width="18%">
+                        <TableSortLabel
+                          active={sortingField === 'title'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("title", sortingOrder)}
+                        >
+                          Title
                       </TableSortLabel></TableCell>
-                    <TableCell className="px-0 py-8" width="10%">
-                      <TableSortLabel
-                        active={sortingField === 'newsType'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("newsType", sortingOrder)}
-                      >
-                        News Type
+                      <TableCell className="px-0 py-8" width="10%">
+                        <TableSortLabel
+                          active={sortingField === 'newsType'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("newsType", sortingOrder)}
+                        >
+                          News Type
                       </TableSortLabel></TableCell>
-                    <TableCell className="px-0 py-8" width="13%">
-                      <TableSortLabel
-                        active={sortingField === 'category'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("category", sortingOrder)}
-                      >
-                        Category
+                      <TableCell className="px-0 py-8" width="13%">
+                        <TableSortLabel
+                          active={sortingField === 'category'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("category", sortingOrder)}
+                        >
+                          Category
                       </TableSortLabel></TableCell>
-                    <TableCell className="px-0 py-8" width="10%">
-                      <TableSortLabel
-                        active={sortingField === 'publish'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("publish", sortingOrder)}
-                      >
-                        Is Published
+                      <TableCell className="px-0 py-8" width="10%">
+                        <TableSortLabel
+                          active={sortingField === 'publish'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("publish", sortingOrder)}
+                        >
+                          Is Published
                       </TableSortLabel></TableCell>
-                    <TableCell className="px-0 py-8" width="12%" >
-                      <TableSortLabel
-                        active={sortingField === 'PublishedBy'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("PublishedBy", sortingOrder)}
-                      >
-                        PublishedBy
+                      <TableCell className="px-0 py-8" width="12%" >
+                        <TableSortLabel
+                          active={sortingField === 'PublishedBy'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("PublishedBy", sortingOrder)}
+                        >
+                          PublishedBy
                       </TableSortLabel></TableCell>
-                    <TableCell className="px-0 py-8" width="10%">
-                      <TableSortLabel
-                        active={sortingField === 'createdTime'}
-                        direction={sortingOrder}
-                        onClick={() => this.handleSortingOrder("createdTime", sortingOrder)}
-                      >
-                        Created Time
+                      <TableCell className="px-0 py-8" width="10%">
+                        <TableSortLabel
+                          active={sortingField === 'createdTime'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("createdTime", sortingOrder)}
+                        >
+                          Created Time
                       </TableSortLabel></TableCell>
-                    <TableCell className="px-0 py-8"  >Actions</TableCell>
+                      <TableCell className="px-0 py-8"  >Actions</TableCell>
 
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {videoNewsList && videoNewsList !== [] ? videoNewsList
-                   // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((VideoNews, index) => (
-                      <TableRow key={index}>
-                        <TableCell style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
-                          <div style={{ alignItems: "center", display: "flex" }}>
-                            <div className={VideoNews.critical ? "activeDot" : "inActiveDot"}></div>
-                            <div className="pl-4">{VideoNews.videoNewsId}</div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
-                          {VideoNews.title}
-                        </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-                          {VideoNews.newsType}
-                        </TableCell>
-                        {/* {/* <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {videoNewsList && videoNewsList !== [] ? videoNewsList
+                      // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((VideoNews, index) => (
+                        <TableRow key={index}>
+                          <TableCell style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
+                            <div style={{ alignItems: "center", display: "flex" }}>
+                              <div className={VideoNews.critical ? "activeDot" : "inActiveDot"}></div>
+                              <div className="pl-4">{VideoNews.videoNewsId}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
+                            {VideoNews.title}
+                          </TableCell>
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                            {VideoNews.newsType}
+                          </TableCell>
+                          {/* {/* <TableCell className="p-0" style={{textOverflow:"ellipsis",overflow:"hidden",whiteSpace: "nowrap"}} >
                           {VideoNews.publish}
                         </TableCell> */}
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
-                          {VideoNews.category + " / " + VideoNews.subCategory}
-                        </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
+                            {VideoNews.category + " / " + VideoNews.subCategory}
+                          </TableCell>
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                             {VideoNews.publish ?
                               (<small className="border-radius-4 bg-primary text-white px-8 py-2 ">
                                 Published
@@ -316,87 +331,88 @@ class videoNews extends Component {
                 </small>)
                             }
                           </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-                          {VideoNews.publishedBy}
-                        </TableCell>
-                        <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
-                          {VideoNews.createdTime}
-                        </TableCell>
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                            {VideoNews.publishedBy}
+                          </TableCell>
+                          <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
+                            {VideoNews.createdTime}
+                          </TableCell>
 
-                        <TableCell className="p-0">
-                          <IconButton className="p-8">
-                            <Icon
-                              color="primary"
-                              onClick={() => this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'edit', id: VideoNews.videoNewsId } })}
-                            >edit </Icon>
-                          </IconButton>
-                          <IconButton className="p-8">
-                            <Icon
-                              color="error"
-                              onClick={() =>
-                                this.deletvideoNewsClicked(VideoNews.videoNewsId)
-                              }>delete</Icon>
-                          </IconButton>
-                          <IconButton className="p-8">
-                            <Icon
-                              color="secondary"
-                              onClick={() => this.props.history.push({ pathname: '/news/videoNews/view', state: { id: VideoNews.videoNewsId } })}
-                            >visibility</Icon>
-                          </IconButton>
-                          <IconButton className="p-8">
-                            <Icon
-                              color="default"
-                            // onClick={() =>
-                            //   this.deleteAdminUserClicked(VideoNews.videoNewsId)}
-                            >comment</Icon>
-                          </IconButton>
+                          <TableCell className="p-0">
+                            <IconButton className="p-8">
+                              <Icon
+                                color="primary"
+                                onClick={() => this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'edit', id: VideoNews.videoNewsId } })}
+                              >edit </Icon>
+                            </IconButton>
+                            <IconButton className="p-8">
+                              <Icon
+                                color="error"
+                                onClick={() =>
+                                  this.deletvideoNewsClicked(VideoNews.videoNewsId)
+                                }>delete</Icon>
+                            </IconButton>
+                            <IconButton className="p-8">
+                              <Icon
+                                color="secondary"
+                                onClick={() => this.props.history.push({ pathname: '/news/videoNews/view', state: { id: VideoNews.videoNewsId } })}
+                              >visibility</Icon>
+                            </IconButton>
+                            <IconButton className="p-8">
+                              <Icon
+                                color="default"
+                              // onClick={() =>
+                              //   this.deleteAdminUserClicked(VideoNews.videoNewsId)}
+                              >comment</Icon>
+                            </IconButton>
 
-                        </TableCell>
-                      </TableRow>
-                    )) :
-                    <h1>
-                      No Data is there!
+                          </TableCell>
+                        </TableRow>
+                      )) :
+                      <h1>
+                        No Data is there!
                     </h1>}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
-            <TablePagination
-              className="px-16"
-              rowsPerPageOptions={[10, 20, 30]}
-              component="div"
-              count={count ? count : 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              backIconButtonProps={{
-                "aria-label": "Previous Page",
-              }}
-              nextIconButtonProps={{
-                "aria-label": "Next Page",
-              }}
-              onChangePage={this.handleChangePage}
-              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              <TablePagination
+                className="px-16"
+                rowsPerPageOptions={[10, 20, 30]}
+                component="div"
+                count={count ? count : 0}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                backIconButtonProps={{
+                  "aria-label": "Previous Page",
+                }}
+                nextIconButtonProps={{
+                  "aria-label": "Next Page",
+                }}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+
+            </Card>
+          </div>
+          <div>
+            <ConfirmationDialog
+              open={this.state.deleteModal}
+              title="Delete Confirmation"
+              message={"are you sure want to delete this Video News?"}
+              toggle={this.deletvideoNewsClicked}
+              onYesClick={() =>
+                this.yesDeleteClicked(this.state.deleteVideoNewsId)
+              }
+              onNoClick={this.noDeleteClicked}
             />
+          </div>
+          <div>
+          </div>
+        </div>
 
-          </Card>
-        </div>
-        <div>
-          <ConfirmationDialog
-            open={this.state.deleteModal}
-            title="Delete Confirmation"
-            message={"are you sure want to delete this Video News?"}
-            toggle={this.deletvideoNewsClicked}
-            onYesClick={() =>
-              this.yesDeleteClicked(this.state.deleteVideoNewsId)
-            }
-            onNoClick={this.noDeleteClicked}
-          />
-        </div>
-        <div>
-        </div>
-      </div>
-
-    );
+      );
+    }
   }
 }
 const mapStateToProps = (state) => {

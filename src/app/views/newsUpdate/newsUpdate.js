@@ -19,6 +19,8 @@ import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import { Search, Clear } from "@material-ui/icons";
 import SimpleReactValidator from "simple-react-validator";
+import AccessDeniedPage from "../sessions/accessdeniedPage";
+
 class newsUpdate extends Component {
   constructor(props) {
     super(props);
@@ -41,10 +43,16 @@ class newsUpdate extends Component {
     updateTime: "",
     published: false,
     type: "new",
+    permission:true
 
   };
 
   componentDidMount = async () => {
+    const perData = JSON.parse(localStorage.getItem("permission"));
+    if(perData[2].key === 'News_headline' && perData[2].value === "N/A"){      
+      this.setState({permission:false});
+      return false;
+    }
     await this.getNewsList();
   };
   getNewsList = async () => {
@@ -277,9 +285,16 @@ class newsUpdate extends Component {
       type,
       openModal,
       count,
+      permission
 
 
     } = this.state;
+    if (!permission) {
+      return (
+        <AccessDeniedPage/>
+      )
+    }
+    else {
     return (
       <div className="m-sm-30">
         <div className="mb-sm-30">
@@ -536,6 +551,7 @@ class newsUpdate extends Component {
       </div>
     );
   }
+}
 }
 const mapStateToProps = (state) => {
   const { newsList, newsText, newsLink, published } = state.newsUpdate;

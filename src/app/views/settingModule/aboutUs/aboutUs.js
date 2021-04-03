@@ -24,6 +24,7 @@ import { status } from "../../../../utility/config";
 import UploadService from "./uploadService";
 import SimpleReactValidator from "simple-react-validator";
 import "../style.css";
+import AccessDeniedPage from "../../sessions/accessdeniedPage";
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -61,8 +62,15 @@ class aboutUs extends Component {
     fileInfos: null,
     infoEdit: false,
     fileEdit: false,
+    permission: true
+
   };
   componentDidMount = async () => {
+    const perData = JSON.parse(localStorage.getItem("permission"));
+    if (perData[9].key === 'Settings' && perData[9].value === "N/A") {
+      this.setState({ permission: false });
+      return false;
+    }
     await this.getAboutUsList();
     UploadService.getFiles(this.state.fileToken).then((response) => {
       this.setState({
@@ -130,7 +138,7 @@ class aboutUs extends Component {
         if (updateAboutUs.status === status.success) {
           if (updateAboutUs.data.code === status.success) {
             toastr.success(updateAboutUs.data.message);
-            this.setState({infoEdit: false })
+            this.setState({ infoEdit: false })
             this.getAboutUsList();
           } else {
             toastr.warning(updateAboutUs.data.message);
@@ -171,7 +179,7 @@ class aboutUs extends Component {
     this.validator.hideMessageFor("abstraction");
 
     await this.getAboutUsList();
-    
+
 
   };
   fileCancle = async () => {
@@ -240,338 +248,347 @@ class aboutUs extends Component {
       message,
       fileInfos,
       fileEdit,
-      infoEdit
+      infoEdit,
+      permission
     } = this.state;
-    return (
-      <>
-        <div className="m-sm-30">
-          <div className="mb-sm-30">
-            <Breadcrumb
-              routeSegments={[
-                { name: "Setting", path: "/" },
-                { name: "About Us" },
-              ]}
-            />
-          </div>
-          <div className="py-12">
-            <Card elevation={6} className="px-20 pt-12 h-100">
-              <div className="flex flex-middle flex-space-between pb-12">
-                <div className="card-title">GNTV About Us Information</div>
-                <div>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    className="mr-4"
-                    onClick={this.changeInfo}
-                    startIcon={<Icon>edit</Icon>}
-                  >Edit Info
-                  </Button>
-                  <Button variant="contained" onClick={this.changeFile} startIcon={<Icon>attachment</Icon>}>
-                    Upload File
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </div>
-          <Card elevation={6} className="p-24 mt-8 h-100">
-            <Grid container spacing={3}>
-              <Grid item lg={6} md={6} sm={12} xs={12}>
-                <Box mb={2} display="flex" alignItems="center">
-                  <Box width="100%">
-                    <BorderLinearProgress
-                      variant="determinate"
-                      value={progress}
+    if (!permission) {
+      return (
+        <AccessDeniedPage />
+      )
+    }
+    else {
 
-                    />
-                  </Box>
-                  <Box minWidth={20}>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                    >{`${progress}%`}</Typography>
-                  </Box>
-                </Box>
-                <Grid container justify="space-between">
-                  <Grid item>
-                    <label htmlFor="btn-upload">
-                      <TextField
-                        id="btn-upload"
-                        name="selectedFile"
-                        style={{ display: "none" }}
-                        type="file"
-                        disabled={!fileEdit}
-                        onChange={(e) => this.onFileChange(e)}
-                        onBlur={() => this.validator.showMessageFor("selectedFile")}
-                        error={this.validator.message(
-                          "selectedFile",
-                          this.state.selectedFile,
-                          "required"
-                        )}
-                        helperText={this.validator.message(
-                          "selectedFile",
-                          this.state.selectedFile,
-                          "required"
-                        )}
-                      />
-                      <Button
-                        className="btn-choose"
-                        variant="outlined"
-                        component="span"
-                        disabled={!fileEdit}
-                      >
-                        Choose Files
-                        </Button>
-                    </label>
-                  </Grid>
-                  <Grid item>
+      return (
+        <>
+          <div className="m-sm-30">
+            <div className="mb-sm-30">
+              <Breadcrumb
+                routeSegments={[
+                  { name: "Setting", path: "/" },
+                  { name: "About Us" },
+                ]}
+              />
+            </div>
+            <div className="py-12">
+              <Card elevation={6} className="px-20 pt-12 h-100">
+                <div className="flex flex-middle flex-space-between pb-12">
+                  <div className="card-title">GNTV About Us Information</div>
+                  <div>
                     <Button
-                      className="btn-upload"
                       color="primary"
                       variant="contained"
-                      component="span"
-                      disabled={!selectedFile}
-                      onClick={this.upload}
-
-                      startIcon={<Icon>backup</Icon>}
-                    >
-                      Upload
-                      </Button>
-                  </Grid>
-                  {fileEdit ?
-                    <Grid item>
-
-                      <Button
-                        className="btn-upload"
-                        color="secondary"
-                        variant="contained"
-                        component="span"
-
-                        onClick={this.fileCancle}
-                        startIcon={<Icon>highlight_off</Icon>}
-                      >
-                        Cancle
-                      </Button>
-
-                    </Grid>
-                    : null}
-
-                </Grid>
-              </Grid>
-              <Grid item lg={6} md={6} sm={12} xs={12}>
-                <Grid item>
-                  <div className="pt-4">
-                    {isError ?
-                      <Typography
-                        variant="subtitle2"
-                        className={`upload-message ${isError ? "error" : ""}`}
-                      >
-                        {message}
-                      </Typography>
-                      : null
-                    }
-                    {selectedFile
-                      ?
-                      <Chip
-
-                        label={selectedFile.name}
-                        onDelete={() => { this.setState({ selectedFile: "", fileToken: "", progress: 0 }) }}
-                        color="primary"
-                        variant="outlined"
-                        disabled={!fileEdit}
-                      />
-                      : fileInfos ? <Chip
-                        label={fileInfos.fileName}
-                        onDelete={() => { this.setState({ fileInfos: "", fileToken: "", progress: 0 }) }}
-                        color="primary"
-                        variant="outlined"
-                        disabled={!fileEdit}
-                      /> : null}
+                      className="mr-4"
+                      onClick={this.changeInfo}
+                      startIcon={<Icon>edit</Icon>}
+                    >Edit Info
+                  </Button>
+                    <Button variant="contained" onClick={this.changeFile} startIcon={<Icon>attachment</Icon>}>
+                      Upload File
+                  </Button>
                   </div>
-
-                </Grid>
-              </Grid>
-            </Grid>
-          </Card>
-          <Card elevation={6} className="p-24 mt-20 h-100">
-            <ValidatorForm
-              ref="form"
-              onSubmit={this.handleSubmit}
-              onReset={this.reset}
-              onError={(errors) => null}
-            >
+                </div>
+              </Card>
+            </div>
+            <Card elevation={6} className="p-24 mt-8 h-100">
               <Grid container spacing={3}>
                 <Grid item lg={6} md={6} sm={12} xs={12}>
-                  <TextField
-                    id="outlined-basic"
-                    variant="outlined"
-                    className="mb-16 w-100"
-                    label="Heading"
-                    onChange={this.handleChange}
-                    type="text"
-                    name="heading"
-                    value={heading}
-                    disabled={!infoEdit}
-                    error={this.validator.message(
-                      "heading",
-                      this.state.heading,
-                      "required"
-                    )}
-                    helperText={this.validator.message(
-                      "heading",
-                      this.state.heading,
-                      "required"
-                    )}
-                    onBlur={() => this.validator.showMessageFor("heading")}
-                  />
-                  <TextField
-                    error={this.validator.message(
-                      "goal",
-                      this.state.goal,
-                      "required"
-                    )}
-                    id="outlined-basic"
-                    multiline
-                    rows={3}
-                    variant="outlined"
-                    className="mb-16 w-100"
-                    label="Goal"
-                    onChange={this.handleChange}
-                    type="textarea"
-                    disabled={!infoEdit}
-                    name="goal"
-                    value={goal}
-                    onBlur={() => this.validator.showMessageFor("goal")}
-                    helperText={this.validator.message(
-                      "goal",
-                      this.state.goal,
-                      "required"
-                    )}
-                  />
-                  <TextField
-                    id="outlined-basic"
-                    multiline
-                    rows={3}
-                    variant="outlined"
-                    className="mb-16 w-100"
-                    label="Vision"
-                    onChange={this.handleChange}
-                    type="textarea"
-                    disabled={!infoEdit}
+                  <Box mb={2} display="flex" alignItems="center">
+                    <Box width="100%">
+                      <BorderLinearProgress
+                        variant="determinate"
+                        value={progress}
 
-                    name="vision"
-                    value={vision}
-                    error={this.validator.message(
-                      "vision",
-                      this.state.vision,
-                      "required"
-                    )}
-                    helperText={this.validator.message(
-                      "vision",
-                      this.state.vision,
-                      "required"
-                    )}
-                    onBlur={() => this.validator.showMessageFor("vision")}
-                  />
+                      />
+                    </Box>
+                    <Box minWidth={20}>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                      >{`${progress}%`}</Typography>
+                    </Box>
+                  </Box>
+                  <Grid container justify="space-between">
+                    <Grid item>
+                      <label htmlFor="btn-upload">
+                        <TextField
+                          id="btn-upload"
+                          name="selectedFile"
+                          style={{ display: "none" }}
+                          type="file"
+                          disabled={!fileEdit}
+                          onChange={(e) => this.onFileChange(e)}
+                          onBlur={() => this.validator.showMessageFor("selectedFile")}
+                          error={this.validator.message(
+                            "selectedFile",
+                            this.state.selectedFile,
+                            "required"
+                          )}
+                          helperText={this.validator.message(
+                            "selectedFile",
+                            this.state.selectedFile,
+                            "required"
+                          )}
+                        />
+                        <Button
+                          className="btn-choose"
+                          variant="outlined"
+                          component="span"
+                          disabled={!fileEdit}
+                        >
+                          Choose Files
+                        </Button>
+                      </label>
+                    </Grid>
+                    <Grid item>
+                      <Button
+                        className="btn-upload"
+                        color="primary"
+                        variant="contained"
+                        component="span"
+                        disabled={!selectedFile}
+                        onClick={this.upload}
 
+                        startIcon={<Icon>backup</Icon>}
+                      >
+                        Upload
+                      </Button>
+                    </Grid>
+                    {fileEdit ?
+                      <Grid item>
+
+                        <Button
+                          className="btn-upload"
+                          color="secondary"
+                          variant="contained"
+                          component="span"
+
+                          onClick={this.fileCancle}
+                          startIcon={<Icon>highlight_off</Icon>}
+                        >
+                          Cancle
+                      </Button>
+
+                      </Grid>
+                      : null}
+
+                  </Grid>
                 </Grid>
-
                 <Grid item lg={6} md={6} sm={12} xs={12}>
+                  <Grid item>
+                    <div className="pt-4">
+                      {isError ?
+                        <Typography
+                          variant="subtitle2"
+                          className={`upload-message ${isError ? "error" : ""}`}
+                        >
+                          {message}
+                        </Typography>
+                        : null
+                      }
+                      {selectedFile
+                        ?
+                        <Chip
+
+                          label={selectedFile.name}
+                          onDelete={() => { this.setState({ selectedFile: "", fileToken: "", progress: 0 }) }}
+                          color="primary"
+                          variant="outlined"
+                          disabled={!fileEdit}
+                        />
+                        : fileInfos ? <Chip
+                          label={fileInfos.fileName}
+                          onDelete={() => { this.setState({ fileInfos: "", fileToken: "", progress: 0 }) }}
+                          color="primary"
+                          variant="outlined"
+                          disabled={!fileEdit}
+                        /> : null}
+                    </div>
+
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Card>
+            <Card elevation={6} className="p-24 mt-20 h-100">
+              <ValidatorForm
+                ref="form"
+                onSubmit={this.handleSubmit}
+                onReset={this.reset}
+                onError={(errors) => null}
+              >
+                <Grid container spacing={3}>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <TextField
+                      id="outlined-basic"
+                      variant="outlined"
+                      className="mb-16 w-100"
+                      label="Heading"
+                      onChange={this.handleChange}
+                      type="text"
+                      name="heading"
+                      value={heading}
+                      disabled={!infoEdit}
+                      error={this.validator.message(
+                        "heading",
+                        this.state.heading,
+                        "required"
+                      )}
+                      helperText={this.validator.message(
+                        "heading",
+                        this.state.heading,
+                        "required"
+                      )}
+                      onBlur={() => this.validator.showMessageFor("heading")}
+                    />
+                    <TextField
+                      error={this.validator.message(
+                        "goal",
+                        this.state.goal,
+                        "required"
+                      )}
+                      id="outlined-basic"
+                      multiline
+                      rows={3}
+                      variant="outlined"
+                      className="mb-16 w-100"
+                      label="Goal"
+                      onChange={this.handleChange}
+                      type="textarea"
+                      disabled={!infoEdit}
+                      name="goal"
+                      value={goal}
+                      onBlur={() => this.validator.showMessageFor("goal")}
+                      helperText={this.validator.message(
+                        "goal",
+                        this.state.goal,
+                        "required"
+                      )}
+                    />
+                    <TextField
+                      id="outlined-basic"
+                      multiline
+                      rows={3}
+                      variant="outlined"
+                      className="mb-16 w-100"
+                      label="Vision"
+                      onChange={this.handleChange}
+                      type="textarea"
+                      disabled={!infoEdit}
+
+                      name="vision"
+                      value={vision}
+                      error={this.validator.message(
+                        "vision",
+                        this.state.vision,
+                        "required"
+                      )}
+                      helperText={this.validator.message(
+                        "vision",
+                        this.state.vision,
+                        "required"
+                      )}
+                      onBlur={() => this.validator.showMessageFor("vision")}
+                    />
+
+                  </Grid>
+
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
 
 
-                  <TextField
-                    id="outlined-basic"
-                    variant="outlined"
-                    className="mb-16 w-100"
-                    label="Abstraction"
-                    onChange={this.handleChange}
-                    type="text"
-                    name="abstraction"
-                    value={abstraction}
-                    disabled={!infoEdit}
+                    <TextField
+                      id="outlined-basic"
+                      variant="outlined"
+                      className="mb-16 w-100"
+                      label="Abstraction"
+                      onChange={this.handleChange}
+                      type="text"
+                      name="abstraction"
+                      value={abstraction}
+                      disabled={!infoEdit}
 
-                    error={this.validator.message(
-                      "abstraction",
-                      this.state.abstraction,
-                      "required"
-                    )}
-                    helperText={this.validator.message(
-                      "abstraction",
-                      this.state.abstraction,
-                      "required"
-                    )}
-                    onBlur={() => this.validator.showMessageFor("abstraction")}
-                  />
-                  <TextField
-                    id="outlined-basic"
-                    multiline
-                    rows={3}
-                    variant="outlined"
-                    className="mb-16 w-100"
-                    label="Mission"
-                    onChange={this.handleChange}
-                    type="textarea"
-                    name="mission"
-                    value={mission}
-                    disabled={!infoEdit}
+                      error={this.validator.message(
+                        "abstraction",
+                        this.state.abstraction,
+                        "required"
+                      )}
+                      helperText={this.validator.message(
+                        "abstraction",
+                        this.state.abstraction,
+                        "required"
+                      )}
+                      onBlur={() => this.validator.showMessageFor("abstraction")}
+                    />
+                    <TextField
+                      id="outlined-basic"
+                      multiline
+                      rows={3}
+                      variant="outlined"
+                      className="mb-16 w-100"
+                      label="Mission"
+                      onChange={this.handleChange}
+                      type="textarea"
+                      name="mission"
+                      value={mission}
+                      disabled={!infoEdit}
 
-                    error={this.validator.message(
-                      "mission",
-                      this.state.mission,
-                      "required"
-                    )}
-                    helperText={this.validator.message(
-                      "mission",
-                      this.state.mission,
-                      "required"
-                    )}
-                    onBlur={() => this.validator.showMessageFor("mission")}
-                  />
-                  <TextField
-                    id="outlined-basic"
-                    multiline
-                    rows={3}
-                    variant="outlined"
-                    className="mb-16 w-100"
-                    label="Objective"
-                    onChange={this.handleChange}
-                    type="textarea"
-                    name="objective"
-                    disabled={!infoEdit}
+                      error={this.validator.message(
+                        "mission",
+                        this.state.mission,
+                        "required"
+                      )}
+                      helperText={this.validator.message(
+                        "mission",
+                        this.state.mission,
+                        "required"
+                      )}
+                      onBlur={() => this.validator.showMessageFor("mission")}
+                    />
+                    <TextField
+                      id="outlined-basic"
+                      multiline
+                      rows={3}
+                      variant="outlined"
+                      className="mb-16 w-100"
+                      label="Objective"
+                      onChange={this.handleChange}
+                      type="textarea"
+                      name="objective"
+                      disabled={!infoEdit}
 
-                    value={objective}
-                    error={this.validator.message(
-                      "objective",
-                      this.state.objective,
-                      "required"
-                    )}
-                    helperText={this.validator.message(
-                      "objective",
-                      this.state.objective,
-                      "required"
-                    )}
-                    onBlur={() => this.validator.showMessageFor("objective")}
-                  />
+                      value={objective}
+                      error={this.validator.message(
+                        "objective",
+                        this.state.objective,
+                        "required"
+                      )}
+                      helperText={this.validator.message(
+                        "objective",
+                        this.state.objective,
+                        "required"
+                      )}
+                      onBlur={() => this.validator.showMessageFor("objective")}
+                    />
+
+                  </Grid>
 
                 </Grid>
-
-              </Grid>
-              {infoEdit ?
-                <>
-                  <Button color="primary" variant="contained" type="submit" startIcon={<Icon>edit</Icon>}>
-                    Update
+                {infoEdit ?
+                  <>
+                    <Button color="primary" variant="contained" type="submit" startIcon={<Icon>edit</Icon>}>
+                      Update
                   </Button>
-                  <Button
-                    color="secondary" variant="contained" type="reset"
-                    className="ml-4" startIcon={<Icon>highlight_off</Icon>}
-                  >Cancle
+                    <Button
+                      color="secondary" variant="contained" type="reset"
+                      className="ml-4" startIcon={<Icon>highlight_off</Icon>}
+                    >Cancle
                   </Button>
-                </>
-                : null}
-            </ValidatorForm>
-          </Card>
-        </div >
-      </>
-    );
+                  </>
+                  : null}
+              </ValidatorForm>
+            </Card>
+          </div >
+        </>
+      );
+    }
   }
 }
 const mapStateToProps = (state) => {

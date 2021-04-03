@@ -1,7 +1,7 @@
 import { api } from "../../../api/api";
 
 
-export const getAdminCount = async () => {
+export const getAdminCountApi = async () => {
   const adminCount = await api("dashBoard/getAdminCount", {} , "get");
     if (adminCount) {
         return adminCount;
@@ -9,24 +9,34 @@ export const getAdminCount = async () => {
       
   };
 
-export const updateAdminInfo = async (data) => {
-  const updateAdminInfo = await api(
-    `profile/update`,
-    data,
-    "put"
+export const getSubscriberCountApi = async () => {
+  const subscriberCount = await api(
+    `dashBoard/getSubscriberCount`,
+    {},
+    "get"
   );
-  if (updateAdminInfo) {
-    return updateAdminInfo;
+  if (subscriberCount) {
+    return subscriberCount;
   }
 };
-export const changeAdminPassApi = async (data) => {
-  const changePass = await api(
-    `profile/changePassword`,
-    data,
-    "post"
+export const getInquiryCountApi = async () => {
+  const inquiryCount = await api(
+    `dashBoard/getInqueryCount`,
+    {},
+    "get"
   );
-  if (changePass) {
-    return changePass;
+  if (inquiryCount) {
+    return inquiryCount;
+  }
+};
+export const getMasterCountApi = async () => {
+  const masterCount = await api(
+    `dashBoard/getActiveCount`,
+    {},
+    "get"
+  );
+  if (masterCount) {
+    return masterCount;
   }
 };
 
