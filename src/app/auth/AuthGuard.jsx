@@ -15,6 +15,7 @@ class AuthGuard extends Component {
     };
   }
 
+  
   componentDidMount() {
     console.log("IN AUTH GUARD..........");
     if (!this.state.authenticated) {
