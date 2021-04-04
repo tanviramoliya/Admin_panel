@@ -5,7 +5,7 @@ import { withStyles } from "@material-ui/styles";
 import { Redirect } from "react-router";
 import Cookies from "js-cookie";
 import {
-  getAdminCountApi, getSubscriberCountApi, getInquiryCountApi, getMasterCountApi
+  getAdminCountApi, getSubscriberCountApi, getInquiryCountApi, getMasterCountApi, getNewsHeadlineCountApi, getNewsByNewsTypeCountApi
 
 } from "../../../redux/actions/index";
 import { status } from "../../../utility/config";
@@ -20,19 +20,26 @@ class Dashboard1 extends Component {
     subscriberFilterBy: "today",
     masterFilterBy: "category",
     masterCardData: "",
-    permission:true
+    newsHeadlineCardData: "",
+    newsByNewsTypeCardData: '',
+    articleCountForNewsType:0,
+    newsTypeForNews:"",
+    videoCountForNewsType:0,
+    permission: true
   };
 
   componentDidMount = async () => {
     const perData = JSON.parse(localStorage.getItem("permission"));
-    if(perData[0].key === 'Dashboard' && perData[0].value === "N/A"){      
-      this.setState({permission:false});
+    if (perData[0].key === 'Dashboard' && perData[0].value === "N/A") {
+      this.setState({ permission: false });
       return false;
     }
     this.getAdminCount();
     this.getSubscriberCount();
     this.getInquiryCount();
     this.getMasterCount();
+    this.getNewsHeadlineCount();
+    this.getNewsByNewsTypeCount();
   }
   getAdminCount = async () => {
     const adminCount = await getAdminCountApi();
@@ -80,6 +87,38 @@ class Dashboard1 extends Component {
       }
     }
   };
+  getNewsHeadlineCount = async () => {
+    const newsHeadlineCount = await getNewsHeadlineCountApi();
+    if (newsHeadlineCount) {
+      if (newsHeadlineCount.status === status.success) {
+
+        this.setState({
+          newsHeadlineCardData: newsHeadlineCount.data
+        });
+
+      }
+    }
+  };
+  getNewsByNewsTypeCount = async () => {
+    const newsByNewsTypeCount = await getNewsByNewsTypeCountApi();
+    if (newsByNewsTypeCount) {
+      if (newsByNewsTypeCount.status === status.success) {
+
+        this.setState({
+          newsByNewsTypeCardData: newsByNewsTypeCount.data
+        });
+
+      }
+    }
+  };
+
+  handleNewsType = (newsType) =>{
+    this.setState({
+      articleCountForNewsType:newsType.article,
+      videoCountForNewsType : newsType.video
+    })
+  }
+
   handleChange = (event) => {
     event.persist();
     this.setState({ [event.target.name]: event.target.value });
@@ -88,8 +127,8 @@ class Dashboard1 extends Component {
 
   render() {
     let { theme } = this.props;
-    const { adminCardData, subscriberFilterBy, subscriberCardData, inquiryCardData, masterFilterBy, masterCardData,permission } = this.state;
-   
+    const { adminCardData, newsTypeForNews,newsByNewsTypeCardData,articleCountForNewsType,videoCountForNewsType, subscriberFilterBy, subscriberCardData, inquiryCardData, masterFilterBy, masterCardData, newsHeadlineCardData, permission } = this.state;
+
 
     if (!Cookies.get("GNTV-SESSIONID")) {
       return <Redirect to="/login" />;
@@ -97,7 +136,7 @@ class Dashboard1 extends Component {
     else {
       if (!permission) {
         return (
-          <AccessDeniedPage/>
+          <AccessDeniedPage />
         )
       }
       else {
@@ -107,8 +146,8 @@ class Dashboard1 extends Component {
             <Grid container>
               <Grid item lg={12} md={12} sm={12} xs={12} className="m-20">
                 <Grid container spacing={3} className="mb-24">
-                  <Grid item xs={12} md={6}>
-                    <Card className="play-card p-sm-24 bg-paper" elevation={6}>
+                  <Grid item xs={12} md={3}>
+                    <Card elevation={3} className="p-16">
                       <div className="flex flex-middle">
                         <Icon
                           style={{
@@ -117,24 +156,20 @@ class Dashboard1 extends Component {
                             color: theme.palette.primary.main,
                           }}
                         >
-                          group
+                          publish
                       </Icon>
                         <div className="ml-12">
-                          <small className="text-muted">New Leads</small>
+                          <medium className="text-muted">Published Articles</medium>
                           <h6 className="m-0 mt-4 text-primary font-weight-500">
                             3050
                         </h6>
                         </div>
                       </div>
-                      <Tooltip title="View Details" placement="top">
-                        <IconButton>
-                          <Icon>arrow_right_alt</Icon>
-                        </IconButton>
-                      </Tooltip>
+
                     </Card>
                   </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Card className="play-card p-sm-24 bg-paper" elevation={6}>
+                  <Grid item xs={12} md={3}>
+                    <Card elevation={3} className="p-16">
                       <div className="flex flex-middle">
                         <Icon
                           style={{
@@ -143,24 +178,43 @@ class Dashboard1 extends Component {
                             color: theme.palette.primary.main,
                           }}
                         >
-                          attach_money
+                          publish
                       </Icon>
                         <div className="ml-12">
-                          <small className="text-muted">This week Sales</small>
+                          <medium className="text-muted">Published Videos</medium>
                           <h6 className="m-0 mt-4 text-primary font-weight-500">
-                            $80500
+                            3050
                         </h6>
                         </div>
                       </div>
-                      <Tooltip title="View Details" placement="top">
-                        <IconButton>
-                          <Icon>arrow_right_alt</Icon>
-                        </IconButton>
-                      </Tooltip>
+
                     </Card>
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <Card className="play-card p-sm-24 bg-paper" elevation={6}>
+                    <Card elevation={3} className="p-16">
+                      <div className="flex flex-start">
+                        <Icon
+                          style={{
+                            fontSize: "44px",
+                            opacity: 0.6,
+                            color: theme.palette.primary.main,
+                          }}
+                        >
+                          widgets
+                      </Icon>
+                        <div className="ml-12">
+                          <medium className="text-muted">Todays News Headline</medium>
+                          <h6 className="m-0 mt-4 text-primary font-weight-500">
+                            Total : {newsHeadlineCardData.totalCount}
+                          </h6>
+                        </div>
+                        <h2 style={{ marginBottom: 0, flex: 2, textAlign: "right", alignSelf: "center" }}>{newsHeadlineCardData.today}</h2>
+                      </div>
+
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Card elevation={3} className="p-16">
                       <div className="flex flex-middle">
                         <Icon
                           style={{
@@ -169,20 +223,43 @@ class Dashboard1 extends Component {
                             color: theme.palette.primary.main,
                           }}
                         >
-                          store
+                          description
                       </Icon>
-                        <div className="ml-12">
-                          <small className="text-muted">Inventory Status</small>
+                        <div className="ml-12" style={{ flex: 2 }}>
+                          <medium className="text-muted">News by News Type</medium>
                           <h6 className="m-0 mt-4 text-primary font-weight-500">
-                            8.5% Stock Surplus
+                            {newsByNewsTypeCardData.totalCount} News Types
                         </h6>
                         </div>
+                        <div className="ml-12">
+                          <FormControl style={{ width: 200 }}>
+                            <Select
+                              id="filter"
+                              name="newsTypeForNews"
+                              onChange={this.handleChange}
+                              value={newsTypeForNews}
+                              displayEmpty
+                              inputProps={{ 'aria-label': 'Without label' }}
+                            >
+                              {newsByNewsTypeCardData && newsByNewsTypeCardData.data ? newsByNewsTypeCardData.data.map((newsType) => (
+                                <MenuItem value={newsType.key} onClick={() => this.handleNewsType(newsType)} >{newsType.key} </MenuItem>
+
+                              )) : null}
+
+                            </Select>
+
+                          </FormControl>
+                        </div>
                       </div>
-                      <Tooltip title="View Details" placement="top">
-                        <IconButton>
-                          <Icon>arrow_right_alt</Icon>
-                        </IconButton>
-                      </Tooltip>
+                      <div className=" px-56 pt-16 flex flex-middle flex-space-between">
+
+
+                        <Chip icon={<Icon>assignment</Icon>} label={'Article News : '+articleCountForNewsType} variant="outlined" color="primary" />
+                        <Chip icon={<Icon>video_library</Icon>} label={'Video News : '+videoCountForNewsType} variant="outlined" color="primary" />
+
+
+
+                      </div>
 
                     </Card>
                   </Grid>
@@ -213,9 +290,7 @@ class Dashboard1 extends Component {
                       </div>
                       <div className="pl-56 pt-4 flex flex-middle flex-space-between">
                         <FormControl style={{ width: 200 }}>
-                          <InputLabel id="demo-controlled-open-select-label">Filter By</InputLabel>
                           <Select
-                            labelId="demo-controlled-open-select-label"
                             id="filter"
                             name="subscriberFilterBy"
                             onChange={this.handleChange}
@@ -322,8 +397,37 @@ class Dashboard1 extends Component {
                       </div>
                     </Card>
                   </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Card className="play-card p-sm-24 bg-paper" elevation={6}>
+                  <Grid item xs={12} md={3}>
+                    <Card elevation={3} className="p-16">
+                      <div className="flex flex-middle">
+
+                        <Icon
+                          style={{
+                            fontSize: "44px",
+                            opacity: 0.6,
+                            color: theme.palette.primary.main,
+
+                          }}
+                        >
+                          live_help
+                      </Icon>
+                        <div className="ml-12" style={{ flex: 2 }}>
+                          <medium className="text-muted">Total Inquiries</medium>
+                          <h6 className="m-0 mt-4  text-primary font-weight-500">
+                            Total : {inquiryCardData.totalCount}
+                          </h6>
+                        </div>
+                        <Tooltip title="View Inquires Details" placement="top">
+                          <IconButton>
+                            <Icon>arrow_right_alt</Icon>
+                          </IconButton>
+                        </Tooltip>
+                      </div>
+
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <Card elevation={3} className="p-16">
                       <div className="flex flex-middle">
 
                         <Icon
@@ -336,18 +440,14 @@ class Dashboard1 extends Component {
                           live_help
                       </Icon>
                         <div className="ml-12" style={{ flex: 2 }}>
-                          <medium className="text-muted">User's Inquiries</medium>
+                          <medium className="text-muted">Unsolved Inquiries</medium>
                           <h6 className="m-0 mt-4  text-error font-weight-500">
-                            {(inquiryCardData.totalCount - inquiryCardData.unreadInquery) + ' / ' + inquiryCardData.totalCount} Inquiries Solved
-                        </h6>
+                            UnSolved : {inquiryCardData.unreadInquery}
+                          </h6>
                         </div>
 
                       </div>
-                      <Tooltip title="Unsolved Inquires Details" placement="top">
-                        <IconButton>
-                          <Icon>arrow_right_alt</Icon>
-                        </IconButton>
-                      </Tooltip>
+
 
 
                     </Card>

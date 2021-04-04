@@ -16,7 +16,7 @@ class AuthGuard extends Component {
   }
 
   componentDidMount() {
-    console.log("IN AUTH GUARD");
+    console.log("IN AUTH GUARD..........");
     if (!this.state.authenticated) {
       this.redirectRoute(this.props);
     }
@@ -60,6 +60,8 @@ class AuthGuard extends Component {
   render() {
     let { children } = this.props;
     const { authenticated } = this.state;
+    console.log(authenticated, "authenticated", children);
+
     return authenticated ? <Fragment>{children}</Fragment> : null;
   }
 }
