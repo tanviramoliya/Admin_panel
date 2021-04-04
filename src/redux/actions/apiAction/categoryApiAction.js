@@ -3,9 +3,9 @@ import {
   } from "../index";
   import { api } from '../../../api/api';
 
-  export const categoryListApi = (data) => {
+  export const categoryListApi = (data1) => {
     return async (dispatch) => {
-      await api('category/search', data, 'post')
+      await api('category/search', data1, 'post')
         .then((res) => {
           dispatch(getCategoryList(res.data.data));
         })

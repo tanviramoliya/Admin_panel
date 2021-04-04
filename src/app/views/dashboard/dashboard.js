@@ -17,7 +17,7 @@ class Dashboard1 extends Component {
     adminCardData: "",
     subscriberCardData: "",
     inquiryCardData: "",
-    subscriberFilterBy: "",
+    subscriberFilterBy: "today",
     masterFilterBy: "category",
     masterCardData: "",
     permission:true
@@ -230,7 +230,7 @@ class Dashboard1 extends Component {
 
                         </FormControl>
                         <div className="pt-12">
-                          <h2 className="m-0 text-muted flex-grow-1"> {subscriberFilterBy ? subscriberCardData[subscriberFilterBy] : '0'} {" / " + subscriberCardData.totalCount}</h2>
+                          <h2 className="m-0 text-muted flex-grow-1"> {subscriberCardData[subscriberFilterBy] + " / " + subscriberCardData.totalCount}</h2>
 
                         </div>
                       </div>

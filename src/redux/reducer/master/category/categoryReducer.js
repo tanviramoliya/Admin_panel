@@ -14,16 +14,17 @@ import {
   
   const CategoryReducer = function(state = initialState, action) {
     switch (action.type) {
-      case GET_CATEGORY_LIST : {
-        return {
-          ...state,
-          categoryList: action.payload
-        };
-      }
+     
       case GET_CATEGORY_NAME_LIST : {
         return {
           ...state,
           categoryNameList: action.payload
+        };
+      } 
+      case GET_CATEGORY_LIST : {
+        return {
+          ...state,
+          categoryList: action.payload
         };
       }
       case GET_CATEGORY : {

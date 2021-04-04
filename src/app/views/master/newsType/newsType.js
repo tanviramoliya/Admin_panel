@@ -56,12 +56,14 @@ class newsType extends Component {
     newsTypeToken: "",
     isActive: "active",
     type: "new",
-    permission: true
+    permission: true,
+    perData: JSON.parse(localStorage.getItem("permission"))[8]
+
 
   };
   componentDidMount = async () => {
-    const perData = JSON.parse(localStorage.getItem("permission"));
-    if (perData[8].key === 'Master' && perData[8].value === "N/A") {
+    const { perData } = this.state;
+    if (perData.key === 'Master' && perData.value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -102,12 +104,18 @@ class newsType extends Component {
 
   //to delete NewsType
   deleteNewsTypeClicked = async (token) => {
-    if (token) {
-      this.setState({ deleteNewsTypeToken: token });
+    const { perData } = this.state;
+    if (perData.key === 'Master' && perData.value === "RW") {
+
+      if (token) {
+        this.setState({ deleteNewsTypeToken: token });
+      }
+      this.setState({
+        deleteModal: !this.state.deleteModal,
+      });
+    } else {
+      toastr.error("Access Denied!")
     }
-    this.setState({
-      deleteModal: !this.state.deleteModal,
-    });
   };
 
   yesDeleteClicked = async () => {
@@ -135,13 +143,20 @@ class newsType extends Component {
   };
   // for open a modal
   setModel = (type, data) => {
-    this.setState({ openModal: true, type: type });
-    if (type === "edit") {
-      this.setState({
-        newsTypeName: data.newsTypeName,
-        newsTypeToken: data.newsTypeToken,
-        isActive: data.isActive ? 'active' : 'notActive'
-      });
+    const { perData } = this.state;
+    if (perData.key === 'Master' && perData.value === "RW") {
+
+      this.setState({ openModal: true, type: type });
+      if (type === "edit") {
+        this.setState({
+          newsTypeName: data.newsTypeName,
+          newsTypeToken: data.newsTypeToken,
+          isActive: data.isActive ? 'active' : 'notActive'
+        });
+      }
+    }
+    else {
+      toastr.error("Access Denied!")
     }
   };
   //for close a modal
@@ -270,7 +285,7 @@ class newsType extends Component {
           <div className="py-12" >
             <Card elevation={6} className="px-24 pt-12 h-100">
               <div className="flex flex-middle flex-space-between pb-12">
-                <div className="card-title">News Type Infromation</div>
+                <div className="card-title">News Type Information</div>
                 <div>
                   <TextField style={{ width: '300px' }}
                     className="mr-16"
@@ -301,8 +316,8 @@ class newsType extends Component {
                 <Table style={{ whiteSpace: "pre" }} stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell className="px-0 py-8">Sr.No</TableCell>
-                      <TableCell className="px-0 py-8">
+                      <TableCell className="px-0 py-8" width="20%">Sr.No</TableCell>
+                      <TableCell className="px-0 py-8" width="25%">
                         <TableSortLabel
                           active={sortingField === 'newsTypeName'}
                           direction={sortingOrder}
@@ -310,7 +325,7 @@ class newsType extends Component {
                         >
                           NEWS Type
                       </TableSortLabel></TableCell>
-                      <TableCell className="px-0 py-8">
+                      <TableCell className="px-0 py-8" width="25%">
                         <TableSortLabel
                           active={sortingField === 'isActive'}
                           direction={sortingOrder}
@@ -318,7 +333,7 @@ class newsType extends Component {
                         >
                           Active/Not Active
                       </TableSortLabel></TableCell>
-                      <TableCell className="px-0 py-8">
+                      <TableCell className="px-0 py-8" width="20%">
                         <TableSortLabel
                           active={sortingField === 'createdDate'}
                           direction={sortingOrder}
@@ -326,7 +341,7 @@ class newsType extends Component {
                         >
                           Created Date
                       </TableSortLabel></TableCell>
-                      <TableCell className="px-0 py-8">Action</TableCell>
+                      <TableCell className="px-0 py-8" >Action</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>

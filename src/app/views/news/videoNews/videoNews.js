@@ -57,13 +57,15 @@ class videoNews extends Component {
     critical: "",
     tags: "",
     type: "new",
-    permission: true
+    permission: true,
+    perData: JSON.parse(localStorage.getItem("permission"))[1]
+
   };
 
 
   componentDidMount = async () => {
-    const perData = JSON.parse(localStorage.getItem("permission"));
-    if (perData[1].key === 'News' && perData[1].value === "N/A") {
+    const { perData } = this.state;
+    if (perData.key === 'News' && perData.value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -107,12 +109,18 @@ class videoNews extends Component {
 
   //to delete Category
   deletvideoNewsClicked = async (vId) => {
+    const { perData } = this.state;
+    if (perData.key === 'News' && perData.value === "RW") {
+
     if (vId) {
       this.setState({ deleteVideoNewsId: vId });
     }
     this.setState({
       deleteModal: !this.state.deleteModal,
     });
+  } else {
+    toastr.error("Access Denied!")
+  }
   };
 
   yesDeleteClicked = async () => {
@@ -173,6 +181,31 @@ class videoNews extends Component {
     event.persist();
     this.setState({ [event.target.name]: event.target.value });
   };
+  handlePerAndAdd = () => {
+    const { perData } = this.state;
+    if (perData.key === 'News' && perData.value === "RW") {
+      this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'add' } })
+    } else {
+      toastr.error("Access Denied!")
+    }
+  }
+  handlePerAndEdit = (videoNewsId) => {
+    const { perData } = this.state;
+    if (perData.key === 'News' && perData.value === "RW") {
+      this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'edit', id: videoNewsId } })
+    } else {
+      toastr.error("Access Denied!")
+    }
+  }
+  handlePerAndView = (videoNewsId) => {
+    const { perData } = this.state;
+    if (perData.key === 'News' && (perData.value === "RO" ||perData.value === "RW" )) {
+      this.props.history.push({ pathname: '/news/videoNews/view', state: { id: videoNewsId } })
+    } else {
+      toastr.error("Access Denied!")
+    }
+  }
+
 
 
   render() {
@@ -228,7 +261,7 @@ class videoNews extends Component {
                   />
                   <Button
                     className="capitalize text-white bg-circle-primary"
-                    onClick={() => this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'add' } })}
+                    onClick={this.handlePerAndAdd}
                   >
                     Add Video News
                   </Button>
@@ -342,7 +375,7 @@ class videoNews extends Component {
                             <IconButton className="p-8">
                               <Icon
                                 color="primary"
-                                onClick={() => this.props.history.push({ pathname: '/news/videoNews/edit', state: { type: 'edit', id: VideoNews.videoNewsId } })}
+                                onClick={() => this.handlePerAndEdit(VideoNews.videoNewsId)}
                               >edit </Icon>
                             </IconButton>
                             <IconButton className="p-8">
@@ -355,7 +388,7 @@ class videoNews extends Component {
                             <IconButton className="p-8">
                               <Icon
                                 color="secondary"
-                                onClick={() => this.props.history.push({ pathname: '/news/videoNews/view', state: { id: VideoNews.videoNewsId } })}
+                                onClick={() => this.handlePerAndView(VideoNews.videoNewsId)}
                               >visibility</Icon>
                             </IconButton>
                             <IconButton className="p-8">
