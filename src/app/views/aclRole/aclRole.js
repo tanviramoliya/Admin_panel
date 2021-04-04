@@ -63,7 +63,7 @@ class AclRole extends Component {
     openModal: false,
     roleToken: "",
     roleType: "",
-    isPermission:true,
+    isPermission: true,
     permission: [
       { key: "Dashboard", value: "N/A" },
       { key: "News", value: "N/A" },
@@ -77,12 +77,13 @@ class AclRole extends Component {
       { key: "Settings", value: "N/A" }
     ],
     type: "new",
+    perData: JSON.parse(localStorage.getItem("permission"))[5]
   };
 
   componentDidMount = async () => {
-    const perData = JSON.parse(localStorage.getItem("permission"));
-    if(perData[5].key === 'Role' && perData[5].value === "N/A"){      
-      this.setState({isPermission:false});
+    const { perData } = this.state;
+    if (perData.key === 'Role' && perData.value === "N/A") {
+      this.setState({ isPermission: false });
       return false;
     }
     await this.getAclRoleList();
@@ -102,12 +103,18 @@ class AclRole extends Component {
 
   //to delete Category
   deleteAclRoleClicked = async (token) => {
-    if (token) {
-      this.setState({ deleteAclRoleToken: token });
+    const { perData } = this.state;
+    if (perData.key === 'Role' && perData.value === "RW") {
+
+      if (token) {
+        this.setState({ deleteAclRoleToken: token });
+      }
+      this.setState({
+        deleteModal: !this.state.deleteModal,
+      });
+    } else {
+      toastr.error("Access Denied!")
     }
-    this.setState({
-      deleteModal: !this.state.deleteModal,
-    });
   };
 
   yesDeleteClicked = async () => {
@@ -137,13 +144,19 @@ class AclRole extends Component {
   };
   // for open a modal
   setModel = (type, data) => {
-    this.setState({ openModal: true, type: type });
-    if (type === "edit") {
-      this.setState({
-        roleToken: data.roleToken,
-        roleType: data.roleType,
-        permission: JSON.parse(data.permission),
-      });
+    const { perData } = this.state;
+    if (perData.key === 'Role' && perData.value === "RW") {
+
+      this.setState({ openModal: true, type: type });
+      if (type === "edit") {
+        this.setState({
+          roleToken: data.roleToken,
+          roleType: data.roleType,
+          permission: JSON.parse(data.permission),
+        });
+      }
+    } else {
+      toastr.error("Access Denied!")
     }
   };
   //for close a modal
@@ -210,9 +223,9 @@ class AclRole extends Component {
       }
       else {
         this.validator.showMessages();
-  
+
       }
-    } 
+    }
   };
   UpdateAclRole = async () => {
     const { type, roleToken, roleType, permission } = this.state;
@@ -251,14 +264,14 @@ class AclRole extends Component {
       }
       else {
         this.validator.showMessages();
-  
+
       }
     }
   };
-  handleTypeChange = (event) =>{
-      event.persist();
-      this.setState({ [event.target.name]: event.target.value });
-    };
+  handleTypeChange = (event) => {
+    event.persist();
+    this.setState({ [event.target.name]: event.target.value });
+  };
   handleChange = (event, key) => {
     let name = event.target.name;
     let value = event.target.checked;
@@ -286,62 +299,62 @@ class AclRole extends Component {
   };
 
   render() {
-    const { aclRoleList, roleType, type, openModal,isPermission } = this.state;
+    const { aclRoleList, roleType, type, openModal, isPermission } = this.state;
     if (!isPermission) {
       return (
-        <AccessDeniedPage/>
+        <AccessDeniedPage />
       )
     }
     else {
 
-   
-    return (
-      
 
-      <div className="m-sm-30">
-        <div className="mb-sm-30">
-          <Breadcrumb routeSegments={[{ name: "User Role", path: "/" }]} />
-        </div>
-        <div className="py-12">
-          <Card elevation={6} className="px-20 pt-12 h-100">
-            <div className="flex flex-middle flex-space-between pb-12">
-              <div className="card-title">User Role And Permission</div>
-              {aclRoleList.length < 3 ? (
-                <Button
-                  className="capitalize text-white bg-circle-primary"
-                  onClick={() => this.setModel("new")}
-                >
-                  Add New Role
-                </Button>
-              ) : (
-                  <Tooltip
-                    title="You can add only three roles!"
-                    placement="right"
+      return (
+
+
+        <div className="m-sm-30">
+          <div className="mb-sm-30">
+            <Breadcrumb routeSegments={[{ name: "User Role", path: "/" }]} />
+          </div>
+          <div className="py-12">
+            <Card elevation={6} className="px-20 pt-12 h-100">
+              <div className="flex flex-middle flex-space-between pb-12">
+                <div className="card-title">User Role And Permission</div>
+                {aclRoleList.length < 3 ? (
+                  <Button
+                    className="capitalize text-white bg-circle-primary"
+                    onClick={() => this.setModel("new")}
                   >
-                    <Warning fontSize="large" color="secondary" />
-                  </Tooltip>
-                )}
-            </div>
-          </Card>
-          <Grid container className="pt-20" spacing={4}>
-            {aclRoleList.map((AclRole, index) => (
-              <Grid item lg={4} md={4} sm={12} xs={12}>
-                <Card elevation={6}>
-                  <CardContent>
-                    <div className="flex flex-middle flex-space-between pb-12">
-                      <Typography variant="h4" className="px-6">
-                        {AclRole.roleType}
-                      </Typography>
-                      <div>
-                        <IconButton className="p-8">
-                          <Icon
-                            color="primary"
-                            onClick={() => this.setModel("edit", AclRole)}
-                          >
-                            edit
+                    Add New Role
+                </Button>
+                ) : (
+                    <Tooltip
+                      title="You can add only three roles!"
+                      placement="right"
+                    >
+                      <Warning fontSize="large" color="secondary" />
+                    </Tooltip>
+                  )}
+              </div>
+            </Card>
+            <Grid container className="pt-20" spacing={4}>
+              {aclRoleList.map((AclRole, index) => (
+                <Grid item lg={4} md={4} sm={12} xs={12}>
+                  <Card elevation={6}>
+                    <CardContent>
+                      <div className="flex flex-middle flex-space-between pb-12">
+                        <Typography variant="h4" className="px-6">
+                          {AclRole.roleType}
+                        </Typography>
+                        <div>
+                          <IconButton className="p-8">
+                            <Icon
+                              color="primary"
+                              onClick={() => this.setModel("edit", AclRole)}
+                            >
+                              edit
                           </Icon>
-                        </IconButton>
-                        {/* <IconButton className="p-8">
+                          </IconButton>
+                          {/* <IconButton className="p-8">
                           <Icon
                             color="error"
                             onClick={() =>
@@ -351,187 +364,187 @@ class AclRole extends Component {
                             delete
                           </Icon>
                         </IconButton> */}
-                      </div>
-                    </div>
-                    <Divider />
-                    <Grid container className="pt-12">
-                      <Grid item lg={12}>
-                        <div>
-                          <TableContainer component={Paper}>
-                            <Table size="small" aria-label="a dense table">
-                              <TableBody>
-                                {Object.values(
-                                  JSON.parse(AclRole.permission)
-                                ).map((row) => (
-                                  <TableRow key={row.key}>
-                                    <TableCell component="th" scope="row">
-                                      {row.key}
-                                    </TableCell>
-                                    <TableCell align="center">
-                                      <small
-                                        className={
-                                          row.value === "N/A"
-                                            ? "border-radius-4 text-white px-8 py-2 bg-error"
-                                            : row.value === "RW"
-                                              ? "border-radius-4 text-white px-8 py-2 bg-primary"
-                                              : "border-radius-4 text-white px-8 py-2 bg-secondary"
-                                        }
-                                      >
-                                        {row.value === "N/A"
-                                          ? "N/A"
-                                          : row.value === "RW"
-                                            ? "RW"
-                                            : "RO"}
-                                      </small>
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
                         </div>
+                      </div>
+                      <Divider />
+                      <Grid container className="pt-12">
+                        <Grid item lg={12}>
+                          <div>
+                            <TableContainer component={Paper}>
+                              <Table size="small" aria-label="a dense table">
+                                <TableBody>
+                                  {Object.values(
+                                    JSON.parse(AclRole.permission)
+                                  ).map((row) => (
+                                    <TableRow key={row.key}>
+                                      <TableCell component="th" scope="row">
+                                        {row.key}
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        <small
+                                          className={
+                                            row.value === "N/A"
+                                              ? "border-radius-4 text-white px-8 py-2 bg-error"
+                                              : row.value === "RW"
+                                                ? "border-radius-4 text-white px-8 py-2 bg-primary"
+                                                : "border-radius-4 text-white px-8 py-2 bg-secondary"
+                                          }
+                                        >
+                                          {row.value === "N/A"
+                                            ? "N/A"
+                                            : row.value === "RW"
+                                              ? "RW"
+                                              : "RO"}
+                                        </small>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </div>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </CardContent>
-                  <Divider />
-                  <CardActions>
-                    <div style={{ display: "flex" }}>
+                    </CardContent>
+                    <Divider />
+                    <CardActions>
+                      <div style={{ display: "flex" }}>
 
-                      <Box fontWeight="fontWeightRegular" marginLeft="16px">
-                        Last Modified Date :
+                        <Box fontWeight="fontWeightRegular" marginLeft="16px">
+                          Last Modified Date :
                       </Box>
-                      <Box fontStyle="italic"> {AclRole.updatedTime}</Box>
+                        <Box fontStyle="italic"> {AclRole.updatedTime}</Box>
 
-                    </div>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </div>
-        <div>
-          <ConfirmationDialog
-            open={this.state.deleteModal}
-            title="Delete Confirmation"
-            message={"are you sure want to delete this Admin Role?"}
-            toggle={this.deleteAclRoleClicked}
-            onYesClick={() =>
-              this.yesDeleteClicked(this.state.deleteAclRoleToken)
-            }
-            onNoClick={this.noDeleteClicked}
-          />
-        </div>
-        <div>
-          <Dialog
-            open={openModal}
-            aria-labelledby="max-width-dialog-title"
-            fullWidth={true}
-            maxWidth="sm"
-          >
-            <DialogTitle id="form-dialog-title">
-
-              <div style={{ display: "contents" }}>
-                {type === "new" ? "Add a Admin Role"
-                  :
-                  "Edit Admin Role"
-                }
-              </div>
-            </DialogTitle>
-            <DialogContent>
-              <ValidatorForm
-                ref="form"
-                onSubmit={type === "new" ? this.AddAclRole : this.UpdateAclRole}
-                onError={(errors) => null}
-              >
-                <Grid container spacing={1}>
-                  <Grid item lg={12}>
-
-                    <TextField
-                      variant="outlined"
-                      className="mb-16 w-100"
-                      label="Role Type"
-                      onChange={this.handleTypeChange}
-                      type="text"
-                      name="roleType"
-                      value={roleType}
-                      error={this.validator.message(
-                        "roleType",
-                        roleType,
-                        "required|min:2"
-                      )}
-                      helperText={this.validator.message(
-                        "roleType",
-                        roleType,
-                        "required|min:2"
-                      )}
-                      onBlur={() => this.validator.showMessageFor("roleType")}
-                    />
-                    <TableContainer component={Paper}>
-                      <Table size="small" aria-label="a dense table">
-                        <TableBody>
-                          {this.state.permission.map((row) => (
-                            <TableRow>
-                              <TableCell className="p-0">{row.key}</TableCell>
-                              <TableCell align="center" className="p-0">
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      onChange={(e) =>
-                                        this.handleChange(e, row.key)
-                                      }
-                                      checked={row.value === "RW"}
-
-                                      name="RW"
-                                      color="primary"
-                                    />
-                                  }
-                                  label="RW"
-                                />
-                              </TableCell>
-                              <TableCell align="center" className="p-0">
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      onChange={(e) =>
-                                        this.handleChange(e, row.key)
-                                      }
-                                      checked={row.value !== "N/A"}
-                                      name="RO"
-                                      color="secondary"
-                                    />
-                                  }
-                                  label="RO"
-                                />
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Grid>
+                      </div>
+                    </CardActions>
+                  </Card>
                 </Grid>
-                <DialogActions className="p-0">
-                  <Button onClick={this.handleClose} color="primary">
-                    Cancel
+              ))}
+            </Grid>
+          </div>
+          <div>
+            <ConfirmationDialog
+              open={this.state.deleteModal}
+              title="Delete Confirmation"
+              message={"are you sure want to delete this Admin Role?"}
+              toggle={this.deleteAclRoleClicked}
+              onYesClick={() =>
+                this.yesDeleteClicked(this.state.deleteAclRoleToken)
+              }
+              onNoClick={this.noDeleteClicked}
+            />
+          </div>
+          <div>
+            <Dialog
+              open={openModal}
+              aria-labelledby="max-width-dialog-title"
+              fullWidth={true}
+              maxWidth="sm"
+            >
+              <DialogTitle id="form-dialog-title">
+
+                <div style={{ display: "contents" }}>
+                  {type === "new" ? "Add a Admin Role"
+                    :
+                    "Edit Admin Role"
+                  }
+                </div>
+              </DialogTitle>
+              <DialogContent>
+                <ValidatorForm
+                  ref="form"
+                  onSubmit={type === "new" ? this.AddAclRole : this.UpdateAclRole}
+                  onError={(errors) => null}
+                >
+                  <Grid container spacing={1}>
+                    <Grid item lg={12}>
+
+                      <TextField
+                        variant="outlined"
+                        className="mb-16 w-100"
+                        label="Role Type"
+                        onChange={this.handleTypeChange}
+                        type="text"
+                        name="roleType"
+                        value={roleType}
+                        error={this.validator.message(
+                          "roleType",
+                          roleType,
+                          "required|min:2"
+                        )}
+                        helperText={this.validator.message(
+                          "roleType",
+                          roleType,
+                          "required|min:2"
+                        )}
+                        onBlur={() => this.validator.showMessageFor("roleType")}
+                      />
+                      <TableContainer component={Paper}>
+                        <Table size="small" aria-label="a dense table">
+                          <TableBody>
+                            {this.state.permission.map((row) => (
+                              <TableRow>
+                                <TableCell className="p-0">{row.key}</TableCell>
+                                <TableCell align="center" className="p-0">
+                                  <FormControlLabel
+                                    control={
+                                      <Checkbox
+                                        onChange={(e) =>
+                                          this.handleChange(e, row.key)
+                                        }
+                                        checked={row.value === "RW"}
+
+                                        name="RW"
+                                        color="primary"
+                                      />
+                                    }
+                                    label="RW"
+                                  />
+                                </TableCell>
+                                <TableCell align="center" className="p-0">
+                                  <FormControlLabel
+                                    control={
+                                      <Checkbox
+                                        onChange={(e) =>
+                                          this.handleChange(e, row.key)
+                                        }
+                                        checked={row.value !== "N/A"}
+                                        name="RO"
+                                        color="secondary"
+                                      />
+                                    }
+                                    label="RO"
+                                  />
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Grid>
+                  </Grid>
+                  <DialogActions className="p-0">
+                    <Button onClick={this.handleClose} color="primary">
+                      Cancel
                   </Button>
-                  {type === "new" ? (
-                    <Button color="primary" type="submit">
-                      Add
-                    </Button>
-                  ) : (
+                    {type === "new" ? (
                       <Button color="primary" type="submit">
-                        Save
+                        Add
                     </Button>
-                    )}
-                </DialogActions>
-              </ValidatorForm>
-            </DialogContent>
-          </Dialog>
+                    ) : (
+                        <Button color="primary" type="submit">
+                          Save
+                    </Button>
+                      )}
+                  </DialogActions>
+                </ValidatorForm>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
-}
 }
 const mapStateToProps = (state) => {
   const { aclRoleList, roleType } = state.aclRole;

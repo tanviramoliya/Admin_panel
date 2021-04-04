@@ -24,6 +24,7 @@ import { Theme, makeStyles, withStyles, createStyles } from '@material-ui/core/s
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import Alert from "@material-ui/lab/Alert";
 const StyledBadge = withStyles((theme) => ({
   badge: {
     backgroundColor: '#44b700',
@@ -32,6 +33,7 @@ const StyledBadge = withStyles((theme) => ({
 }))(Badge);
 
 class articleNews extends Component {
+
   state = {
 
     articleNewsList: [],
@@ -59,13 +61,15 @@ class articleNews extends Component {
     critical: "",
     tags: "",
     type: "new",
-    permission: true
+    permission: true,
+    perData: JSON.parse(localStorage.getItem("permission"))[1]
+
   };
 
 
   componentDidMount = async () => {
-    const perData = JSON.parse(localStorage.getItem("permission"));
-    if (perData[1].key === 'News' && perData[1].value === "N/A") {
+    const { perData } = this.state;
+    if (perData.key === 'News' && perData.value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -108,12 +112,18 @@ class articleNews extends Component {
 
   //to delete Category
   deleteArticleNewsClicked = async (aId) => {
-    if (aId) {
-      this.setState({ deleteArticleNewsId: aId });
+    const { perData } = this.state;
+    if (perData.key === 'News' && perData.value === "RW") {
+
+      if (aId) {
+        this.setState({ deleteArticleNewsId: aId });
+      }
+      this.setState({
+        deleteModal: !this.state.deleteModal,
+      });
+    } else {
+      toastr.error("Access Denied!")
     }
-    this.setState({
-      deleteModal: !this.state.deleteModal,
-    });
   };
 
   yesDeleteClicked = async () => {
@@ -175,13 +185,30 @@ class articleNews extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
   handlePerAndAdd = () => {
-    const perData = JSON.parse(localStorage.getItem("permission"));
-    if (perData[1].key === 'News' && perData[1].value === "RW") {
+    const { perData } = this.state;
+    if (perData.key === 'News' && perData.value === "RW") {
       this.props.history.push({ pathname: '/news/articleNews/edit', state: { type: 'add' } })
     } else {
-     toastr.error("Access Denied!")
+      toastr.error("Access Denied!")
     }
   }
+  handlePerAndEdit = (ArticleNewsId) => {
+    const { perData } = this.state;
+    if (perData.key === 'News' && perData.value === "RW") {
+      this.props.history.push({ pathname: '/news/articleNews/edit', state: { type: 'edit', id: ArticleNewsId } })
+    } else {
+      toastr.error("Access Denied!")
+    }
+  }
+  handlePerAndView = (ArticleNewsId) => {
+    const { perData } = this.state;
+    if (perData.key === 'News' && (perData.value === "RO" ||perData.value === "RW" )) {
+      this.props.history.push({ pathname: '/news/articleNews/view', state: { id: ArticleNewsId } });
+    } else {
+      toastr.error("Access Denied!")
+    }
+  }
+
 
 
   render() {
@@ -350,7 +377,7 @@ class articleNews extends Component {
                               <IconButton className="p-8">
                                 <Icon
                                   color="primary"
-                                  onClick={() => this.props.history.push({ pathname: '/news/articleNews/edit', state: { type: 'edit', id: ArticleNews.articleNewsId } })}
+                                  onClick={() => this.handlePerAndEdit(ArticleNews.articleNewsId)}
                                 >edit </Icon>
                               </IconButton>
                               <IconButton className="p-8">
@@ -363,7 +390,7 @@ class articleNews extends Component {
                               <IconButton className="p-8">
                                 <Icon
                                   color="secondary"
-                                  onClick={() => this.props.history.push({ pathname: '/news/articleNews/view', state: { id: ArticleNews.articleNewsId } })}
+                                  onClick={() => this.handlePerAndView(ArticleNews.articleNewsId)}
                                 >visibility</Icon>
                               </IconButton>
                               <IconButton className="p-8">

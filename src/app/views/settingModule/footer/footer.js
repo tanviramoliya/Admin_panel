@@ -45,11 +45,13 @@ class footer extends Component {
     message: "",
     token: "",
     footerEdit: false,
-    permission:true
+    permission: true,
+    perData: JSON.parse(localStorage.getItem("permission"))[9]
+
   };
   componentDidMount = async () => {
-    const perData = JSON.parse(localStorage.getItem("permission"));
-    if (perData[9].key === 'Settings' && perData[9].value === "N/A") {
+    const { perData } = this.state;
+    if (perData.key === 'Settings' && perData.value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -115,8 +117,14 @@ class footer extends Component {
 
     this.setState({ [event.target.name]: event.target.value });
   };
-  footerEditChick = () => {
-    this.setState({ footerEdit: true })
+  footerEditClick = () => {
+    const { perData } = this.state;
+    if (perData.key === 'Settings' && perData.value === "RW") {
+
+      this.setState({ footerEdit: true })
+    } else {
+      toastr.error("Access Denied!")
+    }
   }
   reset = async () => {
     this.setState({ footerEdit: false })
@@ -167,7 +175,7 @@ class footer extends Component {
                     color="primary"
                     variant="contained"
                     className="mr-4"
-                    onClick={this.footerEditChick}
+                    onClick={this.footerEditClick}
                     startIcon={<Icon>edit</Icon>}
                   >Edit Info
                   </Button>

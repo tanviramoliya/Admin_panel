@@ -66,17 +66,10 @@ const routes = [
 
 const GetRoutes = () => {
   console.log(Cookies.get("GNTV-SESSIONID"));
-  if (Cookies.get("GNTV-SESSIONID")) {
+  // if (Cookies.get("GNTV-SESSIONID")) {
     return routes;
-  } else {
-    // history.push('/login');
-    return [
-      ...sessionRoutes,
-      ...dashboardRoutes,
-      ...redirectRoute,
-      ...PageNotFoundRoute,
-    ];
-  }
+  // } 
+  
 };
 
-export default GetRoutes;
+export default routes;

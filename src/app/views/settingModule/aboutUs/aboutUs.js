@@ -62,12 +62,14 @@ class aboutUs extends Component {
     fileInfos: null,
     infoEdit: false,
     fileEdit: false,
-    permission: true
+    permission: true,
+    perData: JSON.parse(localStorage.getItem("permission"))[9]
+
 
   };
   componentDidMount = async () => {
-    const perData = JSON.parse(localStorage.getItem("permission"));
-    if (perData[9].key === 'Settings' && perData[9].value === "N/A") {
+    const { perData } = this.state;
+    if (perData.key === 'Settings' && perData.value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -163,10 +165,23 @@ class aboutUs extends Component {
     console.log(this.state.selectedFile);
   };
   changeInfo = () => {
-    this.setState({ infoEdit: true });
+    const { perData } = this.state;
+    if (perData.key === 'Settings' && perData.value === "RW") {
+
+      this.setState({ infoEdit: true });
+      this.setState({ edit: true })
+    } else {
+      toastr.error("Access Denied!")
+    }
+
   };
   changeFile = () => {
-    this.setState({ fileEdit: true });
+    const { perData } = this.state;
+    if (perData.key === 'Settings' && perData.value === "RW") {
+      this.setState({ fileEdit: true });
+    } else {
+      toastr.error("Access Denied!")
+    }
   };
   reset = async () => {
     this.setState({ infoEdit: false });

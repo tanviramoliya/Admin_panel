@@ -74,13 +74,14 @@ class inquiry extends Component {
     openReplyModal: false,
     replyMessage: "",
     replySubject: "",
-    permission: true
+    permission: true,
+    perData: JSON.parse(localStorage.getItem("permission"))[7]
 
   };
 
   componentDidMount = async () => {
-    const perData = JSON.parse(localStorage.getItem("permission"));
-    if (perData[7].key === 'Inquiry' && perData[7].value === "N/A") {
+    const { perData } = this.state;
+    if (perData.key === 'Inquiry' && perData.value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -125,12 +126,18 @@ class inquiry extends Component {
 
   //to delete Category
   deleteInquiryClicked = async (token) => {
-    if (token) {
-      this.setState({ deleteInquiryToken: token });
+    const { perData } = this.state;
+    if (perData.key === 'Inquiry' && perData.value === "RW") {
+
+      if (token) {
+        this.setState({ deleteInquiryToken: token });
+      }
+      this.setState({
+        deleteModal: !this.state.deleteModal,
+      });
+    } else {
+      toastr.error("Access Denied!")
     }
-    this.setState({
-      deleteModal: !this.state.deleteModal,
-    });
   };
 
   yesDeleteClicked = async () => {
@@ -161,32 +168,43 @@ class inquiry extends Component {
     });
   };
   setReadModel = (data) => {
-    console.log(data);
-    this.setState({ openReadModal: true });
-    this.setState({
-      userName: data.userName,
-      emailId: data.emailId,
-      token: data.token,
-      subject: data.subject,
-      message: data.message,
-      contactNumber: data.contactNumber,
-      inquiryDate: data.inquiryDate,
-      replyMessage: data.inquiryReply !== null ? data.inquiryReply.replyMessage : null,
-      replySubject: data.inquiryReply !== null ? data.inquiryReply.subject : null,
-      read: data.read
-    });
+    const { perData } = this.state;
+    if (perData.key === 'Inquiry' && (perData.value === "RW" || perData.value === "RO")) {
+
+      this.setState({ openReadModal: true });
+      this.setState({
+        userName: data.userName,
+        emailId: data.emailId,
+        token: data.token,
+        subject: data.subject,
+        message: data.message,
+        contactNumber: data.contactNumber,
+        inquiryDate: data.inquiryDate,
+        replyMessage: data.inquiryReply !== null ? data.inquiryReply.replyMessage : null,
+        replySubject: data.inquiryReply !== null ? data.inquiryReply.subject : null,
+        read: data.read
+      });
+    } else {
+      toastr.error("Access Denied!")
+    }
   };
   setReplyModel = (data) => {
-    this.setState({ openReplyModal: true });
-    this.setState({
-      userName: data.userName,
-      emailId: data.emailId,
-      token: data.token,
-      subject: data.subject,
-      message: data.message,
-      contactNumber: data.contactNumber,
-      read: data.read
-    });
+    const { perData } = this.state;
+    if (perData.key === 'Inquiry' && perData.value === "RW") {
+
+      this.setState({ openReplyModal: true });
+      this.setState({
+        userName: data.userName,
+        emailId: data.emailId,
+        token: data.token,
+        subject: data.subject,
+        message: data.message,
+        contactNumber: data.contactNumber,
+        read: data.read
+      });
+    } else {
+      toastr.error("Access Denied!")
+    }
   };
   //for close a modal
   handleClose = () => {
@@ -256,7 +274,24 @@ class inquiry extends Component {
       this.validator.showMessages();
     }
   };
-
+  handleReadToSend = () => {
+    const { perData, read } = this.state;
+    if (read) {
+      if(perData.key === 'Inquiry' && perData.value === "RO") {
+      this.setState({ openReplyModal: true, openReadModal: false })
+      }
+      else {
+        toastr.error("Access Denied!")
+      }
+    } else {
+      if(perData.key === 'Inquiry' && perData.value === "RW") {
+        this.setState({ openReplyModal: true, openReadModal: false })
+        }
+        else {
+          toastr.error("Access Denied!")
+        }
+    }
+  }
 
 
 
@@ -289,7 +324,6 @@ class inquiry extends Component {
       );
     }
     this.setState({ selected: newSelected });
-    console.log(newSelected);
   };
 
   render() {
@@ -717,7 +751,7 @@ class inquiry extends Component {
                       color="primary"
                       type="submit"
                       endIcon={!read ? <Icon>send</Icon> : <Icon>visibility</Icon>}
-                      onClick={() => this.setState({ openReplyModal: true, openReadModal: false })}
+                      onClick={this.handleReadToSend}
                     >
                       {!read ? "Send Reply" : "View Reply"}
                     </Button>
