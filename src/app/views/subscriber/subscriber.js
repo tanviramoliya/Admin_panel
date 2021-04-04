@@ -48,15 +48,16 @@ class subscriber extends Component {
     orderBy: "",
     setOrder: "",
     sertOrderby: "",
-    permission: true
+    permission: true,
+    perData : JSON.parse(localStorage.getItem("permission"))[6]
 
 
   };
 
 
   componentDidMount = async () => {
-    const perData = JSON.parse(localStorage.getItem("permission"));
-    if (perData[6].key === 'Subscription' && perData[6].value === "N/A") {
+    const { perData } = this.state;
+    if (perData.key === 'Subscription' && perData.value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -97,12 +98,17 @@ class subscriber extends Component {
 
   //to delete Category
   deleteSubscriberClicked = async (token) => {
+    const { perData } = this.state;
+    if (perData.key === 'Subscription' && perData.value === "RW") {
     if (token) {
       this.setState({ deleteSubscriberToken: token });
     }
     this.setState({
       deleteModal: !this.state.deleteModal,
     });
+  } else {
+    toastr.error("Access Denied!")
+  }
   };
 
   yesDeleteClicked = async () => {
@@ -139,7 +145,6 @@ class subscriber extends Component {
   };
   //all checked
   handleSelectAllClick = (event) => {
-    console.log(" Called");
     const { subscriberList } = this.state;
     if (event.target.checked) {
       const newSelecteds = subscriberList ? subscriberList.map((n) => n.userToken) : null;

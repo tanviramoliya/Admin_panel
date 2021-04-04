@@ -50,13 +50,13 @@ class AdminUser extends Component {
     createdTime: "",
     updatedTime: "",
     type: "new",
-    permission:true
-
+    permission:true,
+    perData : JSON.parse(localStorage.getItem("permission"))[4]
   };
 
   componentDidMount = async () => {
-    const perData = JSON.parse(localStorage.getItem("permission"));
-    if(perData[4].key === 'Administrator' && perData[4].value === "N/A"){      
+    const { perData } = this.state;
+    if(perData.key === 'Administrator' && perData.value === "N/A"){      
       this.setState({permission:false});
       return false;
     }
@@ -106,12 +106,17 @@ class AdminUser extends Component {
 
 
   deleteAdminUserClicked = async (token) => {
+    const { perData } = this.state;
+    if(perData.key === 'Administrator' && perData.value === "RW"){ 
     if (token) {
       this.setState({ deleteAdminUserToken: token });
     }
     this.setState({
       deleteModal: !this.state.deleteModal,
     });
+  } else {
+    toastr.error("Access Denied!")
+  }
   };
 
   yesDeleteClicked = async () => {
@@ -146,6 +151,9 @@ class AdminUser extends Component {
   };
   // for open a modal
   setModel = (type, data) => {
+    const { perData } = this.state;
+    if(perData.key === 'Administrator' && perData.value === "RW"){ 
+    
     this.setState({ openModal: true, type: type });
     if (type === "edit") {
       this.setState({
@@ -160,6 +168,9 @@ class AdminUser extends Component {
 
       });
     }
+  } else {
+    toastr.error("Access Denied!")
+  }
   };
   //for close a modal
   handleClose = () => {
@@ -340,7 +351,7 @@ class AdminUser extends Component {
         <div className="py-12">
           <Card elevation={6} className="px-24 pt-12 h-100">
             <div className="flex flex-middle flex-space-between pb-12">
-              <div className="card-title">Admin User Infromation</div>
+              <div className="card-title">Admin User Information</div>
               <div>
                 <TextField style={{ width: '300px' }}
                   className="mr-16"
@@ -370,8 +381,8 @@ class AdminUser extends Component {
               <Table style={{ whiteSpace: "pre" }} stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0 py-8" width="5%" >Sr.No</TableCell>
-                    <TableCell className="px-0 py-8" width="15%" >
+                    <TableCell className="px-0 py-8" width="8%" >Sr.No</TableCell>
+                    <TableCell className="px-0 py-8" width="20%" >
                       <TableSortLabel
                         active={sortingField === 'firstName'}
                         direction={sortingOrder}
@@ -379,7 +390,7 @@ class AdminUser extends Component {
                       >
                         UserName
                       </TableSortLabel></TableCell>
-                    <TableCell className="px-0 py-8" width="8%" >
+                    <TableCell className="px-0 py-8" width="12%" >
                       <TableSortLabel
                         active={sortingField === 'role'}
                         direction={sortingOrder}
@@ -387,7 +398,7 @@ class AdminUser extends Component {
                       >
                         Role
                       </TableSortLabel></TableCell>
-                    <TableCell className="px-0 py-8" width="20%">
+                    <TableCell className="px-0 py-8" width="22%">
                       <TableSortLabel
                         active={sortingField === 'email'}
                         direction={sortingOrder}

@@ -58,12 +58,14 @@ class category extends Component {
     isActive: "active",
     type: "new",
     serialNo: 1,
-    permission: true
+    permission: true,
+    perData: JSON.parse(localStorage.getItem("permission"))[8]
+
 
   };
   componentDidMount = async () => {
-    const perData = JSON.parse(localStorage.getItem("permission"));
-    if (perData[8].key === 'Master' && perData[8].value === "N/A") {
+    const { perData } = this.state;
+    if (perData.key === 'Master' && perData.value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -100,12 +102,18 @@ class category extends Component {
 
   //to delete Category
   deleteCategoryClicked = async (token) => {
-    if (token) {
-      this.setState({ deleteCategoryToken: token });
+    const { perData } = this.state;
+    if (perData.key === 'Master' && perData.value === "RW") {
+
+      if (token) {
+        this.setState({ deleteCategoryToken: token });
+      }
+      this.setState({
+        deleteModal: !this.state.deleteModal,
+      });
+    } else {
+      toastr.error("Access Denied!")
     }
-    this.setState({
-      deleteModal: !this.state.deleteModal,
-    });
   };
 
   yesDeleteClicked = async () => {
@@ -140,14 +148,21 @@ class category extends Component {
   };
   // for open a modal
   setModel = (type, data) => {
-    this.setState({ openModal: true, type: type });
-    if (type === "edit") {
-      this.setState({
-        categoryName: data.categoryName,
-        categoryToken: data.categoryToken,
-        isActive: data.isActive ? "active" : "notActive",
-        serialNo: data.serialNo,
-      });
+    const { perData } = this.state;
+    if (perData.key === 'Master' && perData.value === "RW") {
+
+      this.setState({ openModal: true, type: type });
+      if (type === "edit") {
+        this.setState({
+          categoryName: data.categoryName,
+          categoryToken: data.categoryToken,
+          isActive: data.isActive ? "active" : "notActive",
+          serialNo: data.serialNo,
+        });
+      }
+    }
+    else {
+      toastr.error("Access Denied!")
     }
   };
   //for close a modal

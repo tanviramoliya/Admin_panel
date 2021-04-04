@@ -11,7 +11,7 @@ class Auth extends Component {
   
   constructor(props) {
     super(props);
-
+console.log(' again auth....');
     // Set user if exists in local storage
     // This is only for demo purpose
     // You should remove this
@@ -23,6 +23,7 @@ class Auth extends Component {
   }
 
   checkJwtAuth = () => {
+    console.log('In check jwtAuth...........................');
     // You need to send token to your server to check token is valid
     // modify loginWithToken method in jwtService
     jwtAuthService.loginWithToken().then(user => {

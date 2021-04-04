@@ -40,3 +40,26 @@ export const getMasterCountApi = async () => {
   }
 };
 
+export const getNewsHeadlineCountApi = async () => {
+  const newsHeadlineCount = await api(
+    `dashBoard/getNewsHeadlineCount`,
+    {},
+    "get"
+  );
+  if (newsHeadlineCount) {
+    return newsHeadlineCount;
+  }
+};
+
+export const getNewsByNewsTypeCountApi = async () => {
+  const newsHeadlineCount = await api(
+    `dashBoard/getNewsByNewsTypeCount`,
+    {},
+    "get"
+  );
+  if (newsHeadlineCount) {
+    return newsHeadlineCount;
+  }
+};
+
+
