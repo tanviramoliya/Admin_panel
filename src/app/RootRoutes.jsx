@@ -65,11 +65,11 @@ const routes = [
 ];
 
 const GetRoutes = () => {
-  console.log(Cookies.get("GNTV-SESSIONID"));
+  //console.log(Cookies.get("GNTV-SESSIONID"));
   // if (Cookies.get("GNTV-SESSIONID")) {
     return routes;
   // } 
   
 };
 
-export default routes;
+export default GetRoutes;
