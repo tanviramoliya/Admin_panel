@@ -63,12 +63,13 @@ const routes = [
 ];
 
 const GetRoutes = () => {
-  if (Cookies.get("GNTV-SESSIONID")) {
-    return routes;
-  } else {
-    // history.push('/login');
-    return [...sessionRoutes, ...redirectRoute, ...PageNotFoundRoute];
-  }
+  // if (Cookies.get("GNTV-SESSIONID")) {
+  //   return routes;
+  // } else {
+  //   // history.push('/login');
+  //   return [...sessionRoutes, ...redirectRoute, ...PageNotFoundRoute];
+  // }
+  return routes;
 };
 
 export default GetRoutes;

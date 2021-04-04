@@ -5,7 +5,7 @@ import { setUserData } from "../../redux/actions/UserActions";
 import jwtAuthService from "../services/jwtAuthService";
 import localStorageService from "../services/localStorageService";
 import history from "../../history";
-
+import Cookies from "js-cookie";
 class Auth extends Component {
   state = {};
   
@@ -23,24 +23,35 @@ class Auth extends Component {
   }
 
   checkJwtAuth = () => {
+    console.log('check jwt Auth...............');
+    console.log(history.location.pathname);
+    if (!Cookies.get("GNTV-SESSIONID")) {
+      history.push('/login')
+    }
+    else{
+      if(history.location.pathname === '/login'){
+        history.push('/');
+      }
+    }
+
     // You need to send token to your server to check token is valid
     // modify loginWithToken method in jwtService
-    jwtAuthService.loginWithToken().then(user => {
+    // jwtAuthService.loginWithToken().then(user => {
 
-      // Valid token
-      // Set user
-      this.props.setUserData(user);
+    //   // Valid token
+    //   // Set user
+    //   this.props.setUserData(user);
 
-      // You should redirect user to Dashboard here
+    //   // You should redirect user to Dashboard here
       
-    }).catch(err => {
-      // Invalid token
-      // Ridirect user to sign in page here
-      console.log(err);
-      history.push({
-        pathname: "/session/signin"
-      });
-    });
+    // }).catch(err => {
+    //   // Invalid token
+    //   // Ridirect user to sign in page here
+    //   console.log(err);
+    //   history.push({
+    //     pathname: "/session/signin"
+    //   });
+    // });
   };
 
   render() {
