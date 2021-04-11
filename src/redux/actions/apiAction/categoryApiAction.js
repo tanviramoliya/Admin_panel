@@ -7,10 +7,13 @@ import {
     return async (dispatch) => {
       await api('category/search', data1, 'post')
         .then((res) => {
+          console.log(res.data.data);
           dispatch(getCategoryList(res.data.data));
+          
         })
         .catch((error) => {
           console.log(error)
+          
           // toastr.error('Can not able to get Category list');
         });
     };

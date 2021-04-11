@@ -556,7 +556,7 @@ class category extends Component {
 const mapStateToProps = (state) => {
   const { categoryList } = state.category;
   return {
-    categoryList,
+    categoryList
   };
 };
 
