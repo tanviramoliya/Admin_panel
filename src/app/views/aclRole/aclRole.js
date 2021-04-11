@@ -444,7 +444,7 @@ class AclRole extends Component {
               <DialogTitle id="form-dialog-title">
 
                 <div style={{ display: "contents" }}>
-                  {type === "new" ? "Add a Admin Role"
+                  {type === "new" ? "Add Admin Role"
                     :
                     "Edit Admin Role"
                   }

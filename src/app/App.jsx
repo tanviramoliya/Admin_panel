@@ -20,7 +20,7 @@ const App = () => {
   return (
     <AppContext.Provider value={{ routes }}>
       <Provider store={Store}>
-      {/* <ReduxToastr
+      <ReduxToastr
         timeOut={3000}
         newestOnTop={false}
         preventDuplicates
@@ -29,7 +29,7 @@ const App = () => {
         transitionOut="fadeOut"
         progressBar
         closeOnToastrClick
-      /> */}
+      />
         <MatxTheme>
           <Auth>
             <Router history={history}>

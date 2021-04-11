@@ -489,7 +489,7 @@ class newsUpdate extends Component {
               fullWidth={true}
             >
               <DialogTitle id="form-dialog-title">
-                {type === "new" ? "Add a News Update" : "Edit News Update"}
+                {type === "new" ? "Add News Update" : "Edit News Update"}
               </DialogTitle>
               <DialogContent>
                 <ValidatorForm

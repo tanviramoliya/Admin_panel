@@ -2,7 +2,6 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 
 import dashboardRoutes from "./views/dashboard/DashboardRoutes";
-import utilitiesRoutes from "./views/utilities/UtilitiesRoutes";
 import sessionRoutes from "./views/sessions/SessionRoutes";
 
 import formsRoutes from "./views/forms/FormsRoutes";
@@ -55,7 +54,6 @@ const routes = [
   ...newsUpdateRoutes,
   ...subscriberRoutes,
   ...inquiryRoutes,
-  ...utilitiesRoutes,
   ...formsRoutes,
   ...profileRoute,
   ...newsRoutes,

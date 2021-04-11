@@ -519,7 +519,7 @@ class AdminUser extends Component {
             fullWidth={true} maxWidth="sm"
           >
             <DialogTitle id="form-dialog-title" >
-              {type === "new" ? "Add a Admin User" : "Edit Admin User"}
+              {type === "new" ? "Add Admin User" : "Edit Admin User"}
             </DialogTitle>
             <DialogContent>
               <ValidatorForm

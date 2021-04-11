@@ -7,7 +7,7 @@ class AccessDeniedPage extends Component {
       <div className="flex flex-center flex-middle w-100 mt-86">
         <div className="flex flex-column flex-center" >
           <img className="mb-32" src="/assets/images/illustrations/designer.svg" alt="access denied" />
-          <medium>You havn't permission to access this page! Please contact to administartor.</medium>
+          <medium>You haven't permission to access this page! Please contact to administrator.</medium>
         </div>
       </div>
     );

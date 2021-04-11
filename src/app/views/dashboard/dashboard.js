@@ -305,7 +305,7 @@ class Dashboard1 extends Component {
 
                         </FormControl>
                         <div className="pt-12">
-                          <h2 className="m-0 text-muted flex-grow-1"> {subscriberCardData[subscriberFilterBy] + " / " + subscriberCardData.totalCount}</h2>
+                          <h2 className="m-0 text-muted flex-grow-1"> {(subscriberCardData ?subscriberCardData[subscriberFilterBy] : 0) + " / " + (subscriberCardData ?subscriberCardData.totalCount : 0)}</h2>
 
                         </div>
                       </div>

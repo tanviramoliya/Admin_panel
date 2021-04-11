@@ -472,7 +472,7 @@ class category extends Component {
               fullWidth={true}
             >
               <DialogTitle id="form-dialog-title">
-                {type === "new" ? "Add a Category" : "Edit Category"}
+                {type === "new" ? "Add Category" : "Edit Category"}
               </DialogTitle>
               <DialogContent>
                 <ValidatorForm
