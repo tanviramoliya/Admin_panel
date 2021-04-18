@@ -57,7 +57,7 @@ class subscriber extends Component {
 
   componentDidMount = async () => {
     const { perData } = this.state;
-    if (perData.key === 'Subscription' && perData.value === "N/A") {
+    if (perData.key === 'Subscriber' && perData.value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -99,7 +99,7 @@ class subscriber extends Component {
   //to delete Category
   deleteSubscriberClicked = async (token) => {
     const { perData } = this.state;
-    if (perData.key === 'Subscription' && perData.value === "RW") {
+    if (perData.key === 'Subscriber' && perData.value === "RW") {
     if (token) {
       this.setState({ deleteSubscriberToken: token });
     }

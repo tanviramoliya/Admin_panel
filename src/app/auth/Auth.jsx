@@ -11,7 +11,7 @@ class Auth extends Component {
   
   constructor(props) {
     super(props);
-
+console.log(' again auth....');
     // Set user if exists in local storage
     // This is only for demo purpose
     // You should remove this
@@ -23,9 +23,9 @@ class Auth extends Component {
   }
 
   checkJwtAuth = () => {
-    console.log('check jwt Auth...............');
     console.log(history.location.pathname);
-    if (!Cookies.get("GNTV-SESSIONID")) {
+
+    if (!Cookies.get("GNTV-SESSIONID") && Cookies.get("GNTV-SESSIONID") !== Cookies.get("JSESSIONID")) {
       history.push('/login')
     }
     else{

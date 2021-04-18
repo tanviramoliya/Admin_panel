@@ -51,7 +51,7 @@ class newsUpdate extends Component {
 
   componentDidMount = async () => {
     const { perData } = this.state;
-    if (perData.key === 'News_headline' && perData.value === "N/A") {
+    if (perData.key === 'News Updates' && perData.value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -94,7 +94,7 @@ class newsUpdate extends Component {
   //to delete Category
   deleteNewsClicked = async (token) => {
     const { perData } = this.state;
-    if (perData.key === 'News_headline' && perData.value === "RW") {
+    if (perData.key === 'News Updates' && perData.value === "RW") {
 
       if (token) {
         this.setState({ deleteNewsToken: token });
@@ -141,7 +141,7 @@ class newsUpdate extends Component {
   // for open a modal
   setModel = (type, data) => {
     const { perData } = this.state;
-    if (perData.key === 'News_headline' && perData.value === "RW") {
+    if (perData.key === 'News Updates' && perData.value === "RW") {
       this.setState({ openModal: true, type: type });
       if (type === "edit") {
         this.setState({
@@ -268,7 +268,7 @@ class newsUpdate extends Component {
 
   changeStatus = async (token, newStatus) => {
     const { perData } = this.state;
-    if (perData.key === 'News_headline' && perData.value === "RW") {
+    if (perData.key === 'News Updates' && perData.value === "RW") {
       let data = new FormData();
       data.append("headLineToken", token);
       data.append("status", !newStatus);
@@ -489,7 +489,7 @@ class newsUpdate extends Component {
               fullWidth={true}
             >
               <DialogTitle id="form-dialog-title">
-                {type === "new" ? "Add a News Update" : "Edit News Update"}
+                {type === "new" ? "Add News Update" : "Edit News Update"}
               </DialogTitle>
               <DialogContent>
                 <ValidatorForm

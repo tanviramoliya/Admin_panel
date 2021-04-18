@@ -21,11 +21,12 @@ export const loginApi = (loginData) => {
     console.log(loginData);
     await api("userUtility/authenticate", loginData, "post").then((res) => {
       console.log(res);
-      if (res.data.code === status.success) {
-        
-        Cookies.set("JSESSIONID", res.data.data.JSESSIONID);
+      if (res.data.code === status.success) {        
+        //Cookies.set("JSESSIONID", res.data.data.JSESSIONID);
         Cookies.set("GNTV-SESSIONID", res.data.data.JSESSIONID);
         localStorage.setItem("permission",JSON.stringify(res.data.data.permission));
+        localStorage.setItem("roleToken",res.data.data.roleToken);
+
         toastr.success("Logged in successfully");
         dispatch(setLoginFlag(true));
         history.push("/dashboard");
@@ -76,6 +77,7 @@ export const logoutApi = () => {
     await api("userUtility/logout", {}, "get").then((res) => {
       Cookies.remove("GNTV-SESSIONID");
       localStorage.removeItem("permission");
+      localStorage.removeItem("roleToken");
       dispatch(setLoginFlag(false));
       history.push("/login");
       toastr.success(res.data.message);

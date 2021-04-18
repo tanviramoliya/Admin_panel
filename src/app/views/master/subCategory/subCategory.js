@@ -510,7 +510,7 @@ class subCategory extends Component {
                 fullWidth={true}
               >
                 <DialogTitle id="form-dialog-title">
-                  {type === "new" ? "Add a New Sub category" : "Edit sub category"}
+                  {type === "new" ? "Add New Sub Category" : "Edit Sub Category"}
                 </DialogTitle>
                 <DialogContent>
                   <ValidatorForm

@@ -13,19 +13,18 @@ import {
   };
   
   const CategoryReducer = function(state = initialState, action) {
-    console.log(action.payload);
     switch (action.type) {
      
       case GET_CATEGORY_LIST : {
         return {
           ...state,
-          categoryList: action.payload
+          categoryList: [...action.payload]
         };
       }
       case GET_CATEGORY_NAME_LIST : {
         return {
           ...state,
-          categoryNameList: action.payload
+          categoryNameList: [...action.payload]
         };
       } 
      

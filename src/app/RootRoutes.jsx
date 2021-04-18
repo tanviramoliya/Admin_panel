@@ -2,7 +2,6 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 
 import dashboardRoutes from "./views/dashboard/DashboardRoutes";
-import utilitiesRoutes from "./views/utilities/UtilitiesRoutes";
 import sessionRoutes from "./views/sessions/SessionRoutes";
 
 import formsRoutes from "./views/forms/FormsRoutes";
@@ -55,21 +54,14 @@ const routes = [
   ...newsUpdateRoutes,
   ...subscriberRoutes,
   ...inquiryRoutes,
-  ...utilitiesRoutes,
   ...formsRoutes,
   ...profileRoute,
   ...newsRoutes,
   ...sessionRoutes,
   ...redirectRoute,
   ...errorRoute,
+  ...PageNotFoundRoute
 ];
 
-const GetRoutes = () => {
-  //console.log(Cookies.get("GNTV-SESSIONID"));
-  // if (Cookies.get("GNTV-SESSIONID")) {
-    return routes;
-  // } 
-  
-};
 
-export default GetRoutes;
+export default routes;

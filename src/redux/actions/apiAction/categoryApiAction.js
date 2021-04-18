@@ -3,21 +3,13 @@ import {
   } from "../index";
   import { api } from '../../../api/api';
 
-  export const categoryListApi = (data1) => {
-    return async (dispatch) => {
-      await api('category/search', data1, 'post')
-        .then((res) => {
-          console.log(res.data.data);
-          dispatch(getCategoryList(res.data.data));
-          
-        })
-        .catch((error) => {
-          console.log(error)
-          
-          // toastr.error('Can not able to get Category list');
-        });
-    };
+  export const categoryListApi = async (data) => {
+    const deleteCategory = await api('category/search', data, 'post');
+    if (deleteCategory) {
+      return deleteCategory.data.data;
+    }
   };
+  
 //for news module
   export const categoryNameListApi = () => {
     return async (dispatch) => {

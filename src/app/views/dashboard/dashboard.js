@@ -128,12 +128,6 @@ class Dashboard1 extends Component {
   render() {
     let { theme } = this.props;
     const { adminCardData, newsTypeForNews,newsByNewsTypeCardData,articleCountForNewsType,videoCountForNewsType, subscriberFilterBy, subscriberCardData, inquiryCardData, masterFilterBy, masterCardData, newsHeadlineCardData, permission } = this.state;
-
-
-    if (!Cookies.get("GNTV-SESSIONID")) {
-      return <Redirect to="/login" />;
-    }
-    else {
       if (!permission) {
         return (
           <AccessDeniedPage />
@@ -305,7 +299,7 @@ class Dashboard1 extends Component {
 
                         </FormControl>
                         <div className="pt-12">
-                          <h2 className="m-0 text-muted flex-grow-1"> {subscriberCardData[subscriberFilterBy] + " / " + subscriberCardData.totalCount}</h2>
+                          <h2 className="m-0 text-muted flex-grow-1"> {(subscriberCardData ?subscriberCardData[subscriberFilterBy] : 0) + " / " + (subscriberCardData ?subscriberCardData.totalCount : 0)}</h2>
 
                         </div>
                       </div>
@@ -457,9 +451,7 @@ class Dashboard1 extends Component {
             </Grid>
           </Fragment>
         );
-      }
-    }
-
+      }    
   }
 }
 

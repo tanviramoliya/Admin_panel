@@ -57,12 +57,6 @@ export const navigations = [
     icon: "trending_up",
     children: [
       {
-        name: "Location",
-        path: "/master/country",
-        iconText: "1"
-      },
-      
-      {
         name: "NEWS Type",
         path: "/master/newsType",
         iconText: "4"
@@ -92,36 +86,6 @@ export const navigations = [
         name: "About US",
         path: "/setting/aboutUs",
         iconText: "A"
-      },
-      {
-        name: "Spacing",
-        path: "/utilities/spacing",
-        iconText: "A"
-      },
-      // {
-      //   name: "Contact US",
-      //   path: "/utilities/typography",
-      //   iconText: "C"
-      // },
-      // {
-      //   name: "Terms & Conditions",
-      //   path: "/utilities/display",
-      //   iconText: "T"
-      // },
-      {
-        name: "FAQ",
-        path: "/forms/simple",
-        iconText: "F"
-      },
-      // {
-      //   name: "Support",
-      //   path: "/utilities/display",
-      //   iconText: "S"
-      // },
-      {
-        name: "Header",
-        path: "/utilities/display",
-        iconText: "H"
       },
       {
         name: "Footer",
