@@ -60,14 +60,8 @@ const routes = [
   ...sessionRoutes,
   ...redirectRoute,
   ...errorRoute,
+  ...PageNotFoundRoute
 ];
 
-const GetRoutes = () => {
-  //console.log(Cookies.get("GNTV-SESSIONID"));
-  // if (Cookies.get("GNTV-SESSIONID")) {
-    return routes;
-  // } 
-  
-};
 
 export default routes;

@@ -69,7 +69,7 @@ class category extends Component {
       this.setState({ permission: false });
       return false;
     }
-    await this.getCategoryList();
+  await this.getCategoryList();
   };
   getCategoryList = async () => {
     const { rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
@@ -81,23 +81,24 @@ class category extends Component {
       order: sortingOrder
     }
     await this.props.categoryListApi(data);
+    console.log(this.props.categoryList);
     this.setState({ categoryList: this.props.categoryList.result, count: this.props.categoryList.count });
   };
   handleSearchKeyword = async (event) => {
     await this.setState({ keyword: event.target.value });
-    this.getCategoryList();
+    await this.getCategoryList();
   }
   handleSortingOrder = async (fieldName, order) => {
     await this.setState({ sortingField: fieldName, sortingOrder: order === 'asc' ? 'desc' : 'asc' });
-    this.getCategoryList();
+   await this.getCategoryList();
   }
   handleChangePage = async (event, newPage) => {
     await this.setState({ page: newPage });
-    this.getCategoryList();
+    await this.getCategoryList();
   };
   handleChangeRowsPerPage = async (event) => {
     await this.setState({ rowsPerPage: event.target.value });
-    this.getCategoryList();
+    await this.getCategoryList();
   };
 
   //to delete Category
@@ -127,7 +128,7 @@ class category extends Component {
       this.state.deleteCategoryToken
     );
     if (deleteCategory && deleteCategory.data.code === status.success) {
-      await this.categoryList();
+      await this.getCategoryList();
       toastr.success(deleteCategory.data.message);
     } else if (
       deleteCategory &&
@@ -197,7 +198,7 @@ class category extends Component {
         if (createCategory.status === status.success) {
           if (createCategory.data.code === status.success) {
             toastr.success(createCategory.data.message);
-            this.categoryList();
+            this.getCategoryList();
             this.setState({
               categoryName: "",
               openModal: false,
@@ -245,7 +246,7 @@ class category extends Component {
         if (updateCategory.status === status.success) {
           if (updateCategory.data.code === status.success) {
             toastr.success(updateCategory.data.message);
-            this.categoryList();
+            this.getCategoryList();
             this.setState({
               categoryName: "",
               openModal: false,
@@ -554,10 +555,8 @@ class category extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { categoryList } = state.category;
-  return {
-    categoryList,
-  };
+  const { categoryList}  = state.category;
+  return {categoryList};
 };
 
 export default connect(mapStateToProps, { categoryListApi })(category);

@@ -3,10 +3,11 @@ import {
   } from "../index";
   import { api } from '../../../api/api';
 
-  export const categoryListApi = (data1) => {
+  export const categoryListApi = (data) => {
     return async (dispatch) => {
-      await api('category/search', data1, 'post')
+      await api('category/search', data, 'post')
         .then((res) => {
+          console.log(res.data.data);
           dispatch(getCategoryList(res.data.data));
         })
         .catch((error) => {

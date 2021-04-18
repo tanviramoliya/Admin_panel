@@ -56,7 +56,7 @@ class AdminUser extends Component {
 
   componentDidMount = async () => {
     const { perData } = this.state;
-    if(perData.key === 'Administrator' && perData.value === "N/A"){      
+    if(perData.key === 'Admin Users' && perData.value === "N/A"){      
       this.setState({permission:false});
       return false;
     }
@@ -107,7 +107,7 @@ class AdminUser extends Component {
 
   deleteAdminUserClicked = async (token) => {
     const { perData } = this.state;
-    if(perData.key === 'Administrator' && perData.value === "RW"){ 
+    if(perData.key === 'Admin Users' && perData.value === "RW"){ 
     if (token) {
       this.setState({ deleteAdminUserToken: token });
     }
@@ -152,7 +152,7 @@ class AdminUser extends Component {
   // for open a modal
   setModel = (type, data) => {
     const { perData } = this.state;
-    if(perData.key === 'Administrator' && perData.value === "RW"){ 
+    if(perData.key === 'Admin Users' && perData.value === "RW"){ 
     
     this.setState({ openModal: true, type: type });
     if (type === "edit") {

@@ -67,11 +67,11 @@ class AclRole extends Component {
     permission: [
       { key: "Dashboard", value: "N/A" },
       { key: "News", value: "N/A" },
-      { key: "News_headline", value: "N/A" },
+      { key: "News Updates", value: "N/A" },
       { key: "Comments", value: "N/A" },
-      { key: "Administrator", value: "N/A" },
+      { key: "Admin Users", value: "N/A" },
       { key: "Role", value: "N/A" },
-      { key: "Subscription", value: "N/A" },
+      { key: "Subscriber", value: "N/A" },
       { key: "Inquiry", value: "N/A" },
       { key: "Master", value: "N/A" },
       { key: "Settings", value: "N/A" }
@@ -171,11 +171,11 @@ class AclRole extends Component {
       permission: [
         { key: "Dashboard", value: "N/A" },
         { key: "News", value: "N/A" },
-        { key: "News_headline", value: "N/A" },
+        { key: "News Updates", value: "N/A" },
         { key: "Comments", value: "N/A" },
-        { key: "Administrator", value: "N/A" },
+        { key: "Admin Users", value: "N/A" },
         { key: "Role", value: "N/A" },
-        { key: "Subscription", value: "N/A" },
+        { key: "Subscriber", value: "N/A" },
         { key: "Inquiry", value: "N/A" },
         { key: "Master", value: "N/A" },
         { key: "Settings", value: "N/A" }
@@ -244,6 +244,7 @@ class AclRole extends Component {
           if (updateAclRole.status === status.success) {
             if (updateAclRole.data.code === status.success) {
               toastr.success(updateAclRole.data.message);
+              localStorage.setItem("permission",JSON.stringify(permission));
               this.getAclRoleList();
               this.setState({
                 openModal: false,

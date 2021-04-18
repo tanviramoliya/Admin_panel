@@ -14,9 +14,7 @@ import AuthGuard from "./auth/AuthGuard";
 import ReduxToastr from 'react-redux-toastr';
 
 
-// const routes = GetRoutes(); 
 const App = () => {
-  // console.log(GetRoutes());
   return (
     <AppContext.Provider value={{ routes }}>
       <Provider store={Store}>

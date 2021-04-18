@@ -21,8 +21,7 @@ export const loginApi = (loginData) => {
     console.log(loginData);
     await api("userUtility/authenticate", loginData, "post").then((res) => {
       console.log(res);
-      if (res.data.code === status.success) {
-        
+      if (res.data.code === status.success) {        
         Cookies.set("JSESSIONID", res.data.data.JSESSIONID);
         Cookies.set("GNTV-SESSIONID", res.data.data.JSESSIONID);
         localStorage.setItem("permission",JSON.stringify(res.data.data.permission));

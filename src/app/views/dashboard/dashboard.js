@@ -128,12 +128,6 @@ class Dashboard1 extends Component {
   render() {
     let { theme } = this.props;
     const { adminCardData, newsTypeForNews,newsByNewsTypeCardData,articleCountForNewsType,videoCountForNewsType, subscriberFilterBy, subscriberCardData, inquiryCardData, masterFilterBy, masterCardData, newsHeadlineCardData, permission } = this.state;
-
-
-    if (!Cookies.get("GNTV-SESSIONID")) {
-      return <Redirect to="/login" />;
-    }
-    else {
       if (!permission) {
         return (
           <AccessDeniedPage />
@@ -457,9 +451,7 @@ class Dashboard1 extends Component {
             </Grid>
           </Fragment>
         );
-      }
-    }
-
+      }    
   }
 }
 
