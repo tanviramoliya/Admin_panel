@@ -3,7 +3,6 @@ import {
   videoNewsListApi,
   deleteVideoNewsApi,
   addVideoNewsApi,
-  updateVideoNewsApi,
 } from "../../../../redux/actions/index";
 import { status } from "../../../../utility/config";
 import { toastr } from "react-redux-toastr";
@@ -11,24 +10,13 @@ import { Breadcrumb } from "../../../../components/matx/Breadcrumb";
 import {
   Card, Button, Table,
   TableHead, TableRow, TableCell, TableBody, IconButton,
-  Icon, TablePagination, Badge, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Grid, InputAdornment, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl, Chip, Avatar, Tooltip, Slide, Toolbar, AppBar, Typography, TextField, TableSortLabel
+  Icon, TablePagination, TableContainer,  InputAdornment,TextField, TableSortLabel
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
-import { PhoneIphone, Email, Person, GroupAdd, Search } from '@material-ui/icons';
-import CloseIcon from '@material-ui/icons/Close';
-import history from "../../../../history";
+import { Search } from '@material-ui/icons';
 import "./style.css";
-import { Theme, makeStyles, withStyles, createStyles } from '@material-ui/core/styles';
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
-
-const StyledBadge = withStyles((theme) => ({
-  badge: {
-    backgroundColor: '#44b700',
-    color: '#44b700',
-  }
-}))(Badge);
 
 class videoNews extends Component {
   state = {
@@ -215,11 +203,7 @@ class videoNews extends Component {
       sortingOrder,
       keyword, count,
       sortingField, videoNewsList,
-      videoNewsId, videoLink, title, description, publishedBy, city, state, country, createdTime, updatedTime, publishedTime, publish, critical, tags,
-      type,
-      openModal,
       permission
-
     } = this.state;
     if (!permission) {
       return (

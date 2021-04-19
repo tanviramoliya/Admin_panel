@@ -63,13 +63,11 @@ class aboutUs extends Component {
     infoEdit: false,
     fileEdit: false,
     permission: true,
-    perData: JSON.parse(localStorage.getItem("permission"))[9]
-
-
+    perData: JSON.parse(localStorage.getItem("permission"))[9],
   };
   componentDidMount = async () => {
     const { perData } = this.state;
-    if (perData.key === 'Settings' && perData.value === "N/A") {
+    if (perData.key === "Settings" && perData.value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -97,7 +95,7 @@ class aboutUs extends Component {
         token: a.token,
         fileToken: a.fileToken,
       });
-      //console.log(a.socialMediaName, a.socialMediaLink);
+      return false;
     });
   };
   handleSubmit = async () => {
@@ -108,10 +106,10 @@ class aboutUs extends Component {
       this.validator.fieldValid("objective") &&
       this.validator.fieldValid("heading") &&
       this.validator.fieldValid("abstraction")
-      // this.validator.fieldValid("selectedFile") 
+      // this.validator.fieldValid("selectedFile")
     ) {
       if (this.state.fileToken === "") {
-        toastr.error("Plaese Upload File!")
+        toastr.error("Plaese Upload File!");
         return false;
       }
       const {
@@ -140,7 +138,7 @@ class aboutUs extends Component {
         if (updateAboutUs.status === status.success) {
           if (updateAboutUs.data.code === status.success) {
             toastr.success(updateAboutUs.data.message);
-            this.setState({ infoEdit: false })
+            this.setState({ infoEdit: false });
             this.getAboutUsList();
           } else {
             toastr.warning(updateAboutUs.data.message);
@@ -166,21 +164,19 @@ class aboutUs extends Component {
   };
   changeInfo = () => {
     const { perData } = this.state;
-    if (perData.key === 'Settings' && perData.value === "RW") {
-
+    if (perData.key === "Settings" && perData.value === "RW") {
       this.setState({ infoEdit: true });
-      this.setState({ edit: true })
+      this.setState({ edit: true });
     } else {
-      toastr.error("Access Denied!")
+      toastr.error("Access Denied!");
     }
-
   };
   changeFile = () => {
     const { perData } = this.state;
-    if (perData.key === 'Settings' && perData.value === "RW") {
+    if (perData.key === "Settings" && perData.value === "RW") {
       this.setState({ fileEdit: true });
     } else {
-      toastr.error("Access Denied!")
+      toastr.error("Access Denied!");
     }
   };
   reset = async () => {
@@ -194,8 +190,6 @@ class aboutUs extends Component {
     this.validator.hideMessageFor("abstraction");
 
     await this.getAboutUsList();
-
-
   };
   fileCancle = async () => {
     this.setState({ fileEdit: false });
@@ -264,15 +258,11 @@ class aboutUs extends Component {
       fileInfos,
       fileEdit,
       infoEdit,
-      permission
+      permission,
     } = this.state;
     if (!permission) {
-      return (
-        <AccessDeniedPage />
-      )
-    }
-    else {
-
+      return <AccessDeniedPage />;
+    } else {
       return (
         <>
           <div className="m-sm-30">
@@ -295,11 +285,16 @@ class aboutUs extends Component {
                       className="mr-4"
                       onClick={this.changeInfo}
                       startIcon={<Icon>edit</Icon>}
-                    >Edit Info
-                  </Button>
-                    <Button variant="contained" onClick={this.changeFile} startIcon={<Icon>attachment</Icon>}>
+                    >
+                      Edit Info
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={this.changeFile}
+                      startIcon={<Icon>attachment</Icon>}
+                    >
                       Upload File
-                  </Button>
+                    </Button>
                   </div>
                 </div>
               </Card>
@@ -312,7 +307,6 @@ class aboutUs extends Component {
                       <BorderLinearProgress
                         variant="determinate"
                         value={progress}
-
                       />
                     </Box>
                     <Box minWidth={20}>
@@ -332,7 +326,9 @@ class aboutUs extends Component {
                           type="file"
                           disabled={!fileEdit}
                           onChange={(e) => this.onFileChange(e)}
-                          onBlur={() => this.validator.showMessageFor("selectedFile")}
+                          onBlur={() =>
+                            this.validator.showMessageFor("selectedFile")
+                          }
                           error={this.validator.message(
                             "selectedFile",
                             this.state.selectedFile,
@@ -362,63 +358,68 @@ class aboutUs extends Component {
                         component="span"
                         disabled={!selectedFile}
                         onClick={this.upload}
-
                         startIcon={<Icon>backup</Icon>}
                       >
                         Upload
                       </Button>
                     </Grid>
-                    {fileEdit ?
+                    {fileEdit ? (
                       <Grid item>
-
                         <Button
                           className="btn-upload"
                           color="secondary"
                           variant="contained"
                           component="span"
-
                           onClick={this.fileCancle}
                           startIcon={<Icon>highlight_off</Icon>}
                         >
                           Cancle
-                      </Button>
-
+                        </Button>
                       </Grid>
-                      : null}
-
+                    ) : null}
                   </Grid>
                 </Grid>
                 <Grid item lg={6} md={6} sm={12} xs={12}>
                   <Grid item>
                     <div className="pt-4">
-                      {isError ?
+                      {isError ? (
                         <Typography
                           variant="subtitle2"
                           className={`upload-message ${isError ? "error" : ""}`}
                         >
                           {message}
                         </Typography>
-                        : null
-                      }
-                      {selectedFile
-                        ?
+                      ) : null}
+                      {selectedFile ? (
                         <Chip
-
                           label={selectedFile.name}
-                          onDelete={() => { this.setState({ selectedFile: "", fileToken: "", progress: 0 }) }}
+                          onDelete={() => {
+                            this.setState({
+                              selectedFile: "",
+                              fileToken: "",
+                              progress: 0,
+                            });
+                          }}
                           color="primary"
                           variant="outlined"
                           disabled={!fileEdit}
                         />
-                        : fileInfos ? <Chip
+                      ) : fileInfos ? (
+                        <Chip
                           label={fileInfos.fileName}
-                          onDelete={() => { this.setState({ fileInfos: "", fileToken: "", progress: 0 }) }}
+                          onDelete={() => {
+                            this.setState({
+                              fileInfos: "",
+                              fileToken: "",
+                              progress: 0,
+                            });
+                          }}
                           color="primary"
                           variant="outlined"
                           disabled={!fileEdit}
-                        /> : null}
+                        />
+                      ) : null}
                     </div>
-
                   </Grid>
                 </Grid>
               </Grid>
@@ -488,7 +489,6 @@ class aboutUs extends Component {
                       onChange={this.handleChange}
                       type="textarea"
                       disabled={!infoEdit}
-
                       name="vision"
                       value={vision}
                       error={this.validator.message(
@@ -503,12 +503,9 @@ class aboutUs extends Component {
                       )}
                       onBlur={() => this.validator.showMessageFor("vision")}
                     />
-
                   </Grid>
 
                   <Grid item lg={6} md={6} sm={12} xs={12}>
-
-
                     <TextField
                       id="outlined-basic"
                       variant="outlined"
@@ -519,7 +516,6 @@ class aboutUs extends Component {
                       name="abstraction"
                       value={abstraction}
                       disabled={!infoEdit}
-
                       error={this.validator.message(
                         "abstraction",
                         this.state.abstraction,
@@ -530,7 +526,9 @@ class aboutUs extends Component {
                         this.state.abstraction,
                         "required"
                       )}
-                      onBlur={() => this.validator.showMessageFor("abstraction")}
+                      onBlur={() =>
+                        this.validator.showMessageFor("abstraction")
+                      }
                     />
                     <TextField
                       id="outlined-basic"
@@ -544,7 +542,6 @@ class aboutUs extends Component {
                       name="mission"
                       value={mission}
                       disabled={!infoEdit}
-
                       error={this.validator.message(
                         "mission",
                         this.state.mission,
@@ -568,7 +565,6 @@ class aboutUs extends Component {
                       type="textarea"
                       name="objective"
                       disabled={!infoEdit}
-
                       value={objective}
                       error={this.validator.message(
                         "objective",
@@ -582,25 +578,32 @@ class aboutUs extends Component {
                       )}
                       onBlur={() => this.validator.showMessageFor("objective")}
                     />
-
                   </Grid>
-
                 </Grid>
-                {infoEdit ?
+                {infoEdit ? (
                   <>
-                    <Button color="primary" variant="contained" type="submit" startIcon={<Icon>edit</Icon>}>
-                      Update
-                  </Button>
                     <Button
-                      color="secondary" variant="contained" type="reset"
-                      className="ml-4" startIcon={<Icon>highlight_off</Icon>}
-                    >Cancle
-                  </Button>
+                      color="primary"
+                      variant="contained"
+                      type="submit"
+                      startIcon={<Icon>edit</Icon>}
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      type="reset"
+                      className="ml-4"
+                      startIcon={<Icon>highlight_off</Icon>}
+                    >
+                      Cancle
+                    </Button>
                   </>
-                  : null}
+                ) : null}
               </ValidatorForm>
             </Card>
-          </div >
+          </div>
         </>
       );
     }

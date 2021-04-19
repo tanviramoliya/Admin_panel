@@ -15,9 +15,9 @@ import {
   Icon, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TableContainer, Switch, TableSortLabel, TextField, InputAdornment
 } from "@material-ui/core";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import { ValidatorForm} from "react-material-ui-form-validator";
 import { connect } from "react-redux";
-import { Search, Clear } from "@material-ui/icons";
+import { Search } from "@material-ui/icons";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../sessions/accessdeniedPage";
 

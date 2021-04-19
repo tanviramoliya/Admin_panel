@@ -38,7 +38,7 @@ import {
   TableSortLabel,
   FormHelperText,
 } from "@material-ui/core";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import { ValidatorForm } from "react-material-ui-form-validator";
 
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from "../../../../utility/config";

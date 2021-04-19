@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import { ValidatorForm } from "react-material-ui-form-validator";
 import { Button, Icon, Grid, InputAdornment, Card, TextField } from "@material-ui/core";
 import { Breadcrumb } from "../../../../components/matx/index";
 
@@ -52,7 +52,7 @@ class socialMedia extends Component {
     this.setState({ socialMediaList: this.props.socialMediaList });
     this.state.socialMediaList.map((s) => {
       this.setState({ [s.socialMediaName]: s.socialMediaLink });
-      console.log(s.socialMediaName, s.socialMediaLink);
+      return false;
     });
   };
   handleSubmit = async () => {

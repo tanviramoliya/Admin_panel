@@ -14,11 +14,9 @@ import {
   TablePagination,
   TableContainer,
   Checkbox,
-  Typography,
   Tooltip,
   IconButton,
   Chip,
-  Toolbar,
   Icon,
   DialogActions,
   Button,
@@ -35,11 +33,8 @@ import ReplyIcon from "@material-ui/icons/Reply";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { connect } from "react-redux";
-import { green } from "@material-ui/core/colors";
-import { GroupAdd, TextFormat, Search, Person, Email, DateRange, Phone, Subject, Message } from "@material-ui/icons";
-import RichTextEditor from "components/matx/RichTextEditor";
+import { Search, Person, Email, DateRange, Phone, Subject, Message } from "@material-ui/icons";
 import { ValidatorForm } from "react-material-ui-form-validator";
-import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
 import "./style.css";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../sessions/accessdeniedPage";

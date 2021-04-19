@@ -15,7 +15,6 @@ import { PropTypes } from "prop-types";
 import { MatxMenu } from "../../../components/matx/index";
 import { isMdScreen } from "utils";
 import { Link } from "react-router-dom";
-import { deepOrange, deepPurple } from '@material-ui/core/colors';
 
 const styles = (theme) => ({
   root: {

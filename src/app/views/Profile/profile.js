@@ -13,8 +13,6 @@ import {
   PhoneIphone,
   Email,
   Person,
-  GroupAdd,
-  Search,
 } from "@material-ui/icons";
 
 import {

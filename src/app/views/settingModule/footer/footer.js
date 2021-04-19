@@ -5,10 +5,6 @@ import {
   Icon,
   Grid,
   TextField,
-  Box,
-  withStyles,
-  LinearProgress,
-  Typography,
   InputAdornment,
   Card,
 } from "@material-ui/core";
@@ -21,7 +17,6 @@ import {
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
 import { status } from "../../../../utility/config";
-import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
 import { PhoneIphone, Email } from "@material-ui/icons";
 import SimpleReactValidator from "simple-react-validator";
 import "../style.css"
@@ -69,6 +64,7 @@ class footer extends Component {
         optionalContact: a.optionalContact,
         token: a.token,
       });
+      return false;
     });
   };
   handleSubmit = async () => {
@@ -145,7 +141,6 @@ class footer extends Component {
       contactNumber,
       email,
       optionalContact,
-      footerList: [],
       footerEdit,
       permission
 

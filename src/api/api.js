@@ -1,8 +1,4 @@
-// import { store } from '../redux/store/store';
 import Cookies from "js-cookie";
-import history from "../history";
-// import { setLoginFlag, setLoginUser } from '../redux/action/auth/loginAction';
-// import { getToken } from './getToken';
 import { mainUrl, status } from "../utility/config";
 
 const axios = require("axios");
@@ -140,28 +136,7 @@ export const api = async (endpoint, data, type) => {
           res = err.response;
         });
       break;
-    case "postwithToken":
-      await axios({
-        method: "post",
-        data: data,
-        headers: {
-          "Content-Type": "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
-          "JSESSIONID": Cookies.get("JSESSIONID"),
-          // 'x-auth': token,
-        },
-        // url: authUrl + endpoint,
-        url: endpoint,
-      })
-        .then(function (response) {
-          res = response;
-        })
-        .catch((err) => {
-          res = err.response;
-        });
-      break;
-
-    case "postWithUrlEncoded":
+      case "postWithUrlEncoded":
       await axios({
         method: "post",
         data: data,

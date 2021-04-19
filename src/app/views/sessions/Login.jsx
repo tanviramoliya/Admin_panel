@@ -5,14 +5,9 @@ import {
   FormControlLabel,
   Grid,
   Button,
-  withStyles,
-  CircularProgress,
 } from "@material-ui/core";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
-import { PropTypes } from "prop-types";
-import { withRouter } from "react-router-dom";
-
 import { loginApi } from "../../../redux/actions/LoginActions";
 
 const styles = (theme) => ({
@@ -75,7 +70,6 @@ class LogIn extends Component {
   }
   render() {
     let { email, password ,remember} = this.state;
-    let { classes } = this.props;
     return (
       <div className="signup flex flex-center w-100 h-100vh" >
         

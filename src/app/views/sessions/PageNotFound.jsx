@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { Button } from "@material-ui/core";
-import history from "../../../history";
-
 class PageNotFound extends Component {
   state = {};
   render() {

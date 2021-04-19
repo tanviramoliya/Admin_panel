@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { setUserData } from "../../redux/actions/UserActions";
-import jwtAuthService from "../services/jwtAuthService";
 import localStorageService from "../services/localStorageService";
 import history from "../../history";
 import Cookies from "js-cookie";

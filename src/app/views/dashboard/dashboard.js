@@ -1,9 +1,7 @@
 import React, { Component, Fragment } from "react";
-import { Grid, Card, Icon, IconButton, Tooltip, Fab, Chip, FormControl, Select, MenuItem, FormHelperText, InputLabel, Typography } from "@material-ui/core";
+import { Grid, Card, Icon, IconButton, Tooltip, Chip, FormControl, Select, MenuItem} from "@material-ui/core";
 
 import { withStyles } from "@material-ui/styles";
-import { Redirect } from "react-router";
-import Cookies from "js-cookie";
 import {
   getAdminCountApi, getSubscriberCountApi, getInquiryCountApi, getMasterCountApi, getNewsHeadlineCountApi, getNewsByNewsTypeCountApi
 

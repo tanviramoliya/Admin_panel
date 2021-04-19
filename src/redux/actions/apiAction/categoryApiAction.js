@@ -1,12 +1,12 @@
 import {
-    getCategoryList,getCategoryNameList
+    getCategoryNameList
   } from "../index";
   import { api } from '../../../api/api';
 
   export const categoryListApi = async (data) => {
-    const deleteCategory = await api('category/search', data, 'post');
-    if (deleteCategory) {
-      return deleteCategory.data.data;
+    const categoryData = await api('category/search', data, 'post');
+    if (categoryData) {
+      return categoryData.data.data;
     }
   };
   

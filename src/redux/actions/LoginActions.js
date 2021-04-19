@@ -1,13 +1,4 @@
-// import jwtAuthService from "../../app/services/jwtAuthService";
-// import { setUserData } from "./UserActions";
-// import history from "history.js";
-
-// export const LOGIN_ERROR = "LOGIN_ERROR";
-// export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
-// export const LOGIN_LOADING = "LOGIN_LOADING";
-// export const RESET_PASSWORD = "RESET_PASSWORD";
-
-import { setLoginFlag, setLoginUser, changeRole } from "./auth/loginAction";
+import { setLoginFlag} from "./auth/loginAction";
 // import { setLoader } from "../loaderAction/loaderAction";
 import { api } from "../../api/api";
 import { toastr } from "react-redux-toastr";

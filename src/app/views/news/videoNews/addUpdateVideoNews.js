@@ -7,7 +7,6 @@ import {
   Grid,
   TextField,
   FormControlLabel,
-  Checkbox,
   Icon,
   Button,
   Switch,
@@ -15,22 +14,14 @@ import {
   MenuItem,
   Select,
   FormControl,
-  Input,
-  Chip,
-  InputLabel,Badge, InputAdornment
+  InputLabel, InputAdornment
 } from "@material-ui/core";
-import TextValidator from "react-material-ui-form-validator/lib/TextValidator";
 import RichTextEditor from "components/matx/RichTextEditor";
 import { connect } from "react-redux";
 import { status } from "../../../../utility/config";
 import { toastr } from "react-redux-toastr";
-import history from "../../../../history";
 import SimpleReactValidator from "simple-react-validator";
-import PublishIcon from '@material-ui/icons/Face';
-import DoneIcon from '@material-ui/icons/Done';
 import {
-  videoNewsListApi,
-  deleteVideoNewsApi,
   addVideoNewsApi,
   updateVideoNewsApi,
   getSingleVideoNewsApi,
@@ -44,16 +35,7 @@ import {
 } from "../../../../redux/actions/index";
 import "./style.css"
 
-import { Theme, makeStyles, withStyles, createStyles } from '@material-ui/core/styles';
-import { AccountCircle, YouTube, Business } from "@material-ui/icons";
-
- const StyledBadge = withStyles((theme) => ({
-  badge: {
-    backgroundColor: '#44b700',
-    color: '#44b700',
-    
-  }
-}))(Badge);
+import { YouTube, Business } from "@material-ui/icons";
 
 class addUpdateVideoNews extends Component {
   constructor(props) {

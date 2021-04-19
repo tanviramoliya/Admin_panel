@@ -1,30 +1,18 @@
 import React, { Component } from "react";
 import { Breadcrumb } from "components/matx/Breadcrumb";
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import { YouTube, AccountCircle, DateRange, Business } from '@material-ui/icons';
+import { AccountCircle, DateRange, Business } from '@material-ui/icons';
 import {
     Grid,
     TextField,
     FormControlLabel,
-    Checkbox,
     Icon,
     Button,
     Switch,
-    FormHelperText,
-    MenuItem,
-    Select,
     FormControl,
-    Input,
     Chip,
-    InputLabel,
-    Typography,
-    Box,
+
     Badge,
-    Tooltip,
-    ButtonGroup, InputAdornment, Modal, Backdrop, Fade, Paper
+    InputAdornment, Modal, Backdrop
 } from "@material-ui/core";
 import RichTextEditor from "components/matx/RichTextEditor";
 import "@pathofdev/react-tag-input/build/index.css";

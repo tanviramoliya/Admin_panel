@@ -3,8 +3,6 @@ import {
   Card,
   Grid,
   Button,
-  withStyles,
-  CircularProgress,
   InputAdornment,
   IconButton,
 } from "@material-ui/core";

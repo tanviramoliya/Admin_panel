@@ -4,7 +4,6 @@ import {
   CardActions,
   CardContent,
   Checkbox,
-  createMuiTheme,
   Dialog,
   DialogActions,
   DialogContent,
@@ -24,12 +23,11 @@ import {
   Box,
   TextField
 } from "@material-ui/core";
-import { red } from "@material-ui/core/colors";
 import Paper from "@material-ui/core/Paper";
-import { GroupAdd, Warning } from "@material-ui/icons";
+import { Warning } from "@material-ui/icons";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import React, { Component } from "react";
-import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
+import { ValidatorForm } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
 import { Breadcrumb } from "../../../components/matx/Breadcrumb";
@@ -42,12 +40,6 @@ import {
 import { status } from "../../../utility/config";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../sessions/accessdeniedPage";
-
-const theme = createMuiTheme({
-  palette: {
-    secondary: red,
-  },
-});
 
 class AclRole extends Component {
   constructor(props) {
@@ -297,6 +289,7 @@ class AclRole extends Component {
         permission[index] = permissions;
         this.setState({ permission });
       }
+      return false;
     });
   };
 
