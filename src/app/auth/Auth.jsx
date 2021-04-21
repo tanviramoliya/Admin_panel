@@ -24,7 +24,7 @@ console.log(' again auth....');
   checkJwtAuth = () => {
     console.log(history.location.pathname);
 
-    if (!Cookies.get("GNTV-SESSIONID") && Cookies.get("GNTV-SESSIONID") !== Cookies.get("JSESSIONID")) {
+    if (!Cookies.get("GNTV-SESSIONID") || Cookies.get("GNTV-SESSIONID") !== Cookies.get("JSESSIONID")) {
       history.push('/login')
     }
     else{

@@ -18,7 +18,7 @@ import AboutUsReducer from "./settingModule/aboutUs/aboutUsReducer";
 import InquiryReducer from "./inquiry/inquiryReducer";
 import footerReducer from "./settingModule/footer/footerReducer";
 import profileReducer from "./profile/profileReducer";
-
+import LoaderReducer from "./loader/loaderReducer";
 
 const RootReducer = combineReducers({
   toastr: toastrReducer,
@@ -39,7 +39,8 @@ const RootReducer = combineReducers({
   inquiry : InquiryReducer,
   aclRole : AclRoleReducer,
   footer : footerReducer,
-  profile : profileReducer
+  profile : profileReducer,
+  loaders: LoaderReducer,
 });
 
 export default RootReducer;
