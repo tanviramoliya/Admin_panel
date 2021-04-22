@@ -20,6 +20,7 @@ import { toastr } from "react-redux-toastr";
 import { status } from "../../../../utility/config";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 
 class socialMedia extends Component {
   constructor(props) {
@@ -93,6 +94,7 @@ class socialMedia extends Component {
           socialMediaLink: linkedin,
         },
       ];
+      this.props.setLoader(true);
       const updateSocialMedia = await updateSocialMediaApi(data);
       if (updateSocialMedia) {
         if (updateSocialMedia.status === status.success) {
@@ -107,6 +109,7 @@ class socialMedia extends Component {
           toastr.error(updateSocialMedia.data.message);
         }
       }
+      this.props.setLoader(false);
     }
     else {
       this.validator.showMessages();
@@ -401,6 +404,7 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
+  setLoader,
   socialMediaListApi,
   updateSocialMediaApi,
 })(socialMedia);

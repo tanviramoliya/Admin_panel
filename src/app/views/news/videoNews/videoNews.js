@@ -17,6 +17,8 @@ import { connect } from "react-redux";
 import { Search } from '@material-ui/icons';
 import "./style.css";
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
+
 
 class videoNews extends Component {
   state = {
@@ -117,7 +119,7 @@ class videoNews extends Component {
       deleteModal: !this.state.deleteModal,
       deleteVideoNewsId: null,
     });
-    // this.props.setLoader(true);
+    this.props.setLoader(true);
     const deleteVideoNews = await deleteVideoNewsApi(
       this.state.deleteVideoNewsId
     );
@@ -132,7 +134,7 @@ class videoNews extends Component {
     } else {
       toastr.error(deleteVideoNews.data.message);
     }
-    // this.props.setLoader(false);
+    this.props.setLoader(false);
   };
 
   noDeleteClicked = () => {
@@ -440,6 +442,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { videoNewsListApi, addVideoNewsApi })(
+export default connect(mapStateToProps, { setLoader,videoNewsListApi, addVideoNewsApi })(
   videoNews
 );

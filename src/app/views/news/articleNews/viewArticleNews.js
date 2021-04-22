@@ -17,11 +17,13 @@ import {
 import RichTextEditor from "components/matx/RichTextEditor";
 import "@pathofdev/react-tag-input/build/index.css";
 import ReactTagInput from "@pathofdev/react-tag-input";
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 import {
 
     getSingleArticleNewsApi
 } from "../../../../redux/actions/index";
 import './style.css';
+import { connect } from "react-redux";
 
 
 class viewArticleNews extends Component {
@@ -57,11 +59,11 @@ class viewArticleNews extends Component {
         await this.getArticleNewsData();
     }
     getArticleNewsData = async () => {
+        this.props.setLoader(true);
         const { articleNewsId } = this.state;
         const articleNewsData = await getSingleArticleNewsApi(articleNewsId);
         if (articleNewsData) {
             const data = articleNewsData.data.data;
-            console.log("DATA", data);
             var file = new File([data.file], data.fileName)
             this.setState({
                 articleNewsId: data.articleNewsId,
@@ -84,6 +86,7 @@ class viewArticleNews extends Component {
                 tags: data.tags,
                 content: data.content
             })
+            this.props.setLoader(false);
 
         }
     }
@@ -425,4 +428,10 @@ class viewArticleNews extends Component {
     }
 
 }
-export default viewArticleNews;
+const mapStateToProps = (state) => {
+    return {};
+  };
+  
+  export default connect(mapStateToProps, {setLoader})(
+    viewArticleNews
+  );

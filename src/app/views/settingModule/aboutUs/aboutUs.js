@@ -25,6 +25,8 @@ import UploadService from "./uploadService";
 import SimpleReactValidator from "simple-react-validator";
 import "../style.css";
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
+
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -132,7 +134,7 @@ class aboutUs extends Component {
         token: token,
         fileToken: fileToken,
       };
-      // this.props.setLoader(false);
+      this.props.setLoader(true);
       const updateAboutUs = await updateAboutUsApi(data);
       if (updateAboutUs) {
         if (updateAboutUs.status === status.success) {
@@ -147,7 +149,7 @@ class aboutUs extends Component {
           toastr.error(updateAboutUs.data.message);
         }
       }
-      // this.props.setLoader(false);
+      this.props.setLoader(false);
     } else {
       this.validator.showMessages();
     }
@@ -209,8 +211,8 @@ class aboutUs extends Component {
       progress: 0,
       currentFile: currentFile,
     });
-
     UploadService.upload(currentFile, (event) => {
+      this.props.setLoader(true);
       this.setState({
         progress: Math.round((100 * event.loaded) / event.total),
       });
@@ -228,6 +230,7 @@ class aboutUs extends Component {
         this.setState({
           fileInfos: response.data.data,
         });
+        this.props.setLoader(false);
       })
       .catch(() => {
         this.setState({
@@ -236,6 +239,7 @@ class aboutUs extends Component {
           currentFile: undefined,
           isError: true,
         });
+        this.props.setLoader(false);
       });
 
     this.setState({
@@ -616,6 +620,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { aboutUsListApi, updateAboutUsApi })(
+export default connect(mapStateToProps, {setLoader, aboutUsListApi, updateAboutUsApi })(
   aboutUs
 );

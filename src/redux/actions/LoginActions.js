@@ -64,6 +64,7 @@ export const resetPasswordApi = async (data) => {
 
 export const logoutApi = () => {
   return async (dispatch, store) => {
+    dispatch(setLoader(true));
     await api("userUtility/logout", {}, "get").then((res) => {
       Cookies.remove("GNTV-SESSIONID");
       localStorage.removeItem("permission");
@@ -71,6 +72,7 @@ export const logoutApi = () => {
       dispatch(setLoginFlag(false));
       history.push("/login");
       toastr.success(res.data.message);
+      dispatch(setLoader(false));
     });
   };
 };

@@ -20,7 +20,8 @@ import {
     getSingleVideoNewsApi
 } from "../../../../redux/actions/index";
 import './style.css';
-
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
+import { connect } from "react-redux";
 
 class viewVideoNews extends Component {
     state = {
@@ -52,11 +53,11 @@ class viewVideoNews extends Component {
         await this.getVideoNewsData();
     }
     getVideoNewsData = async () => {
+        this.props.setLoader(true);
         const { videoNewsId } = this.state;
         const videoNewsData = await getSingleVideoNewsApi(videoNewsId);
         if (videoNewsData) {
             const data = videoNewsData.data.data;
-            console.log("DATA", data);
             this.setState({
                 videoNewsId: data.videoNewsId,
                 videoLink: data.videoLink,
@@ -77,7 +78,7 @@ class viewVideoNews extends Component {
                 tags: data.tags,
                 content: data.content
             })
-
+            this.props.setLoader(false);
         }
     }
 
@@ -389,4 +390,10 @@ class viewVideoNews extends Component {
     }
 
 }
-export default viewVideoNews;
+const mapStateToProps = (state) => {
+   return {};
+  };
+  
+  export default connect(mapStateToProps, {setLoader})(
+    viewVideoNews
+  );

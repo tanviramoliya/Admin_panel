@@ -40,6 +40,7 @@ import {
 import { status } from "../../../utility/config";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../sessions/accessdeniedPage";
+import { setLoader } from "../../../redux/actions/loaderAction/loaderAction";
 
 class AclRole extends Component {
   constructor(props) {
@@ -115,7 +116,7 @@ class AclRole extends Component {
       deleteModal: !this.state.deleteModal,
       deleteAclRoleToken: null,
     });
-    // this.props.setLoader(true);
+    this.props.setLoader(true);
     const deleteAclRole = await deleteAclRoleApi(this.state.deleteAclRoleToken);
     if (deleteAclRole && deleteAclRole.data.code === status.success) {
       await this.getAclRoleList();
@@ -125,7 +126,7 @@ class AclRole extends Component {
     } else {
       toastr.error(deleteAclRole.data.message);
     }
-    // this.props.setLoader(false);
+    this.props.setLoader(false);
   };
 
   noDeleteClicked = () => {
@@ -188,6 +189,7 @@ class AclRole extends Component {
           roleType: roleType,
           permission: permission,
         };
+        this.props.setLoader(true);
         const createAclRole = await addAclRoleApi(data);
         if (createAclRole) {
           if (createAclRole.status === status.success) {
@@ -211,7 +213,7 @@ class AclRole extends Component {
             toastr.error(createAclRole.data.message);
           }
         }
-        // this.props.setLoader(false);
+        this.props.setLoader(false);
       }
       else {
         this.validator.showMessages();
@@ -231,6 +233,7 @@ class AclRole extends Component {
           roleType: roleType,
           permission: permission,
         };
+        this.props.setLoader(true);
         const updateAclRole = await updateAclRoleApi(data);
         if (updateAclRole) {
           if (updateAclRole.status === status.success) {
@@ -254,7 +257,7 @@ class AclRole extends Component {
             toastr.error(updateAclRole.data.message);
           }
         }
-        // this.props.setLoader(false);
+        this.props.setLoader(false);
       }
       else {
         this.validator.showMessages();
@@ -301,11 +304,7 @@ class AclRole extends Component {
       )
     }
     else {
-
-
       return (
-
-
         <div className="m-sm-30">
           <div className="mb-sm-30">
             <Breadcrumb routeSegments={[{ name: "User Role", path: "/" }]} />
@@ -549,6 +548,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { aclRoleListApi, addAclRoleApi })(
+export default connect(mapStateToProps, { setLoader, aclRoleListApi, addAclRoleApi })(
   AclRole
 );

@@ -38,7 +38,7 @@ import { ValidatorForm } from "react-material-ui-form-validator";
 import "./style.css";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../sessions/accessdeniedPage";
-
+import { setLoader } from "../../../redux/actions/loaderAction/loaderAction";
 
 class inquiry extends Component {
   constructor(props) {
@@ -142,7 +142,7 @@ class inquiry extends Component {
       deleteInquiryToken: null,
       selected: [],
     });
-    // this.props.setLoader(true);
+    this.props.setLoader(true);
     const deleteInquiry = await deleteInquiryApi(this.state.deleteInquiryToken);
     if (deleteInquiry && deleteInquiry.data.code === status.success) {
       await this.getInquiryList();
@@ -152,7 +152,7 @@ class inquiry extends Component {
     } else {
       toastr.error(deleteInquiry.data.message);
     }
-    // this.props.setLoader(false);
+    this.props.setLoader(false);
   };
 
   noDeleteClicked = () => {
@@ -232,6 +232,7 @@ class inquiry extends Component {
         subject: replySubject,
         inquiryToken: token
       };
+      this.props.setLoader(true);
       const submitReply = await submitReplyApi(data);
       if (submitReply) {
         if (submitReply.status === status.success) {
@@ -260,9 +261,7 @@ class inquiry extends Component {
         } else {
           toastr.error(submitReply.data.message);
         }
-
-        // this.props.setLoader(false);
-
+        this.props.setLoader(false);
       }
     }
     else {
@@ -272,7 +271,7 @@ class inquiry extends Component {
   handleReadToSend = () => {
     const { perData, read } = this.state;
     if (read) {
-      if(perData.key === 'Inquiry' && perData.value === "RO") {
+      if(perData.key === 'Inquiry' && (perData.value === "RO" || perData.value === "RW")) {
       this.setState({ openReplyModal: true, openReadModal: false })
       }
       else {
@@ -911,4 +910,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { inquiryListApi })(inquiry);
+export default connect(mapStateToProps, { setLoader, inquiryListApi })(inquiry);

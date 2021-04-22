@@ -19,8 +19,7 @@ import { connect } from "react-redux";
 import { PhoneIphone, Email, Person, Search } from '@material-ui/icons';
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../sessions/accessdeniedPage";
-
-
+import { setLoader } from "../../../redux/actions/loaderAction/loaderAction";
 
 class AdminUser extends Component {
   constructor(props) {
@@ -125,7 +124,7 @@ class AdminUser extends Component {
       deleteModal: !this.state.deleteModal,
       deleteAdminUserToken: null,
     });
-    // this.props.setLoader(true);
+    this.props.setLoader(true);
     const deleteAdminUser = await deleteAdminUserApi(
       this.state.deleteAdminUserToken
     );
@@ -140,7 +139,7 @@ class AdminUser extends Component {
     } else {
       toastr.error(deleteAdminUser.data.message);
     }
-    // this.props.setLoader(false);
+    this.props.setLoader(false);
   };
 
   noDeleteClicked = () => {
@@ -211,6 +210,7 @@ class AdminUser extends Component {
           email: email,
           contactNumber: contactNumber
         };
+        this.props.setLoader(true);
         const createAdminUser = await addAdminUserApi(data);
         if (createAdminUser) {
           if (createAdminUser.status === status.success) {
@@ -244,7 +244,7 @@ class AdminUser extends Component {
             toastr.error(createAdminUser.data.message);
           }
         }
-        // this.props.setLoader(false);
+        this.props.setLoader(false);
 
       }
       else {
@@ -269,6 +269,7 @@ class AdminUser extends Component {
           email: email,
           contactNumber: contactNumber
         };
+        this.props.setLoader(true);
         const updateAdminUser = await updateAdminUserApi(data);
         if (updateAdminUser) {
           if (updateAdminUser.status === status.success) {
@@ -300,7 +301,7 @@ class AdminUser extends Component {
             toastr.error(updateAdminUser.data.message);
           }
         }
-        // this.props.setLoader(false);
+        this.props.setLoader(false);
 
       }
       else {
@@ -759,6 +760,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { adminUserListApi, aclRoleNameListApi, addAdminUserApi })(
+export default connect(mapStateToProps, {setLoader, adminUserListApi, aclRoleNameListApi, addAdminUserApi })(
   AdminUser
 );

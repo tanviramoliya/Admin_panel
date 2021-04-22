@@ -39,7 +39,7 @@ import { status } from "../../../../utility/config";
 import { toastr } from "react-redux-toastr";
 import { Search } from "@material-ui/icons";
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
-
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 
 class category extends Component {
   state = {
@@ -122,7 +122,7 @@ class category extends Component {
       deleteModal: !this.state.deleteModal,
       deleteCategoryToken: null,
     });
-    // this.props.setLoader(true);
+    this.props.setLoader(true);
     const deleteCategory = await deleteCategoryApi(
       this.state.deleteCategoryToken
     );
@@ -137,7 +137,7 @@ class category extends Component {
     } else {
       toastr.error(deleteCategory.data.message);
     }
-    // this.props.setLoader(false);
+    this.props.setLoader(false);
   };
 
   noDeleteClicked = () => {
@@ -192,6 +192,7 @@ class category extends Component {
         isActive: isActive === "active" ? true : false,
         serialNo: serialNo,
       };
+      this.props.setLoader(true);
       const createCategory = await addCategoryApi(data);
       if (createCategory) {
         if (createCategory.status === status.success) {
@@ -213,8 +214,7 @@ class category extends Component {
           toastr.error(createCategory.data.message);
         }
       }
-      // this.props.setLoader(false);
-
+      this.props.setLoader(false);
     }
   };
   UpdateCategory = async () => {
@@ -240,6 +240,7 @@ class category extends Component {
         isActive: isActive === "active" ? true : false,
         serialNo: serialNo,
       };
+      this.props.setLoader(true);
       const updateCategory = await updateCategoryApi(data);
       if (updateCategory) {
         if (updateCategory.status === status.success) {
@@ -261,8 +262,7 @@ class category extends Component {
           toastr.error(updateCategory.data.message);
         }
       }
-      // this.props.setLoader(false);
-
+      this.props.setLoader(false);
     }
   };
   handleChange = (event) => {
@@ -557,4 +557,4 @@ const mapStateToProps = (state) => {
   return {categoryList};
 };
 
-export default connect(mapStateToProps, { categoryListApi })(category);
+export default connect(mapStateToProps, { setLoader , categoryListApi })(category);
