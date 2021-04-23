@@ -9,6 +9,13 @@ export const getAdminCountApi = async () => {
       
   };
 
+  export const getPublishNewsCountApi = async () => {
+    const publishNewsCount = await api("dashBoard/getPublishedNewsCount", {} , "get");
+      if (publishNewsCount) {
+          return publishNewsCount;
+        }
+        
+    };
 export const getSubscriberCountApi = async () => {
   const subscriberCount = await api(
     `dashBoard/getSubscriberCount`,

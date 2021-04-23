@@ -39,9 +39,14 @@ import { status } from "../../../../utility/config";
 import { toastr } from "react-redux-toastr";
 import { Search } from "@material-ui/icons";
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
+import SimpleReactValidator from "simple-react-validator";
 
 
 class category extends Component {
+  constructor(props) {
+    super(props);
+    this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+  }
   state = {
     categoryList: [],
     count: "",
@@ -69,7 +74,7 @@ class category extends Component {
       this.setState({ permission: false });
       return false;
     }
-  await this.getCategoryList();
+    await this.getCategoryList();
   };
   getCategoryList = async () => {
     const { rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
@@ -89,7 +94,7 @@ class category extends Component {
   }
   handleSortingOrder = async (fieldName, order) => {
     await this.setState({ sortingField: fieldName, sortingOrder: order === 'asc' ? 'desc' : 'asc' });
-   await this.getCategoryList();
+    await this.getCategoryList();
   }
   handleChangePage = async (event, newPage) => {
     await this.setState({ page: newPage });
@@ -175,46 +180,50 @@ class category extends Component {
       isActive: "active",
       serialNo: 1,
     });
+    this.validator.hideMessageFor("categoryName");
+    this.validator.hideMessageFor("isActive");
+    this.validator.hideMessageFor("serialNo");
+
   };
   AddCategory = async () => {
     const { type, categoryName, isActive, serialNo } = this.state;
     if (type === "new") {
-      if (!categoryName) {
-        toastr.error("Category is required");
-        return;
-      }
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
-      let data = {
-        categoryName: categoryName,
-        isActive: isActive === "active" ? true : false,
-        serialNo: serialNo,
-      };
-      const createCategory = await addCategoryApi(data);
-      if (createCategory) {
-        if (createCategory.status === status.success) {
-          if (createCategory.data.code === status.success) {
-            toastr.success(createCategory.data.message);
-            this.getCategoryList();
-            this.setState({
-              categoryName: "",
-              openModal: false,
-              categoryToken: "",
-              type: "new",
-              isActive: "active",
-              serialNo: 1,
-            });
-          } else {
-            toastr.warning(createCategory.data.message);
-          }
-        } else {
-          toastr.error(createCategory.data.message);
-        }
-      }
-      // this.props.setLoader(false);
+      if (
+        this.validator.allValid()
 
+      ) {
+        let data = {
+          categoryName: categoryName,
+          isActive: isActive === "active" ? true : false,
+          serialNo: serialNo,
+        };
+        const createCategory = await addCategoryApi(data);
+        if (createCategory) {
+          if (createCategory.status === status.success) {
+            if (createCategory.data.code === status.success) {
+              toastr.success(createCategory.data.message);
+              this.getCategoryList();
+              this.setState({
+                categoryName: "",
+                openModal: false,
+                categoryToken: "",
+                type: "new",
+                isActive: "active",
+                serialNo: 1,
+              });
+            } else {
+              toastr.warning(createCategory.data.message);
+            }
+          } else {
+            toastr.error(createCategory.data.message);
+          }
+        }
+        // this.props.setLoader(false);
+
+      }
+      else {
+        this.validator.showMessages();
+      }
     }
   };
   UpdateCategory = async () => {
@@ -226,44 +235,49 @@ class category extends Component {
       serialNo,
     } = this.state;
     if (type === "edit") {
-      if (!categoryName) {
-        toastr.error("Catetgory is required");
-        return;
-      }
-      // this.props.setLoader(true);
-      // this.setState({
-      //   addOrg: false,
-      // });
-      let data = {
-        categoryName: categoryName,
-        categoryToken: categoryToken,
-        isActive: isActive === "active" ? true : false,
-        serialNo: serialNo,
-      };
-      const updateCategory = await updateCategoryApi(data);
-      if (updateCategory) {
-        if (updateCategory.status === status.success) {
-          if (updateCategory.data.code === status.success) {
-            toastr.success(updateCategory.data.message);
-            this.getCategoryList();
-            this.setState({
-              categoryName: "",
-              openModal: false,
-              categoryToken: "",
-              type: "new",
-              isActive: "active",
-              serialNo: 1,
-            });
-          } else {
-            toastr.warning(updateCategory.data.message);
-          }
-        } else {
-          toastr.error(updateCategory.data.message);
-        }
-      }
-      // this.props.setLoader(false);
+      if (
+        this.validator.allValid()
 
+      ) {
+        let data = {
+          categoryName: categoryName,
+          categoryToken: categoryToken,
+          isActive: isActive === "active" ? true : false,
+          serialNo: serialNo,
+        };
+        const updateCategory = await updateCategoryApi(data);
+        if (updateCategory) {
+          if (updateCategory.status === status.success) {
+            if (updateCategory.data.code === status.success) {
+              toastr.success(updateCategory.data.message);
+              this.getCategoryList();
+              this.setState({
+                categoryName: "",
+                openModal: false,
+                categoryToken: "",
+                type: "new",
+                isActive: "active",
+                serialNo: 1,
+              });
+              this.validator.hideMessageFor("categoryName");
+              this.validator.hideMessageFor("isActive");
+              this.validator.hideMessageFor("serialNo");
+          
+            } else {
+              toastr.warning(updateCategory.data.message);
+            }
+          } else {
+            toastr.error(updateCategory.data.message);
+          }
+        }
+
+        // this.props.setLoader(false);
+
+      }
+    else {
+      this.validator.showMessages();
     }
+  }
   };
   handleChange = (event) => {
     event.persist();
@@ -330,14 +344,14 @@ class category extends Component {
             </Button>
                 </div>
               </div>
-              <TableContainer style={{ maxHeight: "405px" }}>
+              <TableContainer style={{ maxHeight: "465px" }}>
                 <Table style={{ whiteSpace: "pre" }} stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell className="px-0 py-8" width="15%">
+                      <TableCell className="px-0 py-8" width="10%">
 
                         Sr.No</TableCell>
-                      <TableCell className="px-0 py-8" width="30%">
+                      <TableCell className="px-0 py-8" width="25%">
                         <TableSortLabel
                           active={sortingField === 'categoryName'}
                           direction={sortingOrder}
@@ -346,7 +360,7 @@ class category extends Component {
                           Category Name
                       </TableSortLabel>
                       </TableCell>
-                      <TableCell className="px-0 py-8" width="20%">
+                      <TableCell className="px-0 py-8" width="25%">
                         <TableSortLabel
                           active={sortingField === 'serialNo'}
                           direction={sortingOrder}
@@ -355,7 +369,7 @@ class category extends Component {
                           Serial No
                       </TableSortLabel>
                       </TableCell>
-                      <TableCell className="px-0 py-8" width="20%">
+                      <TableCell className="px-0 py-8" width="15%">
                         <TableSortLabel
                           active={sortingField === 'isActive'}
                           direction={sortingOrder}
@@ -364,7 +378,7 @@ class category extends Component {
                           Active/Not Active
                       </TableSortLabel>
                       </TableCell>
-                      <TableCell className="px-0 py-8" width="20%">
+                      <TableCell className="px-0 py-8" width="15%">
                         <TableSortLabel
                           active={sortingField === 'createdDate'}
                           direction={sortingOrder}
@@ -406,6 +420,9 @@ class category extends Component {
                               )}
                           </TableCell>
                           <TableCell className="p-0">
+                            {category.createdDate}
+                          </TableCell>
+                          <TableCell className="p-0">
                             <IconButton className="p-8">
                               <Icon
                                 color="primary"
@@ -425,6 +442,7 @@ class category extends Component {
                           </Icon>
                             </IconButton>
                           </TableCell>
+                          
                         </TableRow>
                       )) :
                       <h1>
@@ -496,18 +514,30 @@ class category extends Component {
                     />
                   </FormControl>
                   <div style={{ marginTop: "25px" }}>
-                    <TextValidator
-                      className="mb-16 w-300"
-                      label="Category"
+                  <TextField
+                      className="mb-16 w-100"
+                      label="Category Name"
                       onChange={this.handleChange}
                       type="text"
                       name="categoryName"
                       value={categoryName}
-                      validators={["required", "minStringLength: 2"]}
-                      errorMessages={["this field is required", "category name more then 2 character"]}
-                      style={{ width: "-webkit-fill-available" }}
+                      placeholder="Enter Category name"
                       variant="outlined"
+
+                      error={this.validator.message(
+                        "categoryName",
+                        categoryName,
+                        "required"
+                      )}
+                      helperText={this.validator.message(
+                        "categoryName",
+                        categoryName,
+                        "required"
+                      )}
+                      onBlur={() => this.validator.showMessageFor("categoryName")}
                     />
+
+    
                   </div>
                   <RadioGroup
                     value={isActive}
@@ -553,8 +583,8 @@ class category extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { categoryList}  = state.category;
-  return {categoryList};
+  const { categoryList } = state.category;
+  return { categoryList };
 };
 
 export default connect(mapStateToProps, { categoryListApi })(category);

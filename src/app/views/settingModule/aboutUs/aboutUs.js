@@ -216,12 +216,20 @@ class aboutUs extends Component {
       });
     })
       .then((response) => {
-        this.setState({
-          fileToken: response.data.data,
-          message: response.data.message,
-          isError: false,
-        });
-        console.log(this.state.fileToken);
+        if (response) {
+          if (response.status === status.success) {
+            if (response.data.code === status.success) {
+              toastr.success(response.data.message);
+
+              this.setState({
+                 fileEdit: false,
+                fileToken: response.data.data,
+                message: response.data.message,
+                isError: false,
+              });
+            }
+          }
+        }
         return UploadService.getFiles(this.state.fileToken);
       })
       .then((response) => {
