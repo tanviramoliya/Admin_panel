@@ -338,7 +338,7 @@ class videoNews extends Component {
                           {VideoNews.publish}
                         </TableCell> */}
                           <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
-                            {VideoNews.category + " / " + VideoNews.subCategory}
+                            {VideoNews.category}{VideoNews.subCategory ? " / " + VideoNews.subCategory : ''}
                           </TableCell>
                           <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                             {VideoNews.publish ?

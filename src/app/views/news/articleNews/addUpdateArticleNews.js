@@ -521,11 +521,13 @@ class addUpdateArticleNews extends Component {
                     </FormControl>
                   </Grid>
                   <Grid item lg={6} md={6} sm={12} xs={12}>
-                    <FormControl className="mb-16 w-100" error={this.validator.message(
-                      "subCategory",
-                      subCategory,
-                      "required"
-                    )}>
+                    <FormControl className="mb-16 w-100"
+                    //  error={this.validator.message(
+                    //   "subCategory",
+                    //   subCategory,
+                    //   "required"
+                    // )}
+                    >
                       <InputLabel id="subCategory">
                         SubCategory
                   </InputLabel>
@@ -549,11 +551,11 @@ class addUpdateArticleNews extends Component {
                           );
                         })}
                       </Select>
-                      <FormHelperText style={{ color: 'red' }}>{this.validator.message(
+                      {/* <FormHelperText style={{ color: 'red' }}>{this.validator.message(
                         "subCategory",
                         subCategory,
                         "required"
-                      )}</FormHelperText>
+                      )}</FormHelperText> */}
                     </FormControl>
                   </Grid>
                 </Grid>

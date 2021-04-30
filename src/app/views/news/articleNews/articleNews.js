@@ -337,7 +337,7 @@ class articleNews extends Component {
                             </TableCell>
 
                             <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} >
-                              {ArticleNews.category + " / " + ArticleNews.subCategory}
+                              {ArticleNews.category}{ ArticleNews.subCategory ?  " / " + ArticleNews.subCategory : ''}
                             </TableCell>
                             <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                               {ArticleNews.publish ?

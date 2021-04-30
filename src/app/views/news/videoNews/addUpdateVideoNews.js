@@ -177,7 +177,7 @@ class addUpdateVideoNews extends Component {
       this.validator.fieldValid("title") &&
       this.validator.fieldValid("newsType") &&
       this.validator.fieldValid("category") &&
-      this.validator.fieldValid("subCategory") &&
+      // this.validator.fieldValid("subCategory") &&
       this.validator.fieldValid("country") &&
       this.validator.fieldValid("city") &&
       this.validator.fieldValid("state") &&
@@ -497,11 +497,13 @@ class addUpdateVideoNews extends Component {
                     </FormControl>
                   </Grid>
                   <Grid item lg={6} md={6} sm={12} xs={12}>
-                    <FormControl className="mb-16 w-100" error={this.validator.message(
-                      "subCategory",
-                      subCategory,
-                      "required"
-                    )}>
+                    <FormControl className="mb-16 w-100" 
+                    // error={this.validator.message(
+                    //   "subCategory",
+                    //   subCategory,
+                    //   "required"
+                    // )}
+                    >
                       <InputLabel id="subCategory">
                         SubCategory
                   </InputLabel>
@@ -525,11 +527,11 @@ class addUpdateVideoNews extends Component {
                           );
                         })}
                       </Select>
-                      <FormHelperText style={{ color: 'red' }}>{this.validator.message(
+                      {/* <FormHelperText style={{ color: 'red' }}>{this.validator.message(
                         "subCategory",
                         subCategory,
                         "required"
-                      )}</FormHelperText>
+                      )}</FormHelperText> */}
                     </FormControl>
                   </Grid>
                 </Grid>
