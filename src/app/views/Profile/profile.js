@@ -24,6 +24,8 @@ import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
 import { status } from "../../../utility/config";
 import SimpleReactValidator from "simple-react-validator";
+import { setLoader } from "../../../redux/actions/loaderAction/loaderAction";
+
 
 class Profile extends Component {
   constructor(props) {
@@ -122,6 +124,7 @@ class Profile extends Component {
         email,
         contactNumber
       };
+      this.props.setLoader(true);
       const updateProfileInfo = await updateAdminInfo(data);
       if (updateProfileInfo) {
         if (updateProfileInfo.status === status.success) {
@@ -138,7 +141,7 @@ class Profile extends Component {
           toastr.error(updateProfileInfo.data.message);
         }
       }
-      // this.props.setLoader(false);
+      this.props.setLoader(false);
 
     }
     else {
@@ -163,7 +166,7 @@ class Profile extends Component {
       data.append("adminToken",adminToken);
       data.append("oldPass",oldPass);
       data.append("newPass",newPass);
-      
+      this.props.setLoader(true);
       const changeAdminPass = await changeAdminPassApi(data);
       if (changeAdminPass) {
         if (changeAdminPass.status === status.success) {
@@ -180,7 +183,7 @@ class Profile extends Component {
           toastr.error(changeAdminPass.data.message);
         }
       }
-      // this.props.setLoader(false);
+      this.props.setLoader(false);
 
     }
     else {
@@ -521,6 +524,6 @@ const mapStateToProps = (state) => {
   return { info };
 };
 
-export default connect(mapStateToProps, { getAdminInfo,changeAdminPassApi, updateAdminInfo })(
+export default connect(mapStateToProps, { setLoader, getAdminInfo,changeAdminPassApi, updateAdminInfo })(
   Profile
 );

@@ -34,7 +34,7 @@ import { toastr } from 'react-redux-toastr';
 import { Search } from "@material-ui/icons";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
-
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 
 class newsType extends Component {
   constructor(props) {
@@ -124,7 +124,7 @@ class newsType extends Component {
       deleteModal: !this.state.deleteModal,
       deleteNewsTypeToken: null,
     });
-    // this.props.setLoader(true);
+    this.props.setLoader(true);
     const deleteNewsType = await deleteNewsTypeApi(this.state.deleteNewsTypeToken);
     if (deleteNewsType && deleteNewsType.data.code === status.success) {
       await this.newsTypeList();
@@ -132,7 +132,7 @@ class newsType extends Component {
     } else {
       toastr.error(deleteNewsType.data.message);
     }
-    // this.props.setLoader(false);
+    this.props.setLoader(false);
   };
 
   noDeleteClicked = () => {
@@ -183,6 +183,7 @@ class newsType extends Component {
           newsTypeName: newsTypeName,
           isActive: isActive === 'active' ? true : false
         };
+        this.props.setLoader(true);
         const createNewsType = await addNewsTypeApi(data);
         if (createNewsType) {
           if (createNewsType.status === status.success) {
@@ -205,8 +206,7 @@ class newsType extends Component {
             toastr.error(createNewsType.data.message);
           }
         }
-        // this.props.setLoader(false);
-
+        this.props.setLoader(false);
       }
       else {
         this.validator.showMessages();
@@ -225,6 +225,7 @@ class newsType extends Component {
           newsTypeToken: newsTypeToken,
           isActive: isActive === 'active' ? true : false
         };
+        this.props.setLoader(true);
         const updateNewsType = await updateNewsTypeApi(data);
         if (updateNewsType) {
           if (updateNewsType.status === status.success) {
@@ -247,8 +248,7 @@ class newsType extends Component {
             toastr.error(updateNewsType.data.message);
           }
         }
-        // this.props.setLoader(false);
-
+        this.props.setLoader(false);
       }
     }
     else {
@@ -503,4 +503,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { newsTypeListApi })(newsType);
+export default connect(mapStateToProps, {setLoader, newsTypeListApi })(newsType);

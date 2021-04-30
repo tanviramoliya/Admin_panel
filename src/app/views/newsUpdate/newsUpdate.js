@@ -20,6 +20,8 @@ import { connect } from "react-redux";
 import { Search } from "@material-ui/icons";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../sessions/accessdeniedPage";
+import { setLoader } from "../../../redux/actions/loaderAction/loaderAction";
+
 
 class newsUpdate extends Component {
   constructor(props) {
@@ -114,7 +116,7 @@ class newsUpdate extends Component {
       deleteModal: !this.state.deleteModal,
       deleteNewsToken: null,
     });
-    // this.props.setLoader(true);
+    this.props.setLoader(true);
     const deleteNews = await deleteNewsApi(
       this.state.deleteNewsToken
     );
@@ -129,7 +131,7 @@ class newsUpdate extends Component {
     } else {
       toastr.error(deleteNews.data.message);
     }
-    // this.props.setLoader(false);
+    this.props.setLoader(false);
   };
 
   noDeleteClicked = () => {
@@ -181,6 +183,7 @@ class newsUpdate extends Component {
           newsText: newsText,
           newsLink: newsLink
         };
+        this.props.setLoader(true);
         const createNews = await addNewsApi(data);
         if (createNews) {
           if (createNews.status === status.success) {
@@ -205,7 +208,7 @@ class newsUpdate extends Component {
             toastr.error(createNews.data.message);
           }
         }
-        // this.props.setLoader(false);
+        this.props.setLoader(false);
 
       }
       else {
@@ -229,6 +232,7 @@ class newsUpdate extends Component {
           newsLink: newsLink,
           newsToken: newsToken
         };
+        this.props.setLoader(true);
         const updateNews = await updateNewsApi(data);
         if (updateNews) {
           if (updateNews.status === status.success) {
@@ -253,7 +257,7 @@ class newsUpdate extends Component {
             toastr.error(updateNews.data.message);
           }
         }
-        // this.props.setLoader(false);
+        this.props.setLoader(false);
 
       }
       else {
@@ -267,6 +271,7 @@ class newsUpdate extends Component {
   };
 
   changeStatus = async (token, newStatus) => {
+    this.props.setLoader(true);
     const { perData } = this.state;
     if (perData.key === 'News Updates' && perData.value === "RW") {
       let data = new FormData();
@@ -288,6 +293,7 @@ class newsUpdate extends Component {
     } else {
       toastr.error("Access Denied!")
     }
+    this.props.setLoader(false);
   }
 
 
@@ -583,6 +589,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { newsListApi, addNewsApi })(
+export default connect(mapStateToProps, { setLoader,newsListApi, addNewsApi })(
   newsUpdate
 );

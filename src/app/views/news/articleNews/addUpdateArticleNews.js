@@ -34,6 +34,7 @@ import {
   stateListApi,
   cityListApi
 } from "../../../../redux/actions/index";
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 import "./style.css"
 import { Business } from "@material-ui/icons";
 
@@ -202,12 +203,14 @@ class addUpdateArticleNews extends Component {
       data.append("content", content);
       console.log(data);
       if (type === 'add') {
+        this.props.setLoader(true);
         const createArtivleNews = await addArticleNewsApi(data);
         if (createArtivleNews) {
           if (createArtivleNews.status === status.success) {
             if (createArtivleNews.data.code === status.success) {
               toastr.success(createArtivleNews.data.message);
               this.props.history.push('/news/articleNews')
+              this.props.setLoader(false);
             } else {
               toastr.warning(createArtivleNews.data.message);
             }
@@ -215,9 +218,10 @@ class addUpdateArticleNews extends Component {
             toastr.error(createArtivleNews.data.message);
           }
         }
-        // this.props.setLoader(false);
+        this.props.setLoader(false);
       }
       else if (type === 'edit') {
+        this.props.setLoader(true);
         const updateArticleNews = await updateArticleNewsApi(data);
         if (updateArticleNews) {
           if (updateArticleNews.status === status.success) {
@@ -231,6 +235,7 @@ class addUpdateArticleNews extends Component {
             toastr.error(updateArticleNews.data.message);
           }
         }
+        this.props.setLoader(false);
       }
     }
     else {
@@ -733,6 +738,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { addArticleNewsApi, categoryNameListApi, getsubCateByCategoryListApi, newsTypeNameListApi, countryListApi, stateListApi, cityListApi, getAdminNameListApi })(
+export default connect(mapStateToProps, {setLoader, addArticleNewsApi, categoryNameListApi, getsubCateByCategoryListApi, newsTypeNameListApi, countryListApi, stateListApi, cityListApi, getAdminNameListApi })(
   addUpdateArticleNews
 );

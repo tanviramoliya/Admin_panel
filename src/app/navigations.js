@@ -30,7 +30,7 @@ export const navigations = [
   {
     name: "Comments",
     icon: "question_answer",
-    path: "/others/drag-and-drop"
+    path: "/comments"
   },
   {
     name: "Admin Users",

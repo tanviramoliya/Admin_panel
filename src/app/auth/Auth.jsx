@@ -1,10 +1,12 @@
 import React, { Component, Fragment } from "react";
+
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { setUserData } from "../../redux/actions/UserActions";
 import localStorageService from "../services/localStorageService";
 import history from "../../history";
 import Cookies from "js-cookie";
+import {checkLoginApi} from "../../redux/actions/LoginActions"
 class Auth extends Component {
   state = {};
   
@@ -20,11 +22,11 @@ console.log(' again auth....');
     this.checkJwtAuth();
 
   }
+  
 
   checkJwtAuth = () => {
-    console.log(history.location.pathname);
-
-    if (!Cookies.get("GNTV-SESSIONID") || Cookies.get("GNTV-SESSIONID") !== Cookies.get("JSESSIONID")) {
+   
+    if (!Cookies.get("GNTV-SESSIONID")) {
       history.push('/login')
     }
     else{
@@ -32,6 +34,11 @@ console.log(' again auth....');
         history.push('/');
       }
     }
+    setInterval(() => {
+      if(Cookies.get("GNTV-SESSIONID")){
+          this.props.checkLoginApi();
+      }
+    }, 20000);
 
     // You need to send token to your server to check token is valid
     // modify loginWithToken method in jwtService
@@ -66,5 +73,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { setUserData }
+  { setUserData,checkLoginApi }
 )(Auth);

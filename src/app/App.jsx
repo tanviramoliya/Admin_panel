@@ -12,6 +12,7 @@ import Auth from "./auth/Auth";
 import MatxLayout from "./MatxLayout/MatxLayout";
 import AuthGuard from "./auth/AuthGuard";
 import ReduxToastr from 'react-redux-toastr';
+import Spinner from '../components/matx/MatxLoadable/spinner';
 
 
 const App = () => {
@@ -37,6 +38,7 @@ const App = () => {
             </Router>
           </Auth>
         </MatxTheme>
+        <Spinner/>
       </Provider>
     </AppContext.Provider>
   );

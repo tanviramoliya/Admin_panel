@@ -4,7 +4,7 @@ import { api } from "../../../api/api";
 
 export const getAdminInfo = (data) => {
   return async (dispatch) => {
-    await api("profile/get", {} , "get")
+    await api("profile/getCurrentUser", {} , "get")
       .then((res) => {
         dispatch(getAdminProfileInfo(res.data.data));
       })

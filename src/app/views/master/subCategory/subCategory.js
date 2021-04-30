@@ -46,7 +46,7 @@ import { toastr } from "react-redux-toastr";
 import { Search } from "@material-ui/icons";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
-
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 
 class subCategory extends Component {
   constructor(props) {
@@ -141,7 +141,7 @@ class subCategory extends Component {
       deleteModal: !this.state.deleteModal,
       deleteSubCategoryToken: null,
     });
-    // this.props.setLoader(true);
+    this.props.setLoader(true);
     const deleteSubCategory = await deleteSubCategoryApi(
       this.state.deleteSubCategoryToken
     );
@@ -151,7 +151,7 @@ class subCategory extends Component {
     } else {
       toastr.error(deleteSubCategory.data.message);
     }
-    // this.props.setLoader(false);
+    this.props.setLoader(false);
   };
 
   noDeleteClicked = () => {
@@ -212,6 +212,7 @@ class subCategory extends Component {
             categoryToken: categoryToken,
             isActive: isActive === "active" ? true : false
           };
+          this.props.setLoader(true);
           const createSubCategory = await addSubCategoryApi(data);
           if (createSubCategory) {
             if (createSubCategory.status === status.success) {
@@ -237,8 +238,7 @@ class subCategory extends Component {
               toastr.error(createSubCategory.data.message);
             }
           }
-          // this.props.setLoader(false);
-
+          this.props.setLoader(false);
         }
         else {
           this.validator.showMessages();
@@ -264,6 +264,7 @@ class subCategory extends Component {
             subCategoryToken: subCategoryToken,
             isActive: isActive === "active" ? true : false
           };
+          this.props.setLoader(true);
           const updateSubCategory = await updateSubCategoryApi(data);
           if (updateSubCategory) {
             if (updateSubCategory.status === status.success) {
@@ -290,8 +291,7 @@ class subCategory extends Component {
               toastr.error(updateSubCategory.data.message);
             }
           }
-          // this.props.setLoader(false);
-
+          this.props.setLoader(false);
         }
       } else {
         this.validator.showMessages();
@@ -635,6 +635,7 @@ class subCategory extends Component {
   };
 
   export default connect(mapStateToProps, {
+    setLoader,
     subCategoryListApi,
     categoryListApi,
     categoryNameListApi

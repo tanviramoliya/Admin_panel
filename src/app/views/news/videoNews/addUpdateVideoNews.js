@@ -3,6 +3,7 @@ import { Breadcrumb } from "components/matx/Breadcrumb";
 import { ValidatorForm } from "react-material-ui-form-validator";
 import ReactTagInput from "@pathofdev/react-tag-input";
 import "@pathofdev/react-tag-input/build/index.css";
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 import {
   Grid,
   TextField,
@@ -201,6 +202,7 @@ class addUpdateVideoNews extends Component {
         content: content
       };
       if (type === 'add') {
+        this.props.setLoader(true);
         const createVideoNews = await addVideoNewsApi(data);
         if (createVideoNews) {
           if (createVideoNews.status === status.success) {
@@ -214,9 +216,10 @@ class addUpdateVideoNews extends Component {
             toastr.error(createVideoNews.data.message);
           }
         }
-        // this.props.setLoader(false);
+        this.props.setLoader(false);
       }
       else if (type === 'edit') {
+        this.props.setLoader(true);
         const updateVideoNews = await updateVideoNewsApi(data);
         if (updateVideoNews) {
           if (updateVideoNews.status === status.success) {
@@ -230,6 +233,7 @@ class addUpdateVideoNews extends Component {
             toastr.error(updateVideoNews.data.message);
           }
         }
+        this.props.setLoader(false);
       }
     }
     else {
@@ -710,6 +714,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { addVideoNewsApi, categoryNameListApi, getsubCateByCategoryListApi, newsTypeNameListApi, countryListApi, stateListApi, cityListApi, getAdminNameListApi })(
+export default connect(mapStateToProps, { setLoader,addVideoNewsApi, categoryNameListApi, getsubCateByCategoryListApi, newsTypeNameListApi, countryListApi, stateListApi, cityListApi, getAdminNameListApi })(
   addUpdateVideoNews
 );

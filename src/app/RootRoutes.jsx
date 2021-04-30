@@ -13,6 +13,8 @@ import subscriberRoutes from "./views/subscriber/subscriberRoutes";
 import adminUserRoutes from "./views/adminUser/adminUserRoutes";
 import settingRoutes from "./views/settingModule/settingRoutes";
 import inquiryRoutes from "./views/inquiry/inquiryRoutes";
+import commentsRoutes from "./views/comments/commentsRoutes";
+
 import aclRoleRoutes from "./views/aclRole/aclRoleRoutes";
 
 import Profile from "./views/Profile/profile";
@@ -51,6 +53,7 @@ const routes = [
   ...newsUpdateRoutes,
   ...subscriberRoutes,
   ...inquiryRoutes,
+  ...commentsRoutes,
   ...formsRoutes,
   ...profileRoute,
   ...newsRoutes,

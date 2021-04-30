@@ -28,6 +28,8 @@ import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { connect } from "react-redux";
 import { Search } from "@material-ui/icons";
 import AccessDeniedPage from "../sessions/accessdeniedPage";
+import { setLoader } from "../../../redux/actions/loaderAction/loaderAction";
+
 
 
 class subscriber extends Component {
@@ -116,7 +118,7 @@ class subscriber extends Component {
       deleteSubscriberToken: null,
       selected: [],
     });
-    // this.props.setLoader(true);
+    this.props.setLoader(true);
     const deleteSubscriber = await deleteSubscriberApi(
       this.state.deleteSubscriberToken
     );
@@ -131,7 +133,7 @@ class subscriber extends Component {
     } else {
       toastr.error(deleteSubscriber.data.message);
     }
-    // this.props.setLoader(false);
+    this.props.setLoader(false);
   };
 
   noDeleteClicked = () => {
@@ -147,7 +149,6 @@ class subscriber extends Component {
     if (event.target.checked) {
       const newSelecteds = subscriberList ? subscriberList.map((n) => n.userToken) : null;
       this.setState({ selected: newSelecteds });
-      console.log("In ALL selected", newSelecteds);
       return;
     }
     this.setState({ selected: [] });
@@ -400,4 +401,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { subscriberListApi })(subscriber);
+export default connect(mapStateToProps, {setLoader,subscriberListApi })(subscriber);

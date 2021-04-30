@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { inquiryListApi, deleteInquiryApi, submitReplyApi } from "../../../redux/actions/index";
+import { commentsListApi, deleteCommentsApi,changeCommentStatusApi } from "../../../redux/actions/index";
 import "../../../assets/styles/utilities/_tableCell.scss";
 import { status } from "../../../utility/config";
 import { toastr } from "react-redux-toastr";
@@ -26,49 +26,47 @@ import {
   TextField,
   InputAdornment,
   TableSortLabel,
-  Grid
+  Grid,
+  Switch
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ReplyIcon from "@material-ui/icons/Reply";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { connect } from "react-redux";
-import { Search, Person, Email, DateRange, Phone, Subject, Message } from "@material-ui/icons";
+import { Search, Person, Email, DateRange, Phone, Subject, Message, Assignment, Description } from "@material-ui/icons";
 import { ValidatorForm } from "react-material-ui-form-validator";
 import "./style.css";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../sessions/accessdeniedPage";
 import { setLoader } from "../../../redux/actions/loaderAction/loaderAction";
 
-class inquiry extends Component {
+class comments extends Component {
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator({ autoForceUpdate: this });
   }
   state = {
-    inquiryList: [],
+    commentsList: [],
     count: "",
-    sortingField: "inquiryDate",
+    sortingField: "createdDate",
     sortingOrder: "asc",
     keyword: "",
     rowsPerPage: 10,
     page: 0,
     deleteModal: false,
-    deleteInquiryToken: null,
+    deleteCommentsToken: null,
     selected: [],
     userName: "",
     emailId: "",
     token: "",
-    subject: "",
-    message: "",
-    contactNumber: "",
-    inquiryDate: "",
+    comment: "",
+    newsId:"",
+    display:"",
+    createdDate: "",
 
     read: false,
     openReadModal: false,
-    openReplyModal: false,
-    replyMessage: "",
-    replySubject: "",
     permission: true,
     perData: JSON.parse(localStorage.getItem("permission"))[7]
 
@@ -80,9 +78,9 @@ class inquiry extends Component {
       this.setState({ permission: false });
       return false;
     }
-    await this.getInquiryList();
+    await this.getCommentsList();
   };
-  getInquiryList = async () => {
+  getCommentsList = async () => {
     const { rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
     let data = {
       keyword: keyword,
@@ -91,26 +89,26 @@ class inquiry extends Component {
       field: sortingField,
       order: sortingOrder
     }
-    await this.props.inquiryListApi(data);
-    this.setState({ inquiryList: this.props.inquiryList.result, count: this.props.inquiryList.count });
+    await this.props.commentsListApi(data);
+    this.setState({ commentsList: this.props.commentsList.result, count: this.props.commentsList.count });
   };
   handleSearchKeyword = async (event) => {
     await this.setState({ keyword: event.target.value });
-    this.getInquiryList();
+    this.getCommentsList();
   }
   handleSortingOrder = async (fieldName, order) => {
 
     await this.setState({ sortingField: fieldName, sortingOrder: order === 'asc' ? 'desc' : 'asc' });
-    this.getInquiryList();
+    this.getCommentsList();
 
   }
   handleChangePage = async (event, newPage) => {
     await this.setState({ page: newPage });
-    this.getInquiryList();
+    this.getCommentsList();
   };
   handleChangeRowsPerPage = async (event) => {
     await this.setState({ rowsPerPage: event.target.value });
-    this.getInquiryList();
+    this.getCommentsList();
   };
 
 
@@ -120,12 +118,12 @@ class inquiry extends Component {
   };
 
   //to delete Category
-  deleteInquiryClicked = async (token) => {
+  deleteCommentsClicked = async (token) => {
     const { perData } = this.state;
     if (perData.key === 'Inquiry' && perData.value === "RW") {
 
       if (token) {
-        this.setState({ deleteInquiryToken: token });
+        this.setState({ deleteCommentsToken : token });
       }
       this.setState({
         deleteModal: !this.state.deleteModal,
@@ -139,18 +137,18 @@ class inquiry extends Component {
     //call delete Api
     this.setState({
       deleteModal: !this.state.deleteModal,
-      deleteInquiryToken: null,
+      deleteCommentsToken: null,
       selected: [],
     });
     this.props.setLoader(true);
-    const deleteInquiry = await deleteInquiryApi(this.state.deleteInquiryToken);
-    if (deleteInquiry && deleteInquiry.data.code === status.success) {
-      await this.getInquiryList();
-      toastr.success(deleteInquiry.data.message);
-    } else if (deleteInquiry && deleteInquiry.data.code === status.badRequest) {
-      toastr.warning(deleteInquiry.data.message);
+    const deleteComments = await deleteCommentsApi(this.state.deleteCommentsToken);
+    if (deleteComments && deleteComments.data.code === status.success) {
+      await this.getCommentsList();
+      toastr.success(deleteComments.data.message);
+    } else if (deleteComments && deleteComments.data.code === status.badRequest) {
+      toastr.warning(deleteComments.data.message);
     } else {
-      toastr.error(deleteInquiry.data.message);
+      toastr.error(deleteComments.data.message);
     }
     this.props.setLoader(false);
   };
@@ -158,7 +156,7 @@ class inquiry extends Component {
   noDeleteClicked = () => {
     this.setState({
       deleteModal: !this.state.deleteModal,
-      deleteInquiryToken: null,
+      deleteCommentsToken: null,
       selected: [],
     });
   };
@@ -169,105 +167,34 @@ class inquiry extends Component {
       this.setState({ openReadModal: true });
       this.setState({
         userName: data.userName,
+        newsId:data.newsId,
         emailId: data.emailId,
         token: data.token,
-        subject: data.subject,
-        message: data.message,
-        contactNumber: data.contactNumber,
-        inquiryDate: data.inquiryDate,
-        replyMessage: data.inquiryReply !== null ? data.inquiryReply.replyMessage : null,
-        replySubject: data.inquiryReply !== null ? data.inquiryReply.subject : null,
-        read: data.read
+        comment: data.comment,
+        createdDate: data.createdDate,
+        display: data.display
       });
     } else {
       toastr.error("Access Denied!")
     }
   };
-  setReplyModel = (data) => {
-    const { perData } = this.state;
-    if (perData.key === 'Inquiry' && perData.value === "RW") {
-
-      this.setState({ openReplyModal: true });
-      this.setState({
-        userName: data.userName,
-        emailId: data.emailId,
-        token: data.token,
-        subject: data.subject,
-        message: data.message,
-        contactNumber: data.contactNumber,
-        read: data.read
-      });
-    } else {
-      toastr.error("Access Denied!")
-    }
-  };
+  
   //for close a modal
   handleClose = () => {
     this.setState({
       openReadModal: false,
-      openReplyModal: false,
       userName: "",
       emailId: "",
       token: "",
-      subject: "",
-      message: "",
-      contactNumber: "",
-      replyMessage: "",
-      replySubject: ""
+      newsId: "",
+      comment: ""
       //read: false
     });
     this.validator.hideMessageFor("replyMessage");
     this.validator.hideMessageFor("replySubject");
 
   };
-  replySubmit = async () => {
-    const { replyMessage, replySubject, token } = this.state;
-    if (
-      this.validator.allValid()
 
-    ) {
-      let data = {
-
-        replyMessage: replyMessage,
-        subject: replySubject,
-        inquiryToken: token
-      };
-      this.props.setLoader(true);
-      const submitReply = await submitReplyApi(data);
-      if (submitReply) {
-        if (submitReply.status === status.success) {
-          if (submitReply.data.code === status.success) {
-            toastr.success(submitReply.data.message);
-            this.getInquiryList();
-            this.setState({
-              openReadModal: false,
-              openReplyModal: false,
-              userName: "",
-              emailId: "",
-              token: "",
-              subject: "",
-              message: "",
-              replyMessage: "",
-              replySubject: "",
-              contactNumber: "",
-              read: false
-
-            });
-            this.validator.hideMessageFor("replyMessage");
-            this.validator.hideMessageFor("replySubject");
-          } else {
-            toastr.warning(submitReply.data.message);
-          }
-        } else {
-          toastr.error(submitReply.data.message);
-        }
-        this.props.setLoader(false);
-      }
-    }
-    else {
-      this.validator.showMessages();
-    }
-  };
   handleReadToSend = () => {
     const { perData, read } = this.state;
     if (read) {
@@ -291,9 +218,9 @@ class inquiry extends Component {
 
   //all checked
   handleSelectAllClick = (event) => {
-    const { inquiryList } = this.state;
+    const { commentsList } = this.state;
     if (event.target.checked) {
-      const newSelecteds = inquiryList ? inquiryList.map((n) => n.token) : null;
+      const newSelecteds = commentsList ? commentsList.map((n) => n.token) : null;
       this.setState({ selected: newSelecteds });
       return;
     }
@@ -319,6 +246,31 @@ class inquiry extends Component {
     }
     this.setState({ selected: newSelected });
   };
+  changeStatus = async (token, commentStatus) => {
+    this.props.setLoader(true);
+    const { perData } = this.state;
+    if (perData.key === 'Inquiry' && perData.value === "RW") {
+      let data = new FormData();
+      data.append("token", token);
+      data.append("status", !commentStatus);
+      const changeStatus = await changeCommentStatusApi(data
+      );
+      if (changeStatus && changeStatus.data.code === status.success) {
+        await this.getCommentsList();
+        toastr.success(changeStatus.data.message);
+      } else if (
+        changeStatus &&
+        changeStatus.data.code === status.badRequest
+      ) {
+        toastr.warning(changeStatus.data.message);
+      } else {
+        toastr.error(changeStatus.data.message);
+      }
+    } else {
+      toastr.error("Access Denied!")
+    }
+    this.props.setLoader(false);
+  }
 
   render() {
     const {
@@ -327,19 +279,15 @@ class inquiry extends Component {
       sortingOrder,
       keyword,
       sortingField, count,
-      inquiryList,
+      commentsList,
       selected,
       userName,
       emailId,
-      subject,
-      message,
-      contactNumber,
-      inquiryDate,
+      newsId,
+      comment,
+      display,
+      createdDate,
       openReadModal,
-      openReplyModal,
-      replyMessage,
-      replySubject,
-      read,
       permission
     } = this.state;
     if (!permission) {
@@ -352,7 +300,7 @@ class inquiry extends Component {
       return (
         <div className="m-sm-30">
           <div className="mb-sm-30">
-            <Breadcrumb routeSegments={[{ name: "Inquiry", path: "/inquiry" }]} />
+            <Breadcrumb routeSegments={[{ name: "Comments", path: "/Comments" }]} />
           </div>
           <div className="py-12">
             <Card elevation={6} className="px-24 pt-12 h-100">
@@ -362,7 +310,7 @@ class inquiry extends Component {
                   {selected.length > 0 ? (
                     <span>{selected.length} rows selected</span>
                   ) : (
-                      <span>Inquiry Information</span>
+                      <span>Comments Information</span>
 
                     )}
                 </div>
@@ -387,7 +335,7 @@ class inquiry extends Component {
                     <Tooltip title="Delete" >
                       <IconButton
                         aria-label="delete" className="p-0"
-                        onClick={() => this.deleteInquiryClicked(selected)}
+                        onClick={() => this.deleteCommentsClicked(selected)}
                       >
                         <DeleteIcon color="error" />
                       </IconButton>
@@ -397,7 +345,7 @@ class inquiry extends Component {
                         <Chip
                           variant="outlined"
                           color="secondary"
-                          label={inquiryList.length + " Inquiries"}
+                          label={commentsList.length + " Comments"}
                         />
                       </Tooltip>
                     )}
@@ -411,11 +359,11 @@ class inquiry extends Component {
                         <Checkbox style={{ paddingTop: 0, paddingBottom: 0 }}
                           indeterminate={
                             selected.length > 0 &&
-                            selected.length < inquiryList.length
+                            selected.length < commentsList.length
                           }
                           checked={
-                            inquiryList.length > 0 &&
-                            selected.length === inquiryList.length
+                            commentsList.length > 0 &&
+                            selected.length === commentsList.length
                           }
                           onChange={this.handleSelectAllClick}
                           inputProps={{ "aria-label": "select all desserts" }}
@@ -425,7 +373,16 @@ class inquiry extends Component {
                       <TableCell className="px-0 py-8" width="5%">
                         Sr.No
                     </TableCell>
-                      <TableCell className="px-0 py-8" width="13%">
+                    <TableCell className="px-0 py-8" width="10%">
+                        <TableSortLabel
+                          active={sortingField === 'newsId'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("newsId", sortingOrder)}
+                        >
+                          News Id
+                      </TableSortLabel>
+                      </TableCell>
+                      <TableCell className="px-0 py-8" width="15%">
                         <TableSortLabel
                           active={sortingField === 'userName'}
                           direction={sortingOrder}
@@ -434,57 +391,57 @@ class inquiry extends Component {
                           User Name
                       </TableSortLabel>
                       </TableCell>
-                      <TableCell className="px-0 py-8" width="18%">
-                        <TableSortLabel
-                          active={sortingField === 'subject'}
-                          direction={sortingOrder}
-                          onClick={() => this.handleSortingOrder("subject", sortingOrder)}
-                        >
-                          Subject
-                      </TableSortLabel>
-
-                      </TableCell>
-                      <TableCell className="px-0 py-8" width="22%">
-                        <TableSortLabel
-                          active={sortingField === 'message'}
-                          direction={sortingOrder}
-                          onClick={() => this.handleSortingOrder("message", sortingOrder)}
-                        >
-                          Message
-                      </TableSortLabel>
-                      </TableCell>
-                      <TableCell className="px-0 py-8" width="16%">
+                      <TableCell className="px-0 py-8" width="15%">
                         <TableSortLabel
                           active={sortingField === 'emailId'}
                           direction={sortingOrder}
                           onClick={() => this.handleSortingOrder("emailId", sortingOrder)}
                         >
-                          User Email
-                        </TableSortLabel>
+                          Email Id
+                      </TableSortLabel>
 
+                      </TableCell>
+                      <TableCell className="px-0 py-8" width="22%">
+                        <TableSortLabel
+                          active={sortingField === 'comment'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("comment", sortingOrder)}
+                        >
+                          Comment
+                      </TableSortLabel>
                       </TableCell>
                       <TableCell className="px-0 py-8" width="10%">
                         <TableSortLabel
-                          active={sortingField === 'contactNumber'}
+                          active={sortingField === 'display'}
                           direction={sortingOrder}
-                          onClick={() => this.handleSortingOrder("contactNumber", sortingOrder)}
+                          onClick={() => this.handleSortingOrder("isDisplay", sortingOrder)}
                         >
-                          Contact Number
+                          Display
                         </TableSortLabel>
 
                       </TableCell>
-                      <TableCell className="px-0 py-8" width="10%">
+                      <TableCell className="px-0 py-8" width="12%">
+                        <TableSortLabel
+                          active={sortingField === 'createdDate'}
+                          direction={sortingOrder}
+                          onClick={() => this.handleSortingOrder("createdDate", sortingOrder)}
+                        >
+                          Created Date
+                        </TableSortLabel>
+
+                      </TableCell>
+                      <TableCell className="px-0 py-8">
                         Action
                     </TableCell>
                     </TableRow>
                   </TableHead>
 
                   <TableBody>
-                    {inquiryList && inquiryList !== [] ? inquiryList
+                    {commentsList && commentsList !== [] ? commentsList
                       //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((inquiryUpdate, index) => {
+                      .map((commentsUpdate, index) => {
                         const isItemSelected = this.isSelected(
-                          inquiryUpdate.token
+                          commentsUpdate.token
                         );
                         const labelId = `enhanced-table-checkbox-${index}`;
                         return (
@@ -493,12 +450,12 @@ class inquiry extends Component {
                             role="checkbox"
                             aria-checked={isItemSelected}
                             tabIndex={-1}
-                            key={inquiryUpdate.token}
+                            key={commentsUpdate.token}
                             selected={isItemSelected}
                           >
                             <TableCell
                               onClick={(event) =>
-                                this.handleClick(event, inquiryUpdate.token)
+                                this.handleClick(event, commentsUpdate.token)
                               }
                               className="p-0"
                             >
@@ -510,7 +467,7 @@ class inquiry extends Component {
                             </TableCell>
                             <TableCell
                               onClick={(event) =>
-                                this.handleClick(event, inquiryUpdate.token)
+                                this.handleClick(event, commentsUpdate.token)
                               }
                               className="p-0"
                             >
@@ -521,61 +478,65 @@ class inquiry extends Component {
                               id={labelId}
                               className="ellipse p-0"
                               onClick={(event) =>
-                                this.handleClick(event, inquiryUpdate.token)
+                                this.handleClick(event, commentsUpdate.token)
                               }
                             >
-                              {inquiryUpdate.userName}
+                              {commentsUpdate.newsId}
+                            </TableCell>
+                            <TableCell
+                              id={labelId}
+                              className="ellipse p-0"
+                              onClick={(event) =>
+                                this.handleClick(event, commentsUpdate.token)
+                              }
+                            >
+                              {commentsUpdate.userName}
                             </TableCell>
                             <TableCell
                               className="ellipse p-0"
                               onClick={(event) =>
-                                this.handleClick(event, inquiryUpdate.token)
+                                this.handleClick(event, commentsUpdate.token)
                               }
                             >
-                              {inquiryUpdate.subject}
+                              {commentsUpdate.emailId}
                             </TableCell>
                             <TableCell
                               className="ellipse p-0"
                               onClick={(event) =>
-                                this.handleClick(event, inquiryUpdate.token)
+                                this.handleClick(event, commentsUpdate.token)
                               }
                             >
-                              {inquiryUpdate.message}
+                              {commentsUpdate.comment}
                             </TableCell>
+                            <TableCell className="ellipse p-0">
+                            <Switch
+                              onClick={() => this.changeStatus(commentsUpdate.token, commentsUpdate.display)}
+                              name="display"
+                              color="secondary"
+                              checked={commentsUpdate.display}
+                              inputProps={{ 'aria-label': 'secondary checkbox' }}
+                            />
+                          </TableCell>
+                           
                             <TableCell
                               className="ellipse p-0"
                               onClick={(event) =>
-                                this.handleClick(event, inquiryUpdate.token)
+                                this.handleClick(event, commentsUpdate.token)
                               }
                             >
-                              {inquiryUpdate.emailId}
-                            </TableCell>
-                            <TableCell
-                              className="ellipse p-0"
-                              onClick={(event) =>
-                                this.handleClick(event, inquiryUpdate.token)
-                              }
-                            >
-                              {inquiryUpdate.contactNumber}
+                              {commentsUpdate.createdDate}
                             </TableCell>
                             <TableCell className="p-0">
                               <IconButton className="p-8">
                                 <Icon
                                   onClick={() =>
-                                    this.setReadModel(inquiryUpdate)
+                                    this.setReadModel(commentsUpdate)
                                   }
                                 >
                                   <VisibilityIcon />
                                 </Icon>
                               </IconButton>
-                              <IconButton className="p-8"
-
-                                onClick={() => this.setReplyModel(inquiryUpdate)
-                                }
-                                disabled={inquiryUpdate.read}
-                              >
-                                <Icon color={inquiryUpdate.read ? "" : "primary"}>send</Icon>
-                              </IconButton>
+                              
                             </TableCell>
                           </TableRow>
                         );
@@ -611,11 +572,11 @@ class inquiry extends Component {
               message={
                 "are you sure want to delete " +
                 selected.length +
-                " inquiries?"
+                " comments?"
               }
-              toggle={this.deleteInquiryClicked}
+              toggle={this.deleteCommentsClicked}
               onYesClick={() =>
-                this.yesDeleteClicked(this.state.deleteInquiryToken)
+                this.yesDeleteClicked(this.state.deleteCommentsClicked)
               }
               onNoClick={this.noDeleteClicked}
             />
@@ -627,7 +588,7 @@ class inquiry extends Component {
               fullWidth="true"
               onClose={this.handleClose}
             >
-              <DialogTitle id="customized-dialog-title">User Inquiry</DialogTitle>
+              <DialogTitle id="customized-dialog-title">User Comments</DialogTitle>
               <DialogContent dividers>
                 <Grid container spacing={3}>
                   <Grid item lg={6} md={6} sm={12} xs={12}>
@@ -649,6 +610,28 @@ class inquiry extends Component {
                     />
                     <TextField
                       className="mb-16 w-100"
+                      label="Comments Date"
+                      type="text"
+                      name="createdDate"
+                      value={createdDate}
+                      disabled={true}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <DateRange />
+                          </InputAdornment>
+                        ),
+                      }}
+
+                    />
+                   
+
+
+                  </Grid>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                     
+                  <TextField
+                      className="mb-16 w-100"
                       label="User Email"
                       type="text"
                       name="emailId"
@@ -663,50 +646,32 @@ class inquiry extends Component {
                       }}
 
                     />
-
-
-                  </Grid>
-                  <Grid item lg={6} md={6} sm={12} xs={12}>
-                    <TextField
+                    
+                  <TextField
                       className="mb-16 w-100"
-                      label="Inquiry Data"
+                      label="newsId"
                       type="text"
-                      name="inquiryDate"
-                      value={inquiryDate}
+                      name="newsId"
+                      value={newsId}
                       disabled={true}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <DateRange />
+                            <Description />
                           </InputAdornment>
                         ),
                       }}
 
                     />
-                    <TextField
-                      className="mb-16 w-100"
-                      label="User Contact Number"
-                      type="text"
-                      name="contactNumber"
-                      value={contactNumber}
-                      disabled={true}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Phone />
-                          </InputAdornment>
-                        ),
-                      }}
-
-                    />
+                   
                   </Grid>
                 </Grid>
                 <TextField
                   className="mb-16 w-100"
-                  label="Subject"
+                  label="Comment"
                   type="text"
-                  name="subject"
-                  value={subject}
+                  name="comment"
+                  value={comment}
                   disabled={true}
 
                   InputProps={{
@@ -718,185 +683,18 @@ class inquiry extends Component {
                   }}
 
                 />
-                <TextField
-                  className="mb-16 w-100"
-                  label="message"
-                  type="text"
-                  multiline
-                  name="message"
-                  value={message}
-                  disabled={true}
-
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Message />
-                      </InputAdornment>
-                    ),
-                  }}
-
-                />
 
                 <DialogActions className="p-0" style={{ display: "block" }}>
                   <div className="flex flex-end">
 
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      type="submit"
-                      endIcon={!read ? <Icon>send</Icon> : <Icon>visibility</Icon>}
-                      onClick={this.handleReadToSend}
-                    >
-                      {!read ? "Send Reply" : "View Reply"}
-                    </Button>
+                   
                   </div>
                 </DialogActions>
 
 
               </DialogContent>
             </Dialog>
-            <Dialog
-              open={openReplyModal}
-              aria-labelledby="customized-dialog-title"
-              fullWidth="true"
-            >
-              <DialogTitle id="customized-dialog-title">
-                <ReplyIcon color="primary" /> Send Reply
-            </DialogTitle>
-
-              <DialogContent dividers>
-                <Grid container spacing={3}>
-                  <Grid item lg={6} md={6} sm={12} xs={12}>
-                    <TextField
-                      className="mb-16 w-100"
-                      label="User Name"
-                      type="text"
-                      name="userName"
-                      value={userName}
-                      disabled={true}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Person />
-                          </InputAdornment>
-                        ),
-                      }}
-
-                    />
-                  </Grid>
-                  <Grid item lg={6} md={6} sm={12} xs={12}>
-
-                    <TextField
-                      className="mb-16 w-100"
-                      label="User Email"
-                      type="text"
-                      name="emailId"
-                      value={emailId}
-                      disabled={true}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Email />
-                          </InputAdornment>
-                        ),
-                      }}
-
-                    />
-
-
-                  </Grid>
-                </Grid>
-                <ValidatorForm
-                  ref="form"
-                  onSubmit={this.replySubmit}
-                  onError={(errors) => null}
-                >
-
-                  <TextField
-                    className="mb-16 w-100"
-                    label="Reply Subject"
-                    onChange={this.handleChange}
-                    type="text"
-                    name="replySubject"
-                    value={replySubject}
-                    placeholder="Enter Subject"
-                    variant={!read ? "outlined" : "standard"}
-                    disabled={!read ? false : true}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Subject />
-                        </InputAdornment>
-                      ),
-                    }}
-                    error={this.validator.message(
-                      "replySubject",
-                      replySubject,
-                      "required"
-                    )}
-                    helperText={this.validator.message(
-                      "replySubject",
-                      replySubject,
-                      "required"
-                    )}
-                    onBlur={() => this.validator.showMessageFor("replySubject")}
-                  />
-
-                  <TextField
-                    className="mb-16 w-100"
-                    label="Reply Message"
-                    onChange={this.handleChange}
-                    type="text"
-                    multiline
-
-                    name="replyMessage"
-                    value={replyMessage}
-                    placeholder="Enter Reply Message"
-                    variant={!read ? "outlined" : "standard"}
-                    disabled={!read ? false : true}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Message />
-                        </InputAdornment>
-                      ),
-                    }}
-
-                    error={this.validator.message(
-                      "replyMessage",
-                      replyMessage,
-                      "required"
-                    )}
-                    helperText={this.validator.message(
-                      "replyMessage",
-                      replyMessage,
-                      "required"
-                    )}
-                    onBlur={() => this.validator.showMessageFor("replyMessage")}
-                  />
-
-                  <DialogActions className="p-0" style={{ display: "block" }}>
-                    <div className="flex flex-end">
-                      <Button onClick={this.handleClose} className="mr-8" variant="outlined">
-                        Cancel
-                    </Button>
-                      {read ? null :
-                        <>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            endIcon={<Icon>send</Icon>}
-                          >
-                            Send
-                      </Button>
-                        </>
-                      }
-                    </div>
-                  </DialogActions>
-                </ValidatorForm>
-              </DialogContent>
-            </Dialog>
+           
           </div>
         </div>
       );
@@ -904,10 +702,10 @@ class inquiry extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  const { inquiryList } = state.inquiry;
+  const { commentsList } = state.comments;
   return {
-    inquiryList,
+    commentsList,
   };
 };
 
-export default connect(mapStateToProps, { setLoader, inquiryListApi })(inquiry);
+export default connect(mapStateToProps, { setLoader, commentsListApi })(comments);

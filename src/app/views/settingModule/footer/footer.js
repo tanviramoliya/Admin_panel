@@ -21,7 +21,7 @@ import { PhoneIphone, Email } from "@material-ui/icons";
 import SimpleReactValidator from "simple-react-validator";
 import "../style.css"
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
-
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 
 class footer extends Component {
   constructor(props) {
@@ -87,6 +87,7 @@ class footer extends Component {
         optionalContact: optionalContact,
         token: token,
       };
+      this.props.setLoader(true);
       const updateFooter = await updateFooterApi(data);
       if (updateFooter) {
         if (updateFooter.status === status.success) {
@@ -101,7 +102,7 @@ class footer extends Component {
           toastr.error(updateFooter.data.message);
         }
       }
-      // this.props.setLoader(false);
+      this.props.setLoader(false);
     } else {
       this.validator.showMessages();
     }
@@ -355,6 +356,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { footerListApi, updateFooterApi })(
+export default connect(mapStateToProps, { setLoader , footerListApi, updateFooterApi })(
   footer
 );

@@ -1,5 +1,5 @@
 import { setLoginFlag} from "./auth/loginAction";
-// import { setLoader } from "../loaderAction/loaderAction";
+import { setLoader } from "./loaderAction/loaderAction";
 import { api } from "../../api/api";
 import { toastr } from "react-redux-toastr";
 import history from "../../history";
@@ -8,10 +8,8 @@ import Cookies from "js-cookie";
 
 export const loginApi = (loginData) => {
   return async (dispatch, store) => {
-    // dispatch(setLoader(true));
-    console.log(loginData);
+    dispatch(setLoader(true));
     await api("userUtility/authenticate", loginData, "post").then((res) => {
-      console.log(res);
       if (res.data.code === status.success) {        
         //Cookies.set("JSESSIONID", res.data.data.JSESSIONID);
         Cookies.set("GNTV-SESSIONID", res.data.data.JSESSIONID);
@@ -27,6 +25,7 @@ export const loginApi = (loginData) => {
         toastr.error(res.data.message);
       }
     });
+    dispatch(setLoader(false));
   };
 };
 
@@ -65,6 +64,7 @@ export const resetPasswordApi = async (data) => {
 
 export const logoutApi = () => {
   return async (dispatch, store) => {
+    dispatch(setLoader(true));
     await api("userUtility/logout", {}, "get").then((res) => {
       Cookies.remove("GNTV-SESSIONID");
       localStorage.removeItem("permission");
@@ -72,6 +72,21 @@ export const logoutApi = () => {
       dispatch(setLoginFlag(false));
       history.push("/login");
       toastr.success(res.data.message);
+      dispatch(setLoader(false));
     });
   };
 };
+
+export const checkLoginApi = () => {
+  return async (dispatch, store) => {
+    let data = new FormData();
+    data.append("gntvSessionId",Cookies.get("GNTV-SESSIONID"));
+
+    await api("userUtility/isLogin", data, "postWithUrlEncoded").then((res) => {
+      if(!res.data){
+        dispatch(logoutApi());
+      }
+    });
+  };
+};
+

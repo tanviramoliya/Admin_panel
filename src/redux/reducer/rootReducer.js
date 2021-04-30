@@ -16,9 +16,11 @@ import ArticleNewsReducer from "./news/articleNews/articleNewsReducer";
 import SocialMediaReducer from "./settingModule/socialMedia/socialMediaReducer";
 import AboutUsReducer from "./settingModule/aboutUs/aboutUsReducer";
 import InquiryReducer from "./inquiry/inquiryReducer";
+import CommentsReducer from "./comments/commentsReducer";
+
 import footerReducer from "./settingModule/footer/footerReducer";
 import profileReducer from "./profile/profileReducer";
-
+import LoaderReducer from "./loader/loaderReducer";
 
 const RootReducer = combineReducers({
   toastr: toastrReducer,
@@ -37,9 +39,11 @@ const RootReducer = combineReducers({
   socialMedia : SocialMediaReducer,
   aboutUs : AboutUsReducer,
   inquiry : InquiryReducer,
+  comments : CommentsReducer,
   aclRole : AclRoleReducer,
   footer : footerReducer,
-  profile : profileReducer
+  profile : profileReducer,
+  loaders: LoaderReducer,
 });
 
 export default RootReducer;

@@ -16,6 +16,7 @@ import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { connect } from "react-redux";
 import { Search } from '@material-ui/icons';
 import "./style.css";
+import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
 
 class articleNews extends Component {
@@ -118,7 +119,7 @@ class articleNews extends Component {
       deleteModal: !this.state.deleteModal,
       deleteArticleNewsId: null,
     });
-    // this.props.setLoader(true);
+    this.props.setLoader(true);
     const deleteArticleNews = await deleteArticleNewsApi(
       this.state.deleteArticleNewsId
     );
@@ -133,7 +134,7 @@ class articleNews extends Component {
     } else {
       toastr.error(deleteArticleNews.data.message);
     }
-    // this.props.setLoader(false);
+    this.props.setLoader(false);
   };
 
   noDeleteClicked = () => {
@@ -439,6 +440,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { articleNewsListApi, addArticleNewsApi })(
+export default connect(mapStateToProps, {setLoader, articleNewsListApi, addArticleNewsApi })(
   articleNews
 );

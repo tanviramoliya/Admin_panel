@@ -9,6 +9,7 @@ import {
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import { loginApi } from "../../../redux/actions/LoginActions";
+import { setLoader } from "../../../redux/actions/loaderAction/loaderAction";
 
 const styles = (theme) => ({
   wrapper: {
@@ -123,17 +124,10 @@ class LogIn extends Component {
                         <Button
                           variant="contained"
                           color="primary"
-                          // disabled={this.props.login.loading}
                           type="submit"
                         >
                           Sign in
                         </Button>
-                        {/* {this.props.login.loading && (
-                          <CircularProgress
-                            size={24}
-                            className={classes.buttonProgress}
-                          />
-                        )} */}
                       </div>
                       <Button
                       variant="outlined"
@@ -159,4 +153,4 @@ class LogIn extends Component {
 const mapStateToProps = (state) => {
   return {};
 };
-export default connect(mapStateToProps, { loginApi })(LogIn);
+export default connect(mapStateToProps, { loginApi , setLoader})(LogIn);
