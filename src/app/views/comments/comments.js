@@ -258,6 +258,7 @@ class comments extends Component {
       if (changeStatus && changeStatus.data.code === status.success) {
         await this.getCommentsList();
         toastr.success(changeStatus.data.message);
+        
       } else if (
         changeStatus &&
         changeStatus.data.code === status.badRequest
