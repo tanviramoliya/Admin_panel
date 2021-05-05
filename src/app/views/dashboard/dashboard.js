@@ -3,7 +3,7 @@ import { Grid, Card, Icon, IconButton, Tooltip, Chip, FormControl, Select, MenuI
 
 import { withStyles } from "@material-ui/styles";
 import {
-  getAdminCountApi, getSubscriberCountApi, getInquiryCountApi, getMasterCountApi, getNewsHeadlineCountApi, getNewsByNewsTypeCountApi
+  getAdminCountApi,getPublishNewsCountApi, getSubscriberCountApi, getInquiryCountApi, getMasterCountApi, getNewsHeadlineCountApi, getNewsByNewsTypeCountApi
 
 } from "../../../redux/actions/index";
 import { status } from "../../../utility/config";
@@ -23,7 +23,8 @@ class Dashboard1 extends Component {
     articleCountForNewsType:0,
     newsTypeForNews:"",
     videoCountForNewsType:0,
-    permission: true
+    permission: true,
+    publishNewsCardData : ""
   };
 
   componentDidMount = async () => {
@@ -32,6 +33,7 @@ class Dashboard1 extends Component {
       this.setState({ permission: false });
       return false;
     }
+    this.getPublishNewsCount();
     this.getAdminCount();
     this.getSubscriberCount();
     this.getInquiryCount();
@@ -39,6 +41,17 @@ class Dashboard1 extends Component {
     this.getNewsHeadlineCount();
     this.getNewsByNewsTypeCount();
   }
+  getPublishNewsCount = async () => {
+    const publishNewsCount = await getPublishNewsCountApi();
+    if (publishNewsCount) {
+      if (publishNewsCount.status === status.success) {
+        this.setState({
+          publishNewsCardData: publishNewsCount.data
+        });
+
+      }
+    }
+  };
   getAdminCount = async () => {
     const adminCount = await getAdminCountApi();
     if (adminCount) {
@@ -125,7 +138,7 @@ class Dashboard1 extends Component {
 
   render() {
     let { theme } = this.props;
-    const { adminCardData, newsTypeForNews,newsByNewsTypeCardData,articleCountForNewsType,videoCountForNewsType, subscriberFilterBy, subscriberCardData, inquiryCardData, masterFilterBy, masterCardData, newsHeadlineCardData, permission } = this.state;
+    const { adminCardData, publishNewsCardData, newsTypeForNews,newsByNewsTypeCardData,articleCountForNewsType,videoCountForNewsType, subscriberFilterBy, subscriberCardData, inquiryCardData, masterFilterBy, masterCardData, newsHeadlineCardData, permission } = this.state;
       if (!permission) {
         return (
           <AccessDeniedPage />
@@ -153,7 +166,7 @@ class Dashboard1 extends Component {
                         <div className="ml-12">
                           <medium className="text-muted">Published Articles</medium>
                           <h6 className="m-0 mt-4 text-primary font-weight-500">
-                            3050
+                            {publishNewsCardData.articleNews}
                         </h6>
                         </div>
                       </div>
@@ -175,7 +188,7 @@ class Dashboard1 extends Component {
                         <div className="ml-12">
                           <medium className="text-muted">Published Videos</medium>
                           <h6 className="m-0 mt-4 text-primary font-weight-500">
-                            3050
+                          {publishNewsCardData.videoNews}
                         </h6>
                         </div>
                       </div>

@@ -257,7 +257,7 @@ class articleNews extends Component {
                 <Table style={{ whiteSpace: "pre" }} stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell className="px-0 py-8" width="13%">
+                      <TableCell className="px-0 py-8" width="11%">
                         <TableSortLabel
                           active={sortingField === 'articleNewsId'}
                           direction={sortingOrder}
@@ -265,7 +265,7 @@ class articleNews extends Component {
                         >
                           ArticleNewsId
                       </TableSortLabel></TableCell>
-                      <TableCell className="px-0 py-8" width="18%">
+                      <TableCell className="px-0 py-8" width="20%">
                         <TableSortLabel
                           active={sortingField === 'title'}
                           direction={sortingOrder}

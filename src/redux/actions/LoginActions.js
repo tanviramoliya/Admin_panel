@@ -76,3 +76,17 @@ export const logoutApi = () => {
     });
   };
 };
+
+export const checkLoginApi = () => {
+  return async (dispatch, store) => {
+    let data = new FormData();
+    data.append("gntvSessionId",Cookies.get("GNTV-SESSIONID"));
+
+    await api("userUtility/isLogin", data, "postWithUrlEncoded").then((res) => {
+      if(!res.data){
+        dispatch(logoutApi());
+      }
+    });
+  };
+};
+
