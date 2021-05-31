@@ -38,7 +38,7 @@ console.log(' again auth....');
       if(Cookies.get("GNTV-SESSIONID")){
           this.props.checkLoginApi();
       }
-    }, 20000);
+    }, 12000000);
 
     // You need to send token to your server to check token is valid
     // modify loginWithToken method in jwtService

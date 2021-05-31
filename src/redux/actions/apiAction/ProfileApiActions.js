@@ -36,3 +36,15 @@ export const changeAdminPassApi = async (data) => {
   }
 };
 
+export const getCurrentAdminNameApi = async (data) => {
+  const changePass = await api(
+    `profile/getCurrentUserName`,
+    data,
+    "get"
+  );
+  if (changePass) {
+    return changePass;
+  }
+};
+
+

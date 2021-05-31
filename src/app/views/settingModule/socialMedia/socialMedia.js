@@ -16,6 +16,7 @@ import {
   updateSocialMediaApi,
 } from "../../../../redux/actions/index";
 import { connect } from "react-redux";
+import "../style.css";
 import { toastr } from "react-redux-toastr";
 import { status } from "../../../../utility/config";
 import SimpleReactValidator from "simple-react-validator";
@@ -32,8 +33,8 @@ class socialMedia extends Component {
     twitter: "",
     linkedin: "",
     instagram: "",
-    youTube: "",
-    email: "",
+    youtube: "",
+    envelope: "",
     socialMediaList: [],
     edit: false,
     permission: true,
@@ -60,8 +61,8 @@ class socialMedia extends Component {
     const {
       facebook,
       instagram,
-      youTube,
-      email,
+      youtube,
+      envelope,
       twitter,
       linkedin,
     } = this.state;
@@ -78,12 +79,12 @@ class socialMedia extends Component {
           socialMediaLink: instagram,
         },
         {
-          socialMediaName: "youTube",
-          socialMediaLink: youTube,
+          socialMediaName: "youtube",
+          socialMediaLink: youtube,
         },
         {
-          socialMediaName: "email",
-          socialMediaLink: email,
+          socialMediaName: "envelope",
+          socialMediaLink: envelope,
         },
         {
           socialMediaName: "twitter",
@@ -135,8 +136,8 @@ class socialMedia extends Component {
     this.validator.hideMessages();
     this.validator.hideMessageFor("facebook");
     this.validator.hideMessageFor("instagram");
-    this.validator.hideMessageFor("youTube");
-    this.validator.hideMessageFor("email");
+    this.validator.hideMessageFor("youtube");
+    this.validator.hideMessageFor("envelope");
     this.validator.hideMessageFor("twitter");
     this.validator.hideMessageFor("linkedin");
     await this.getSocialMediaList();
@@ -147,9 +148,9 @@ class socialMedia extends Component {
       facebook,
       twitter,
       linkedin,
-      email,
+      envelope,
       instagram,
-      youTube,
+      youtube,
       edit,
       permission
     } = this.state;
@@ -230,11 +231,11 @@ class socialMedia extends Component {
 
                     <TextField
                       className="mb-16 w-100"
-                      label="YouTube"
+                      label="Youtube"
                       onChange={this.handleChange}
                       type="url"
-                      name="youTube"
-                      value={youTube}
+                      name="youtube"
+                      value={youtube}
                       disabled={!edit}
                       InputProps={{
                         startAdornment: (
@@ -244,16 +245,16 @@ class socialMedia extends Component {
                         ),
                       }}
                       error={this.validator.message(
-                        "youTube",
-                        this.state.youTube,
+                        "youtube",
+                        this.state.youtube,
                         "required|url"
                       )}
                       helperText={this.validator.message(
-                        "youTube",
-                        this.state.youTube,
+                        "youtube",
+                        this.state.youtube,
                         "required|url"
                       )}
-                      onBlur={() => this.validator.showMessageFor("youTube")}
+                      onBlur={() => this.validator.showMessageFor("youtube")}
                     />
 
                     {/* "matchRegexp:^(http://|https://)?(?:www.)?twitter.com/(?:#!/)?@?([^?#]*)(?:[?#].*)?$", */}
@@ -291,9 +292,9 @@ class socialMedia extends Component {
                       className="mb-16 w-100"
                       label="Email"
                       onChange={this.handleChange}
-                      type="email"
-                      name="email"
-                      value={email}
+                      type="envelope"
+                      name="envelope"
+                      value={envelope}
                       disabled={!edit}
                       InputProps={{
                         startAdornment: (
@@ -303,16 +304,16 @@ class socialMedia extends Component {
                         ),
                       }}
                       error={this.validator.message(
-                        "email",
-                        this.state.email,
-                        "required|email"
+                        "envelope",
+                        this.state.envelope,
+                        "required|envelope"
                       )}
                       helperText={this.validator.message(
-                        "email",
-                        this.state.email,
-                        "required|email"
+                        "envelope",
+                        this.state.envelope,
+                        "required|envelope"
                       )}
-                      onBlur={() => this.validator.showMessageFor("email")}
+                      onBlur={() => this.validator.showMessageFor("envelope")}
                     />
                   </Grid>
 

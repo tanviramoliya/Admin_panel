@@ -127,7 +127,7 @@ export const api = async (endpoint, data, type) => {
           "JSESSIONID": Cookies.get("JSESSIONID"),
         },
         // url: authUrl + endpoint,
-        url: endpoint,
+        url: mainUrl + endpoint,
       })
         .then(function (response) {
           res = response;

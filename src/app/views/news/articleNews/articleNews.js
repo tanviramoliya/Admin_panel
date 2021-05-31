@@ -195,6 +195,14 @@ class articleNews extends Component {
       toastr.error("Access Denied!")
     }
   }
+  handleComments = (ArticleNewsId) => {
+    const { perData } = this.state;
+    if (perData.key === 'News' && (perData.value === "RO" ||perData.value === "RW" )) {
+      this.props.history.push({ pathname: '/comments', state: { keyword: ArticleNewsId } });
+    } else {
+      toastr.error("Access Denied!")
+    }
+  }
 
 
 
@@ -253,7 +261,7 @@ class articleNews extends Component {
                   </Button>
                 </div>
               </div>
-              <TableContainer style={{ maxHeight: "465px" }}>
+              <TableContainer>
                 <Table style={{ whiteSpace: "pre" }} stickyHeader>
                   <TableHead>
                     <TableRow>
@@ -379,8 +387,7 @@ class articleNews extends Component {
                               <IconButton className="p-8">
                                 <Icon
                                   color="default"
-                                // onClick={() =>
-                                //   this.deleteAdminUserClicked(VideoNews.videoNewsId)}
+                                 onClick={() => this.handleComments(ArticleNews.articleNewsId)}
                                 >comment</Icon>
                               </IconButton>
 

@@ -403,7 +403,7 @@ class inquiry extends Component {
                     )}
                 </div>
               </div>
-              <TableContainer style={{ maxHeight: "465px" }}>
+              <TableContainer >
                 <Table style={{ whiteSpace: "pre" }} stickyHeader>
                   <TableHead>
                     <TableRow>

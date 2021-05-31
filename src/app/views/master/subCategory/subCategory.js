@@ -369,7 +369,7 @@ class subCategory extends Component {
             </Button>
                   </div>
                 </div>
-                <TableContainer style={{ maxHeight: "465px" }}>
+                <TableContainer >
                   <Table style={{ whiteSpace: "pre" }} stickyHeader>
                     <TableHead>
                       <TableRow>

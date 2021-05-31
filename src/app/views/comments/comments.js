@@ -89,6 +89,7 @@ class comments extends Component {
       field: sortingField,
       order: sortingOrder
     }
+    console.log('--keyword from news--',this.state.keyword)
     await this.props.commentsListApi(data);
     this.setState({ commentsList: this.props.commentsList.result, count: this.props.commentsList.count });
   };
@@ -352,7 +353,7 @@ class comments extends Component {
                     )}
                 </div>
               </div>
-              <TableContainer style={{ maxHeight: "465px" }}>
+              <TableContainer>
                 <Table style={{ whiteSpace: "pre" }} stickyHeader>
                   <TableHead>
                     <TableRow>

@@ -69,4 +69,37 @@ export const getNewsByNewsTypeCountApi = async () => {
   }
 };
 
+export const getLIVEURLApi = async () => {
+  const liveURL = await api(
+    `dashBoard/getLiveUrl`,
+    {},
+    "get"
+  );
+  if (liveURL) {
+    return liveURL;
+  }
+};
+
+export const updateLIVEURLApi = async (data) => {
+  const updateliveURL = await api(
+    `dashBoard/updateLiveUrl`,
+    data,
+    "postWithoutToken"
+  );
+  if (updateliveURL) {
+    return updateliveURL;
+  }
+};
+
+export const getTodaysCommentCountApi = async () => {
+  const commentCount = await api(
+    `dashBoard/getTodaysComments`,
+    {},
+    "get"
+  );
+  if (commentCount) {
+    return commentCount;
+  }
+};
+
 

@@ -15,6 +15,8 @@ import { PropTypes } from "prop-types";
 import { MatxMenu } from "../../../components/matx/index";
 import { isMdScreen } from "utils";
 import { Link } from "react-router-dom";
+import {
+  getCurrentAdminNameApi } from "../../../redux/actions/apiAction/ProfileApiActions";
 
 const styles = (theme) => ({
   root: {
@@ -23,7 +25,10 @@ const styles = (theme) => ({
 });
 
 class Layout1Topbar extends Component {
-  state = {};
+  state = {
+    firstName : "",
+    lastName : ""
+  };
 
   updateSidebarMode = (sidebarSettings) => {
     let { settings, setLayoutSettings } = this.props;
@@ -37,6 +42,21 @@ class Layout1Topbar extends Component {
           ...sidebarSettings,
         },
       },
+    });
+  };
+  componentDidMount = async () => {
+    await this.getCurrentAdmin();
+  };
+
+
+  getCurrentAdmin = async () => {
+    
+    let res = await getCurrentAdminNameApi();
+
+    this.setState({
+      firstName: res.data.data.firstName,
+      lastName: res.data.data.lastName,
+      
     });
   };
 
@@ -56,6 +76,8 @@ class Layout1Topbar extends Component {
   handleSignOut = () => {
     this.props.logoutApi();
   };
+
+
 
   render() {
     let { theme, settings, className, style } = this.props;
@@ -83,7 +105,7 @@ class Layout1Topbar extends Component {
                 <div className="flex flex-middle">
                   <MatxMenu
                     menuButton={
-                      <Avatar>H</Avatar>
+                    <Avatar>{this.state.firstName.charAt(0)+this.state.lastName.charAt(0)}</Avatar>
                     }
                   >
                     <MenuItem style={{ minWidth: 185 }}>
