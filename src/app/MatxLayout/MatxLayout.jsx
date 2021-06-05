@@ -11,6 +11,8 @@ import {
 } from "redux/actions/LayoutActions";
 import { isEqual, merge } from "lodash";
 import { isMdScreen, getQueryParam } from "utils";
+import history from "../../history";
+import Cookies from "js-cookie";
 
 class MatxLayout extends Component {
   constructor(props, context) {
@@ -53,7 +55,7 @@ class MatxLayout extends Component {
       setLayoutSettings(updatedSettings);
       setDefaultSettings(updatedSettings);
     } catch (e) {
-      // console.log("Error! Set settings from query param", e);
+      console.log(e);
     }
   };
 
@@ -69,20 +71,33 @@ class MatxLayout extends Component {
   };
 
   updateSettingsFromRouter() {
+    
     const { routes } = this.appContext;
     const matched = matchRoutes(routes, this.props.location.pathname)[0];
     let { defaultSettings, settings, setLayoutSettings } = this.props;
+    let per = localStorage.getItem('permission');
+    if (!Cookies.get("GNTV-SESSIONID") || per === null) {
+      if(history.location.pathname === '/login' || history.location.pathname === '/forgot-password'){
+        history.push(history.location.pathname);
+      }
+      else{
+        history.push('/404');
+      }
+    }
+    else{
+      if(history.location.pathname === '/login'){
+        history.push('/');
+      }
+    }
 
     if (matched && matched.route.settings) {
       // ROUTE HAS SETTINGS
       const updatedSettings = merge({}, settings, matched.route.settings);
       if (!isEqual(settings, updatedSettings)) {
         setLayoutSettings(updatedSettings);
-        // console.log('Route has settings');
       }
     } else if (!isEqual(settings, defaultSettings)) {
       setLayoutSettings(defaultSettings);
-      // console.log('reset settings', defaultSettings);
     }
   }
 

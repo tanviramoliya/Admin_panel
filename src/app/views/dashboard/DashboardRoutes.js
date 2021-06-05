@@ -8,6 +8,8 @@ const dashboardRoutes = [
   {
     path: "/dashboard",
     component: Dashboard ,
+    exact : true,
+
   }
 ];
 

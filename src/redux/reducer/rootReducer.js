@@ -22,7 +22,11 @@ import footerReducer from "./settingModule/footer/footerReducer";
 import profileReducer from "./profile/profileReducer";
 import LoaderReducer from "./loader/loaderReducer";
 
-const RootReducer = combineReducers({
+import { connectRouter } from 'connected-react-router'
+
+
+const RootReducer = (history) => combineReducers({
+  router: connectRouter(history),
   toastr: toastrReducer,
   login: LoginReducer,
   user: UserReducer,

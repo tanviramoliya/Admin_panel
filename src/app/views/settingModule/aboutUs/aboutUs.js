@@ -160,9 +160,7 @@ class aboutUs extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
   onFileChange = (event) => {
-    console.log(event.target.files[0]);
     this.setState({ progress: 0, selectedFile: event.target.files[0] });
-    console.log(this.state.selectedFile);
   };
   changeInfo = () => {
     const { perData } = this.state;

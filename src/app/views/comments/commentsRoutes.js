@@ -7,7 +7,9 @@ const comments = MatxLoadable({
 const commentsRoutes = [
     {
         path: "/comments",
-        component: comments
+        component: comments,
+            exact : true,
+
     }  
 ]
 

@@ -14,15 +14,21 @@ const masterRoutes = [
       
     {
         path: "/master/newsType",
-        component: newsType
+        component: newsType,
+        exact : true,
+
     },   
     {
         path: "/master/category",
-        component: category
+        component: category,
+        exact : true,
+
     },   
     {
         path: "/master/subcategory",
-        component: subCategory
+        component: subCategory,
+        exact : true,
+
     },   
 ]
 

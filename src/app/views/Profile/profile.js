@@ -107,7 +107,6 @@ class Profile extends Component {
 
   }
   handleSubmit = async () => {
-    console.log('handle submit');
     const {
       adminToken, firstName, lastName, role, email, contactNumber } = this.state;
 
@@ -154,7 +153,6 @@ class Profile extends Component {
   };
 
   changePassword = async () => {
-    console.log('handle submit');
     const {
       adminToken, oldPass,newPass } = this.state;
 

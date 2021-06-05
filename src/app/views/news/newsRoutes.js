@@ -30,11 +30,13 @@ const newsRoutes = [
     },
     {
         path: "/news/videoNews/edit",
-        component: addUpdateVideoNews
+        component: addUpdateVideoNews,
+        exact : true
     },
     {
         path: "/news/videoNews/view",
-        component: viewVideoNews
+        component: viewVideoNews,
+        exact : true
     },
    
     {
@@ -44,11 +46,13 @@ const newsRoutes = [
     },
     {
         path: "/news/articleNews/edit",
-        component: addUpdateArticleNews
+        component: addUpdateArticleNews,
+        exact : true
     },
     {
         path: "/news/articleNews/view",
-        component: viewArticleNews
+        component: viewArticleNews,
+        exact : true
     },
 ]
 

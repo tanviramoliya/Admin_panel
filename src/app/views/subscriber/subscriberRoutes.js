@@ -7,7 +7,9 @@ const subcriber = MatxLoadable({
 const subcriberRoutes = [
     {
         path: "/subscriber",
-        component: subcriber
+        component: subcriber,
+        exact : true,
+
     }  
 ]
 

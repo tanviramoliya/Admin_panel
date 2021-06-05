@@ -7,7 +7,9 @@ const inquiry = MatxLoadable({
 const inquiryRoutes = [
     {
         path: "/inquiry",
-        component: inquiry
+        component: inquiry,
+        exact : true,
+
     }  
 ]
 

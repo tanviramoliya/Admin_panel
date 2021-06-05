@@ -7,7 +7,9 @@ const adminUser = MatxLoadable({
 const adminUserRoutes = [
     {
         path: "/adminUser",
-        component: adminUser
+        component: adminUser,
+        exact : true,
+
     }  
 ]
 

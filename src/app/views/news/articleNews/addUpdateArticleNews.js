@@ -128,7 +128,6 @@ getArticleNewsData = async () => {
     const articleNewsData = await getSingleArticleNewsApi(articleNewsId);
     if (articleNewsData) {
       const data = articleNewsData.data.data;
-      console.log("DATA", data);
       var file = new File([data.file], data.fileName)
       this.setState({
         articleNewsId: data.articleNewsId,
@@ -201,7 +200,6 @@ handleSubmit = async (event) => {
     data.append("isCritical", critical);
     data.append("tags", tags);
     data.append("content", content);
-    console.log(data);
     if (type === 'add') {
       this.props.setLoader(true);
       const createArtivleNews = await addArticleNewsApi(data);
@@ -244,7 +242,6 @@ handleSubmit = async (event) => {
   }
 };
 onFileChange = (e) => {
-  console.log(e.target.files[0]);
   this.setState({ selectedFile: e.target.files[0] });
 };
 

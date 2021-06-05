@@ -172,7 +172,6 @@ class subscriber extends Component {
       );
     }
     this.setState({ selected: newSelected });
-    console.log(newSelected);
   };
 
   render() {

@@ -128,7 +128,6 @@ class addUpdateVideoNews extends Component {
       const videoNewsData = await getSingleVideoNewsApi(videoNewsId);
       if (videoNewsData) {
         const data = videoNewsData.data.data;
-        console.log("DATA", data);
         this.setState({
           videoNewsId: data.videoNewsId,
           videoLink: data.videoLink,

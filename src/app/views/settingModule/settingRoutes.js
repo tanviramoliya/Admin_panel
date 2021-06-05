@@ -13,15 +13,21 @@ const footer = MatxLoadable({
 const settingRoutes = [
     {
         path: "/setting/socialMedia",
-        component: socialMedia
+        component: socialMedia,
+        exact : true,
+
     },
     {
         path: "/setting/aboutUs",
-        component: aboutUs
+        component: aboutUs,
+        exact : true,
+
     },
     {
         path: "/setting/footer",
-        component: footer
+        component: footer,
+        exact : true,
+
     }
 ]
 

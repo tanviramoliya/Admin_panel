@@ -41,7 +41,7 @@ class Dashboard1 extends Component {
 
   componentDidMount = async () => {
     const perData = JSON.parse(localStorage.getItem("permission"));
-    if (perData[0].key === 'Dashboard' && perData[0].value === "N/A") {
+    if (perData && perData[0].key === 'Dashboard' && perData[0].value === "N/A") {
       this.setState({ permission: false });
       return false;
     }
@@ -71,7 +71,6 @@ class Dashboard1 extends Component {
     if (liveUrl) {
       if (liveUrl.status === status.success) {
 
-        console.log(liveUrl);
         if(liveUrl.data.data){
           this.setState({
             liveURL1: liveUrl.data.data.url,

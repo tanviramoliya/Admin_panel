@@ -46,8 +46,7 @@ class SimpleForm extends Component {
   }
 
   handleSubmit = event => {
-    console.log("submitted");
-    console.log(event);
+   
   };
 
   handleChange = event => {
@@ -56,7 +55,6 @@ class SimpleForm extends Component {
   };
 
   handleDateChange = date => {
-    console.log(date);
 
     this.setState({ date });
   };

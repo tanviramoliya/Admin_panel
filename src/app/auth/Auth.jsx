@@ -3,7 +3,6 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { setUserData } from "../../redux/actions/UserActions";
-import localStorageService from "../services/localStorageService";
 import history from "../../history";
 import Cookies from "js-cookie";
 import {checkLoginApi} from "../../redux/actions/LoginActions"
@@ -12,22 +11,21 @@ class Auth extends Component {
   
   constructor(props) {
     super(props);
-console.log(' again auth....');
-    // Set user if exists in local storage
-    // This is only for demo purpose
-    // You should remove this
-    this.props.setUserData(localStorageService.getItem("auth_user"));
-    
-    // Check current token is valid on page load/reload
+
     this.checkJwtAuth();
 
   }
   
 
   checkJwtAuth = () => {
-   
-    if (!Cookies.get("GNTV-SESSIONID")) {
-      history.push('/login')
+   let per = localStorage.getItem('permission');
+    if (!Cookies.get("GNTV-SESSIONID") || per === null) {
+      if(history.location.pathname === '/login' || history.location.pathname === '/forgot-password'){
+        history.push(history.location.pathname);
+      }
+      else{
+        history.push('/404');
+      }
     }
     else{
       if(history.location.pathname === '/login'){
@@ -51,7 +49,7 @@ console.log(' again auth....');
     //   // You should redirect user to Dashboard here
       
     // }).catch(err => {
-    //   // Invalid token
+    //   // Invalid tokens
     //   // Ridirect user to sign in page here
     //   console.log(err);
     //   history.push({

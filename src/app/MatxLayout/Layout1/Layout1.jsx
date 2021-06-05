@@ -21,7 +21,6 @@ const styles = theme => {
 
 class Layout1 extends Component {
   componentWillMount() {
-    console.log('Layout mounted........');
     if (isMdScreen()) {
       this.updateSidebarMode({ mode: "close" });
     }
@@ -53,7 +52,6 @@ class Layout1 extends Component {
       [`${settings.activeLayout} sidenav-${layout1Settings.leftSidebar.mode} theme-${theme.palette.type} flex`]: true,
       "topbar-fixed": layout1Settings.topbar.fixed
     };
-    console.log('in layout 1.......................');
     return (
       <AppContext.Consumer>
         {({ routes }) => (

@@ -19,7 +19,6 @@ import {
   Chip,
   Icon,
   DialogActions,
-  Button,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -30,12 +29,10 @@ import {
   Switch
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import ReplyIcon from "@material-ui/icons/Reply";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { connect } from "react-redux";
-import { Search, Person, Email, DateRange, Phone, Subject, Message, Assignment, Description } from "@material-ui/icons";
-import { ValidatorForm } from "react-material-ui-form-validator";
+import { Search, Person, Email, DateRange,Subject, Description } from "@material-ui/icons";
 import "./style.css";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../sessions/accessdeniedPage";
@@ -89,7 +86,6 @@ class comments extends Component {
       field: sortingField,
       order: sortingOrder
     }
-    console.log('--keyword from news--',this.state.keyword)
     await this.props.commentsListApi(data);
     this.setState({ commentsList: this.props.commentsList.result, count: this.props.commentsList.count });
   };
@@ -287,7 +283,6 @@ class comments extends Component {
       emailId,
       newsId,
       comment,
-      display,
       createdDate,
       openReadModal,
       permission

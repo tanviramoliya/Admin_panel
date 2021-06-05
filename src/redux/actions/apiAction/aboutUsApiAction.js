@@ -16,7 +16,6 @@ export const aboutUsListApi = () => {
 };
 
 export const updateAboutUsApi = async (data) => {
-  console.log(data);
   const updateAboutUs = await api(
     `aboutUs/updateAboutUs`,
     data,

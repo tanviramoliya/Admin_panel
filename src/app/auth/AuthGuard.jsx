@@ -6,7 +6,6 @@ import AppContext from "app/appContext";
 class AuthGuard extends Component {
   constructor(props, context) {
     super(props);
-    console.log(context);
     let { routes } = context;
 
     this.state = {
@@ -17,7 +16,6 @@ class AuthGuard extends Component {
 
   
   componentDidMount() {
-    console.log("IN AUTH GUARD..........");
     if (!this.state.authenticated) {
       this.redirectRoute(this.props);
     }
@@ -48,7 +46,6 @@ class AuthGuard extends Component {
   }
 
   redirectRoute(props) {
-    console.log("In Redirect Route");
     const { location, history } = props;
     const { pathname } = location;
 
@@ -61,7 +58,6 @@ class AuthGuard extends Component {
   render() {
     let { children } = this.props;
     const { authenticated } = this.state;
-    console.log(authenticated, "authenticated", children);
 
     return authenticated ? <Fragment>{children}</Fragment> : null;
   }

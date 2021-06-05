@@ -1,7 +1,6 @@
 import "../assets/styles/_app.scss";
 import React from "react";
-import { Provider } from "react-redux";
-import { Router } from "react-router-dom";
+import { Provider,ReactReduxContext  } from "react-redux";
 import MatxTheme from "./MatxLayout/MatxTheme/MatxTheme";
 import AppContext from "./appContext";
 import history from "../history";
@@ -13,12 +12,13 @@ import MatxLayout from "./MatxLayout/MatxLayout";
 import AuthGuard from "./auth/AuthGuard";
 import ReduxToastr from 'react-redux-toastr';
 import Spinner from '../components/matx/MatxLoadable/spinner';
+import { ConnectedRouter } from "connected-react-router";
 
 
 const App = () => {
   return (
     <AppContext.Provider value={{ routes }}>
-      <Provider store={Store}>
+      <Provider store={Store} context={ReactReduxContext }>
       <ReduxToastr
         timeOut={3000}
         newestOnTop={false}
@@ -31,11 +31,11 @@ const App = () => {
       />
         <MatxTheme>
           <Auth>
-            <Router history={history}>
+          <ConnectedRouter  history={history} context={ReactReduxContext }>
               <AuthGuard>
                 <MatxLayout />
               </AuthGuard>
-            </Router>
+            </ConnectedRouter>
           </Auth>
         </MatxTheme>
         <Spinner/>

@@ -29,22 +29,26 @@ const sessionRoutes = [
   {
     path: "/login",
     component: LogIn,
+    exact : true,
     settings,
   },
   {
     path: "/forgot-password",
     component: ForgotPassword,
+    exact : true,
     settings,
   },
 
   {
     path: "/session/404",
     component: NotFound,
+    exact : true,
     settings,
   },
   {
     path : '/404',
     component : PageNotFound,
+    exact : true,
     settings
   }
 ];

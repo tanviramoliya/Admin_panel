@@ -16,7 +16,6 @@ export const footerListApi = () => {
 };
 
 export const updateFooterApi = async (data) => {
-  console.log(data);
   const updateFooter = await api(
     `footer/updateFooter`,
     data,

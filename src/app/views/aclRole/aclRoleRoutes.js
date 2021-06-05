@@ -7,7 +7,9 @@ const aclRole = MatxLoadable({
 const aclRoleRoutes = [
     {
         path: "/role",
-        component: aclRole
+        component: aclRole,
+        exact : true,
+
     }  
 ]
 

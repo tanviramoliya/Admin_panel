@@ -7,7 +7,9 @@ const newsUpdate = MatxLoadable({
 const newsUpdateRoutes = [
     {
         path: "/newsUpdate",
-        component: newsUpdate
+        component: newsUpdate,
+        exact : true,
+
     }  
 ]
 

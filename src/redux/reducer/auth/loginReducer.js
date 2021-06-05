@@ -9,7 +9,6 @@ const initState = {
 const LoginReducer = (state = initState, action) => {
   switch (action.type) {
     case SET_LOGIN_USER:
-      console.log(action.payload.data);
       return {
         ...state,
         loginUser: action.payload.data,
