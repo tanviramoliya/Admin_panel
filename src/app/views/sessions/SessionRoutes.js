@@ -42,13 +42,13 @@ const sessionRoutes = [
   {
     path: "/session/404",
     component: NotFound,
-    exact : true,
+    // exact : true,
     settings,
   },
   {
     path : '/404',
     component : PageNotFound,
-    exact : true,
+    // exact : true,
     settings
   }
 ];

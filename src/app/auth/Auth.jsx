@@ -20,8 +20,11 @@ class Auth extends Component {
   checkJwtAuth = () => {
    let per = localStorage.getItem('permission');
     if (!Cookies.get("GNTV-SESSIONID") || per === null) {
-      if(history.location.pathname === '/login' || history.location.pathname === '/forgot-password'){
+      if(history.location.pathname === '/login' || history.location.pathname === '/forgot-password' ){
         history.push(history.location.pathname);
+      }
+      else if(history.location.pathname === '/'){
+        history.push('/login');
       }
       else{
         history.push('/404');
