@@ -26,7 +26,7 @@ import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 class socialMedia extends Component {
   constructor(props) {
     super(props);
-    this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+    this.validator = new SimpleReactValidator({ autoForceUpdate: this ,messages : { required : 'This field is required'}});
   }
   state = {
     facebook: "",
@@ -167,7 +167,7 @@ class socialMedia extends Component {
             <div className="mb-sm-30">
               <Breadcrumb
                 routeSegments={[
-                  { name: "Setting", path: "/" },
+                  { name: "Settings", path: "/" },
                   { name: "Social Media" },
                 ]}
               />
@@ -384,7 +384,7 @@ class socialMedia extends Component {
                       Update
                   </Button>
                     <Button color="secondary" variant="contained" type="reset" className="ml-4" startIcon={<Icon>highlight_off</Icon>}>
-                      Cancle
+                      Cancel
                   </Button>
                   </>
                 ) : null}

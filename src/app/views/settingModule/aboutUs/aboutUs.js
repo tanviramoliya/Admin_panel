@@ -279,7 +279,7 @@ class aboutUs extends Component {
             <div className="mb-sm-30">
               <Breadcrumb
                 routeSegments={[
-                  { name: "Setting", path: "/" },
+                  { name: "Settings", path: "/" },
                   { name: "About Us" },
                 ]}
               />
@@ -383,7 +383,7 @@ class aboutUs extends Component {
                           onClick={this.fileCancle}
                           startIcon={<Icon>highlight_off</Icon>}
                         >
-                          Cancle
+                          Cancel
                         </Button>
                       </Grid>
                     ) : null}
@@ -607,7 +607,7 @@ class aboutUs extends Component {
                       className="ml-4"
                       startIcon={<Icon>highlight_off</Icon>}
                     >
-                      Cancle
+                      Cancel
                     </Button>
                   </>
                 ) : null}

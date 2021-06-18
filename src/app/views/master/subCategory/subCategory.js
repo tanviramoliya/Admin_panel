@@ -148,6 +148,11 @@ class subCategory extends Component {
     if (deleteSubCategory && deleteSubCategory.data.code === status.success) {
       await this.subCategoryList();
       toastr.success(deleteSubCategory.data.message);
+    } else if (
+      deleteSubCategory &&
+      deleteSubCategory.data.code === status.badRequest
+    ) {
+      toastr.warning(deleteSubCategory.data.message);
     } else {
       toastr.error(deleteSubCategory.data.message);
     }

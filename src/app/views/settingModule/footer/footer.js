@@ -157,7 +157,7 @@ class footer extends Component {
           <div className="mb-sm-30">
             <Breadcrumb
               routeSegments={[
-                { name: "Setting", path: "/" },
+                { name: "Settings", path: "/" },
                 { name: "Footer" },
               ]}
             />
@@ -194,6 +194,7 @@ class footer extends Component {
                     multiline
                     rows={3}
                     variant="outlined"
+                    placeholder = "Enter About Us"
                     className="mb-16 w-100"
                     label="aboutUs"
                     onChange={this.handleChange}
@@ -244,6 +245,7 @@ class footer extends Component {
                   />
                   <TextField
                     id="outlined-basic"
+                    placeholder="Enter Email"
                     variant="outlined"
                     className="mb-16 w-100"
                     label="email"
@@ -286,6 +288,7 @@ class footer extends Component {
                     onChange={this.handleChange}
                     type="textarea"
                     name="address"
+                    placeholder="Enter Address"
                     value={address}
                     disabled={!footerEdit}
                     error={this.validator.message(
@@ -338,7 +341,7 @@ class footer extends Component {
                     <Icon>edit</Icon>}>Update
             </Button>
                   <Button color="secondary" className="ml-4" variant="contained" type="reset" startIcon={
-                    <Icon>highlight_off</Icon>}>Cancle
+                    <Icon>highlight_off</Icon>}>Cancel
             </Button>
                 </>
                 : null}
