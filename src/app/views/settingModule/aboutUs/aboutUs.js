@@ -279,7 +279,7 @@ class aboutUs extends Component {
             <div className="mb-sm-30">
               <Breadcrumb
                 routeSegments={[
-                  { name: "Settings", path: "/" },
+                  { name: "Settings",isClick :false},
                   { name: "About Us" },
                 ]}
               />

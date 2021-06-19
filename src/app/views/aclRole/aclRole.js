@@ -45,7 +45,7 @@ import { setLoader } from "../../../redux/actions/loaderAction/loaderAction";
 class AclRole extends Component {
   constructor(props) {
     super(props);
-    this.validator = new SimpleReactValidator({ autoForceUpdate: this });
+    this.validator = new SimpleReactValidator({ autoForceUpdate: this,messages :{required:"This field is required"} });
   }
   state = {
     aclRoleList: [],
@@ -63,7 +63,7 @@ class AclRole extends Component {
       { key: "News Updates", value: "N/A" },
       { key: "Comments", value: "N/A" },
       { key: "Admin Users", value: "N/A" },
-      { key: "Role", value: "N/A" },
+      { key: "User Role", value: "N/A" },
       { key: "Subscriber", value: "N/A" },
       { key: "Inquiry", value: "N/A" },
       { key: "Master", value: "N/A" },
@@ -75,7 +75,7 @@ class AclRole extends Component {
 
   componentDidMount = async () => {
     const { perData } = this.state;
-    if (perData.key === 'Role' && perData.value === "N/A") {
+    if (perData.key === 'User Role' && perData.value === "N/A") {
       this.setState({ isPermission: false });
       return false;
     }
@@ -97,7 +97,7 @@ class AclRole extends Component {
   //to delete Category
   deleteAclRoleClicked = async (token) => {
     const { perData } = this.state;
-    if (perData.key === 'Role' && perData.value === "RW") {
+    if (perData.key === 'User Role' && perData.value === "RW") {
 
       if (token) {
         this.setState({ deleteAclRoleToken: token });
@@ -138,7 +138,7 @@ class AclRole extends Component {
   // for open a modal
   setModel = (type, data) => {
     const { perData } = this.state;
-    if (perData.key === 'Role' && perData.value === "RW") {
+    if (perData.key === 'User Role' && perData.value === "RW") {
 
       this.setState({ openModal: true, type: type });
       if (type === "edit") {
@@ -167,7 +167,7 @@ class AclRole extends Component {
         { key: "News Updates", value: "N/A" },
         { key: "Comments", value: "N/A" },
         { key: "Admin Users", value: "N/A" },
-        { key: "Role", value: "N/A" },
+        { key: "User Role", value: "N/A" },
         { key: "Subscriber", value: "N/A" },
         { key: "Inquiry", value: "N/A" },
         { key: "Master", value: "N/A" },
@@ -318,7 +318,7 @@ class AclRole extends Component {
                     className="capitalize text-white bg-circle-primary"
                     onClick={() => this.setModel("new")}
                   >
-                    Add New Role
+                    Add New User Role
                 </Button>
                 ) : (
                     <Tooltip
@@ -420,7 +420,7 @@ class AclRole extends Component {
             <ConfirmationDialog
               open={this.state.deleteModal}
               title="Delete Confirmation"
-              message={"are you sure want to delete this Admin Role?"}
+              message={"are you sure want to delete this User Role?"}
               toggle={this.deleteAclRoleClicked}
               onYesClick={() =>
                 this.yesDeleteClicked(this.state.deleteAclRoleToken)
@@ -438,9 +438,9 @@ class AclRole extends Component {
               <DialogTitle id="form-dialog-title">
 
                 <div style={{ display: "contents" }}>
-                  {type === "new" ? "Add Admin Role"
+                  {type === "new" ? "Add User Role"
                     :
-                    "Edit Admin Role"
+                    "Edit User Role"
                   }
                 </div>
               </DialogTitle>
@@ -456,7 +456,7 @@ class AclRole extends Component {
                       <TextField
                         variant="outlined"
                         className="mb-16 w-100"
-                        label="Role Type"
+                        label="Role Name"
                         onChange={this.handleTypeChange}
                         type="text"
                         name="roleType"

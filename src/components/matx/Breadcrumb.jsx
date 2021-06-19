@@ -20,10 +20,11 @@ const Breadcrumb = ({ routeSegments }) => {
       </NavLink>
       {routeSegments
         ? routeSegments.map((route, index) => (
-            <Fragment key={index}>
+          <Fragment key={index}>
               <Icon className="text-hint">navigate_next</Icon>
-              {index !== routeSegments.length - 1 ? (
+              {index !== routeSegments.length - 1 && route.isClick? (
                 <NavLink to={route.path}>
+                { console.log(route)}
                   <span className="capitalize text-muted">{route.name}</span>
                 </NavLink>
               ) : (

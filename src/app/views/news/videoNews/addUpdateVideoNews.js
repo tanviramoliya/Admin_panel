@@ -286,8 +286,8 @@ class addUpdateVideoNews extends Component {
         <div className="flex flex-middle flex-space-between">
           <Breadcrumb
             routeSegments={[
-              { name: "News | Video", path: "/news/videoNews" },
-              { name: this.state.type === "add" ? "Add Video News" : "Edit Video News", path: "/" },
+              { name: "News | Video", path: "/news/videoNews",isClick:true },
+              { name: this.state.type === "add" ? "Add Video News" : "Edit Video News", path: "/",isClick:false },
             ]}
           />
           <div>

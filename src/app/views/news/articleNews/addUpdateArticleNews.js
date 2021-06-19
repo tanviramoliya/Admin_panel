@@ -290,8 +290,8 @@ render() {
       <div className="flex flex-middle flex-space-between">
         <Breadcrumb
           routeSegments={[
-            { name: "News | Article", path: "/news/articleNews" },
-            { name: this.state.type === "add" ? "Add Article News" : "Edit Article News", path: "/" },
+            { name: "News | Article", path: "/news/articleNews",isClick : true },
+            { name: this.state.type === "add" ? "Add Article News" : "Edit Article News", path: "/",isClick:false },
           ]}
         />
         <div>

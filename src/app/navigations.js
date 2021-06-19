@@ -38,7 +38,7 @@ export const navigations = [
     path: "/adminUser"
   },
   {
-    name: "Role",
+    name: "User Role",
     icon: "verified_user",
     path: "/role"
   },

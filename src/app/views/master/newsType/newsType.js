@@ -20,7 +20,7 @@ import {
   DialogActions,
   RadioGroup,
   FormControlLabel,
-  Radio,
+  Radio,Chip,
   TableContainer,
   TextField,
   InputAdornment,
@@ -31,10 +31,12 @@ import { ValidatorForm } from "react-material-ui-form-validator";
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from '../../../../utility/config';
 import { toastr } from 'react-redux-toastr';
-import { Search } from "@material-ui/icons";
+import { Search,Error } from "@material-ui/icons";
 import SimpleReactValidator from "simple-react-validator";
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
 import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
+import { red } from "@material-ui/core/colors";
+
 
 class newsType extends Component {
   constructor(props) {
@@ -129,6 +131,11 @@ class newsType extends Component {
     if (deleteNewsType && deleteNewsType.data.code === status.success) {
       await this.newsTypeList();
       toastr.success(deleteNewsType.data.message);
+    } else if (
+      deleteNewsType &&
+      deleteNewsType.data.code === status.badRequest
+    ) {
+      toastr.warning(deleteNewsType.data.message);
     } else {
       toastr.error(deleteNewsType.data.message);
     }
@@ -472,19 +479,29 @@ class newsType extends Component {
                       labelPlacement="end"
                     />
                   </RadioGroup>
-                  <DialogActions className="p-0">
-                    <Button onClick={this.handleClose} color="primary">
-                      Cancel
+
+
+                  <DialogActions className="p-0" style={{ display: "block" }}>
+                    <div className="flex flex-middle flex-space-between">
+                      <div>
+                        <Chip variant="outlined" style={{ color: red[500] }} label="Changes are also affected on News" icon={<Error style={{ color: red[500] }} />} />
+
+                      </div>
+                      <div>
+                        <Button onClick={this.handleClose} color="primary">
+                          Cancel
                 </Button>
-                    {type === "new" ? (
-                      <Button color="primary" type="submit">
-                        Add
+                        {type === "new" ? (
+                          <Button color="primary" type="submit">
+                            Add
                   </Button>
-                    ) : (
-                        <Button color="primary" type="submit">
-                          Save
+                        ) : (
+                            <Button color="primary" type="submit">
+                              Save
                   </Button>
-                      )}
+                          )}
+                      </div>
+                    </div>
                   </DialogActions>
                 </ValidatorForm>
               </DialogContent>
@@ -503,4 +520,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {setLoader, newsTypeListApi })(newsType);
+export default connect(mapStateToProps, { setLoader, newsTypeListApi })(newsType);

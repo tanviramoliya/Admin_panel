@@ -31,15 +31,18 @@ import {
   TableContainer,
   InputAdornment,
   TableSortLabel,
+  Chip,Tooltip
 } from "@material-ui/core";
 import { ValidatorForm } from "react-material-ui-form-validator";
 
 import ConfirmationDialog from "components/matx/ConfirmationDialog";
 import { status } from "../../../../utility/config";
 import { toastr } from "react-redux-toastr";
-import { Search } from "@material-ui/icons";
+import { Search,Error } from "@material-ui/icons";
 import AccessDeniedPage from "../../sessions/accessdeniedPage";
 import SimpleReactValidator from "simple-react-validator";
+import { red } from "@material-ui/core/colors";
+
 
 import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 
@@ -263,7 +266,7 @@ class category extends Component {
               this.validator.hideMessageFor("categoryName");
               this.validator.hideMessageFor("isActive");
               this.validator.hideMessageFor("serialNo");
-          
+
             } else {
               toastr.warning(updateCategory.data.message);
             }
@@ -275,10 +278,10 @@ class category extends Component {
         // this.props.setLoader(false);
 
       }
-    else {
-      this.validator.showMessages();
+      else {
+        this.validator.showMessages();
+      }
     }
-  }
   };
   handleChange = (event) => {
     event.persist();
@@ -401,8 +404,12 @@ class category extends Component {
                             {page * rowsPerPage + index + 1}
 
                           </TableCell>
-                          <TableCell className="p-0">
+                          
+                          <TableCell className="p-0" arrow placement="bottom">
+                          
+
                             {category.categoryName}
+                          
                           </TableCell>
                           <TableCell className="p-0">
                             <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
@@ -443,7 +450,7 @@ class category extends Component {
                           </Icon>
                             </IconButton>
                           </TableCell>
-                          
+
                         </TableRow>
                       )) :
                       <h1>
@@ -486,6 +493,7 @@ class category extends Component {
           <div>
             <Dialog
               open={openModal}
+
               aria-labelledby="form-dialog-title"
               fullWidth={true}
             >
@@ -512,10 +520,21 @@ class category extends Component {
                       value={serialNo}
                       onChange={this.handleChange}
                       variant="outlined"
+                      error={this.validator.message(
+                        "serialNo",
+                        serialNo,
+                        "required"
+                      )}
+                      helperText={this.validator.message(
+                        "serialNo",
+                        serialNo,
+                        "required"
+                      )}
+                      onBlur={() => this.validator.showMessageFor("serialNo")}
                     />
                   </FormControl>
                   <div style={{ marginTop: "25px" }}>
-                  <TextField
+                    <TextField
                       className="mb-16 w-100"
                       label="Category Name"
                       onChange={this.handleChange}
@@ -538,7 +557,7 @@ class category extends Component {
                       onBlur={() => this.validator.showMessageFor("categoryName")}
                     />
 
-    
+
                   </div>
                   <RadioGroup
                     value={isActive}
@@ -559,19 +578,27 @@ class category extends Component {
                       labelPlacement="end"
                     />
                   </RadioGroup>
-                  <DialogActions className="p-0">
-                    <Button onClick={this.handleClose} color="primary">
-                      Cancel
+                  <DialogActions className="p-0" style={{ display: "block" }}>
+                    <div className="flex flex-middle flex-space-between">
+                      <div>
+                        <Chip variant="outlined" style={{ color: red[500] }} label="Changes are also affected on News" icon={<Error style={{ color: red[500] }} />} />
+
+                      </div>
+                      <div>
+                        <Button onClick={this.handleClose} color="primary">
+                          Cancel
                   </Button>
-                    {type === "new" ? (
-                      <Button color="primary" type="submit">
-                        Add
+                        {type === "new" ? (
+                          <Button color="primary" type="submit">
+                            Add
                     </Button>
-                    ) : (
-                        <Button color="primary" type="submit">
-                          Save
+                        ) : (
+                            <Button color="primary" type="submit">
+                              Save
                     </Button>
-                      )}
+                          )}
+                      </div>
+                    </div>
                   </DialogActions>
                 </ValidatorForm>
               </DialogContent>
@@ -588,4 +615,4 @@ const mapStateToProps = (state) => {
   return { categoryList };
 };
 
-export default connect(mapStateToProps, { setLoader , categoryListApi })(category);
+export default connect(mapStateToProps, { setLoader, categoryListApi })(category);
