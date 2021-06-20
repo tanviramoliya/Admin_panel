@@ -47,7 +47,7 @@ class comments extends Component {
     commentsList: [],
     count: "",
     sortingField: "createdDate",
-    sortingOrder: "asc",
+    sortingOrder: "desc",
     keyword: "",
     rowsPerPage: 10,
     page: 0,
@@ -180,11 +180,11 @@ class comments extends Component {
   handleClose = () => {
     this.setState({
       openReadModal: false,
-      userName: "",
-      emailId: "",
-      token: "",
-      newsId: "",
-      comment: ""
+      // userName: "",
+      // emailId: "",
+      // token: "",
+      // newsId: "",
+      // comment: ""
       //read: false
     });
     this.validator.hideMessageFor("replyMessage");

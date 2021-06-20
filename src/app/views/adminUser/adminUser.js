@@ -33,7 +33,7 @@ class AdminUser extends Component {
     aclRoleNameList: [],
     count: "",
     sortingField: "updatedTime",
-    sortingOrder: "asc",
+    sortingOrder: "desc",
     keyword: "",
     rowsPerPage: 10,
     page: 0,

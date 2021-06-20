@@ -55,7 +55,7 @@ class category extends Component {
     categoryList: [],
     count: "",
     sortingField: "createdDate",
-    sortingOrder: "asc",
+    sortingOrder: "desc",
     keyword: "",
     rowsPerPage: 10,
     page: 0,
@@ -215,6 +215,9 @@ class category extends Component {
                 isActive: "active",
                 serialNo: 1,
               });
+              this.validator.hideMessageFor("categoryName");
+              this.validator.hideMessageFor("isActive");
+              this.validator.hideMessageFor("serialNo");
             } else {
               toastr.warning(createCategory.data.message);
             }

@@ -32,7 +32,7 @@ class newsUpdate extends Component {
     newsList: [],
     count: "",
     sortingField: "updatedTime",
-    sortingOrder: "asc",
+    sortingOrder: "desc",
     keyword: "",
     rowsPerPage: 10,
     page: 0,
@@ -363,8 +363,8 @@ class newsUpdate extends Component {
                 <Table style={{ whiteSpace: "pre" }} stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell className="px-0 py-8" width="10%">Sr.No</TableCell>
-                      <TableCell className="px-0  py-8" width="20%">
+                      <TableCell className="px-0 py-8" width="5%">Sr.No</TableCell>
+                      <TableCell className="px-0  py-8" width="30%">
                         <TableSortLabel
                           active={sortingField === 'newsText'}
                           direction={sortingOrder}
@@ -374,7 +374,7 @@ class newsUpdate extends Component {
                       </TableSortLabel>
 
                       </TableCell>
-                      <TableCell className="px-0  py-8" width="20%">
+                      <TableCell className="px-0  py-8" width="30%">
                         <TableSortLabel
                           active={sortingField === 'newsLink'}
                           direction={sortingOrder}
@@ -383,7 +383,7 @@ class newsUpdate extends Component {
                           News Link
                       </TableSortLabel>
                       </TableCell>
-                      <TableCell className="px-0 py-8" width="15%">
+                      <TableCell className="px-0 py-8" width="10%">
                         <TableSortLabel
                           active={sortingField === 'isPublished'}
                           direction={sortingOrder}
@@ -408,7 +408,7 @@ class newsUpdate extends Component {
                       //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((newsUpdate, index) => (
                         <TableRow key={index}>
-                          <TableCell className="p-0" >
+                          <TableCell className="p-0">
                             {page * rowsPerPage + index + 1}
                           </TableCell>
                           <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
@@ -417,7 +417,7 @@ class newsUpdate extends Component {
                           <TableCell className="p-0" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                             {newsUpdate.newsLink}
                           </TableCell>
-                          <TableCell className="p-0">
+                          <TableCell className="p-0" width="10%">
                             <Switch
                               onClick={() => this.changeStatus(newsUpdate.newsToken, newsUpdate.published)}
                               name="published"

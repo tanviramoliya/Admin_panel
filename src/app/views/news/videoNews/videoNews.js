@@ -25,7 +25,7 @@ class videoNews extends Component {
     videoNewsList: [],
     count: "",
     sortingField: "createdTime",
-    sortingOrder: "asc",
+    sortingOrder: "desc",
     keyword: "",
     rowsPerPage: 10,
     page: 0,

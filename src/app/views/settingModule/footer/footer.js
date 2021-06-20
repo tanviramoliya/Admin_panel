@@ -294,12 +294,12 @@ class footer extends Component {
                     error={this.validator.message(
                       "address",
                       this.state.address,
-                      "required"
+                      "required|max:300"
                     )}
                     helperText={this.validator.message(
                       "address",
                       this.state.address,
-                      "required"
+                      "required|max:300"
                     )}
                     onBlur={() => this.validator.showMessageFor("address")}
                   />

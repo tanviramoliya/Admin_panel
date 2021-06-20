@@ -47,7 +47,7 @@ class newsType extends Component {
     newsTypeList: [],
     count: "",
     sortingField: "createdDate",
-    sortingOrder: "asc",
+    sortingOrder: "desc",
     keyword: "",
     rowsPerPage: 10,
     page: 0,

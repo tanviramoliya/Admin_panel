@@ -49,7 +49,7 @@ class inquiry extends Component {
     inquiryList: [],
     count: "",
     sortingField: "inquiryDate",
-    sortingOrder: "asc",
+    sortingOrder: "desc",
     keyword: "",
     rowsPerPage: 10,
     page: 0,
@@ -61,7 +61,6 @@ class inquiry extends Component {
     token: "",
     subject: "",
     message: "",
-    contactNumber: "",
     inquiryDate: "",
 
     read: false,
@@ -173,7 +172,6 @@ class inquiry extends Component {
         token: data.token,
         subject: data.subject,
         message: data.message,
-        contactNumber: data.contactNumber,
         inquiryDate: data.inquiryDate,
         replyMessage: data.inquiryReply !== null ? data.inquiryReply.replyMessage : null,
         replySubject: data.inquiryReply !== null ? data.inquiryReply.subject : null,
@@ -194,7 +192,6 @@ class inquiry extends Component {
         token: data.token,
         subject: data.subject,
         message: data.message,
-        contactNumber: data.contactNumber,
         read: data.read
       });
     } else {
@@ -211,7 +208,6 @@ class inquiry extends Component {
       token: "",
       subject: "",
       message: "",
-      contactNumber: "",
       replyMessage: "",
       replySubject: ""
       //read: false
@@ -249,7 +245,6 @@ class inquiry extends Component {
               message: "",
               replyMessage: "",
               replySubject: "",
-              contactNumber: "",
               read: false
 
             });
@@ -333,7 +328,6 @@ class inquiry extends Component {
       emailId,
       subject,
       message,
-      contactNumber,
       inquiryDate,
       openReadModal,
       openReplyModal,
@@ -463,16 +457,7 @@ class inquiry extends Component {
                         </TableSortLabel>
 
                       </TableCell>
-                      <TableCell className="px-0 py-8" width="10%">
-                        <TableSortLabel
-                          active={sortingField === 'contactNumber'}
-                          direction={sortingOrder}
-                          onClick={() => this.handleSortingOrder("contactNumber", sortingOrder)}
-                        >
-                          Contact Number
-                        </TableSortLabel>
-
-                      </TableCell>
+                     
                       <TableCell className="px-0 py-8" width="10%">
                         Action
                     </TableCell>
@@ -550,14 +535,7 @@ class inquiry extends Component {
                             >
                               {inquiryUpdate.emailId}
                             </TableCell>
-                            <TableCell
-                              className="ellipse p-0"
-                              onClick={(event) =>
-                                this.handleClick(event, inquiryUpdate.token)
-                              }
-                            >
-                              {inquiryUpdate.contactNumber}
-                            </TableCell>
+                            
                             <TableCell className="p-0">
                               <IconButton className="p-8">
                                 <Icon
@@ -683,22 +661,7 @@ class inquiry extends Component {
                       }}
 
                     />
-                    <TextField
-                      className="mb-16 w-100"
-                      label="User Contact Number"
-                      type="text"
-                      name="contactNumber"
-                      value={contactNumber}
-                      disabled={true}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Phone />
-                          </InputAdornment>
-                        ),
-                      }}
-
-                    />
+                    
                   </Grid>
                 </Grid>
                 <TextField

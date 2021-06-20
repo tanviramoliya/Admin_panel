@@ -456,12 +456,12 @@ class aboutUs extends Component {
                       error={this.validator.message(
                         "heading",
                         this.state.heading,
-                        "required"
+                        "required|max:300"
                       )}
                       helperText={this.validator.message(
                         "heading",
                         this.state.heading,
-                        "required"
+                        "required|max:300"
                       )}
                       onBlur={() => this.validator.showMessageFor("heading")}
                     />
@@ -469,7 +469,7 @@ class aboutUs extends Component {
                       error={this.validator.message(
                         "goal",
                         this.state.goal,
-                        "required"
+                        "required|max:300"
                       )}
                       id="outlined-basic"
                       multiline
@@ -486,7 +486,7 @@ class aboutUs extends Component {
                       helperText={this.validator.message(
                         "goal",
                         this.state.goal,
-                        "required"
+                        "required|max:300"
                       )}
                     />
                     <TextField
@@ -504,12 +504,12 @@ class aboutUs extends Component {
                       error={this.validator.message(
                         "vision",
                         this.state.vision,
-                        "required"
+                        "required|max:300"
                       )}
                       helperText={this.validator.message(
                         "vision",
                         this.state.vision,
-                        "required"
+                        "required|max:300"
                       )}
                       onBlur={() => this.validator.showMessageFor("vision")}
                     />
@@ -529,12 +529,12 @@ class aboutUs extends Component {
                       error={this.validator.message(
                         "abstraction",
                         this.state.abstraction,
-                        "required"
+                        "required|max:300"
                       )}
                       helperText={this.validator.message(
                         "abstraction",
                         this.state.abstraction,
-                        "required"
+                        "required|max:300"
                       )}
                       onBlur={() =>
                         this.validator.showMessageFor("abstraction")
@@ -555,12 +555,12 @@ class aboutUs extends Component {
                       error={this.validator.message(
                         "mission",
                         this.state.mission,
-                        "required"
+                        "required|max:300"
                       )}
                       helperText={this.validator.message(
                         "mission",
                         this.state.mission,
-                        "required"
+                        "required|max:300"
                       )}
                       onBlur={() => this.validator.showMessageFor("mission")}
                     />
@@ -579,12 +579,12 @@ class aboutUs extends Component {
                       error={this.validator.message(
                         "objective",
                         this.state.objective,
-                        "required"
+                        "required|max:300"
                       )}
                       helperText={this.validator.message(
                         "objective",
                         this.state.objective,
-                        "required"
+                        "required|max:300"
                       )}
                       onBlur={() => this.validator.showMessageFor("objective")}
                     />
