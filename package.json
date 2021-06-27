@@ -83,6 +83,6 @@
     "cross-env": "^5.2.0",
     "gh-pages": "^2.1.1"
   },
-  "proxy": "http://localhost:9090",
+  "proxy": "http://localhost:7070",
   "homepage": "http://localhost:8080"
 }

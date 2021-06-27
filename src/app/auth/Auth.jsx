@@ -39,7 +39,7 @@ class Auth extends Component {
       if(Cookies.get("GNTV-SESSIONID")){
           this.props.checkLoginApi();
       }
-    }, 12000000);
+    }, 30000);
 
     // You need to send token to your server to check token is valid
     // modify loginWithToken method in jwtService

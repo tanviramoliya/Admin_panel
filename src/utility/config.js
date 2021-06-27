@@ -1,5 +1,5 @@
-export const mainUrl = 'https://localhost:9090/';
-export const authUrl =  'https://localhost:9090/';
+export const mainUrl = 'https://localhost:7070/';
+export const authUrl =  'https://localhost:7070/';
 export const status = {
     unAuthorized: 401,
     forbidden: 403,

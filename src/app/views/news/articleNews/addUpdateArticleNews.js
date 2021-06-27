@@ -94,7 +94,7 @@ categoryNameList = async () => {
   this.setState({ categoryNameList: this.props.categoryNameList });
 };
 getSubCatByCategory = (category) => {
-  this.setState({ category: category.categoryName, categoryToken: category.categoryToken })
+  this.setState({ category: category.categoryName, categoryToken: category.categoryToken,subCategory:"" })
   this.setSubCategory(category.categoryToken);
 }
 setSubCategory = async (categoryToken) => {
