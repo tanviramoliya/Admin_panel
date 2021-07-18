@@ -86,6 +86,12 @@ class AclRole extends Component {
   getAclRoleList = async () => {
     await this.props.aclRoleListApi();
     this.setState({ aclRoleList: this.props.aclRoleList });
+    if(this.props.aclRoleList){
+      let a = this.props.aclRoleList.find(e => e.roleToken === localStorage.getItem('roleToken'));
+      localStorage.setItem('permission',a.permission);
+      console.log(a);
+    }
+   // console.log(this.props.aclRoleList);
   };
   handleChangePage = (event, newPage) => {
     this.setState({ page: newPage });
@@ -241,6 +247,7 @@ class AclRole extends Component {
               toastr.success(updateAclRole.data.message);
               if (localStorage.getItem("roleToken") === updateAclRole.data.data) {
                 localStorage.setItem("permission", JSON.stringify(permission));
+                this.setState({perData:JSON.stringify(permission)});
               } this.getAclRoleList();
               this.setState({
                 openModal: false,

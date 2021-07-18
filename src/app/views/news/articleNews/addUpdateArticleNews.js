@@ -200,6 +200,7 @@ handleSubmit = async (event) => {
     data.append("isCritical", critical);
     data.append("tags", tags);
     data.append("content", content);
+
     if (type === 'add') {
       this.props.setLoader(true);
       const createArtivleNews = await addArticleNewsApi(data);
@@ -242,11 +243,20 @@ handleSubmit = async (event) => {
   }
 };
 onFileChange = (e) => {
+  if (
+    e.target.files[0].type !== "image/jpeg" &&
+    e.target.files[0].type !== "image/png"
+  ) {
+    toastr.error("file should be a image of jpeg or png format");
+    return false;
+  }
   this.setState({ selectedFile: e.target.files[0] });
 };
 
 handleChange = (event) => {
   event.persist();
+  
+  
   this.setState({ [event.target.name]: event.target.value });
 };
 handleDelete = (event) => {
@@ -297,10 +307,11 @@ render() {
         <div>
           <FormControlLabel
             control={
-              <Switch onClick={() => this.setState({
+              <Switch onClick={() => {
+                this.setState({
                 publish:
-                  !publish
-              })} name="publish" color="primary" checked={publish} />
+                  !publish, critical : !publish?critical:false
+              })}} name="publish" color="primary" checked={publish} />
             }
             label="Publish This News"
           />
@@ -308,10 +319,15 @@ render() {
         <div>
           <FormControlLabel
             control={
-              <Switch onClick={() => this.setState({
+              <Switch onClick={() => {
+                if(!publish){
+                  toastr.warning("you can't nofity to the user before publish.");
+                  return ;
+                  }
+                this.setState({
                 critical:
                   !critical
-              })} name="critical" checked={critical} />
+              })}} name="critical" checked={critical} />
             }
             label="Notify To Subscriber"
           />
@@ -571,6 +587,7 @@ render() {
             name="content"
             handleContentChange={this.handleContentChange}
             placeholder="insert text here..."
+           
           />
         </Grid>
         <Grid container spacing={3}>

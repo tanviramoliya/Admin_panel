@@ -7,7 +7,8 @@ import ReactQuill from "react-quill";
  */
 
 const RichTextEditor = ({ content, placeholder, handleContentChange,readOnly }) => {
-  return (
+
+ return (
     <ReactQuill
       theme="snow"
       onChange={handleContentChange}
@@ -15,7 +16,8 @@ const RichTextEditor = ({ content, placeholder, handleContentChange,readOnly }) 
       modules={RichTextEditor.modules}
       formats={RichTextEditor.formats}
       placeholder={placeholder}
-      readOnly={readOnly}
+      readOnly={readOnly}  
+      //scrollingContainer= 'body'   
     />
   );
 };

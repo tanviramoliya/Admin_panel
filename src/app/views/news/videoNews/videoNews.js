@@ -196,6 +196,15 @@ class videoNews extends Component {
     }
   }
 
+  handleComments = (videoNewsId) => {
+    const { perData } = this.state;
+    if (perData.key === 'News' && (perData.value === "RO" ||perData.value === "RW" )) {
+      this.props.history.push({ pathname: '/comments', state: { keyword: videoNewsId } });
+    } else {
+      toastr.error("Access Denied!")
+    }
+  }
+
 
 
   render() {
@@ -378,11 +387,10 @@ class videoNews extends Component {
                               >visibility</Icon>
                             </IconButton>
                             <IconButton className="p-8">
-                              <Icon
-                                color="default"
-                              // onClick={() =>
-                              //   this.deleteAdminUserClicked(VideoNews.videoNewsId)}
-                              >comment</Icon>
+                            <Icon
+                                  color="default"
+                                 onClick={() => this.handleComments(VideoNews.videoNewsId)}
+                                >comment</Icon>
                             </IconButton>
 
                           </TableCell>

@@ -409,7 +409,7 @@ class Profile extends Component {
                     className="ml-4"
                     startIcon={
                     <Icon>highlight_off</Icon>}
-                    >Cancle
+                    >Cancel
                   </Button>
                 </>
               ) : null}
@@ -505,7 +505,7 @@ class Profile extends Component {
                     type="reset"
                     className="ml-4"
                     startIcon={<Icon>highlight_off</Icon>}
-                  >Cancle
+                  >Cancel
                   </Button>
                 </>
               </ValidatorForm>

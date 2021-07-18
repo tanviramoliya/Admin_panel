@@ -48,7 +48,7 @@ class comments extends Component {
     count: "",
     sortingField: "createdDate",
     sortingOrder: "desc",
-    keyword: "",
+    keyword:  this.props.location.state?this.props.location.state.keyword:"",
     rowsPerPage: 10,
     page: 0,
     deleteModal: false,
@@ -78,9 +78,9 @@ class comments extends Component {
     await this.getCommentsList();
   };
   getCommentsList = async () => {
-    const { rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
+    const { id,rowsPerPage, page, sortingField, sortingOrder, keyword } = this.state;
     let data = {
-      keyword: keyword,
+      keyword: id?id:keyword,
       pageSize: rowsPerPage,
       pageNo: page,
       field: sortingField,

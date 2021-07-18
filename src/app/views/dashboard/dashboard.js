@@ -517,8 +517,8 @@ class Dashboard1 extends Component {
                         </h6>
                       </div>
                       <Tooltip title="View Inquires Details" placement="top">
-                        <IconButton>
-                          <Icon>arrow_right_alt</Icon>
+                        <IconButton onClick={() =>  this.props.history.push('/inquiry')}>
+                          <Icon >arrow_right_alt</Icon>
                         </IconButton>
                       </Tooltip>
                     </div>
