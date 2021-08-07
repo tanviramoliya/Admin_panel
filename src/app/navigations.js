@@ -42,11 +42,11 @@ export const navigations = [
     icon: "verified_user",
     path: "/role"
   },
-  {
-    name: "Subscriber",
-    icon: "subscriptions",
-    path: "/subscriber"
-  },
+  // {
+  //   name: "Subscriber",
+  //   icon: "subscriptions",
+  //   path: "/subscriber"
+  // },
   {
     name: "Inquiry",
     icon: "live_help",

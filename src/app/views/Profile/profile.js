@@ -14,6 +14,7 @@ import {
   Email,
   Person,
 } from "@material-ui/icons";
+import { setNameSettings } from "redux/actions/LayoutActions";
 
 import {
   getAdminInfo,
@@ -128,6 +129,9 @@ class Profile extends Component {
       if (updateProfileInfo) {
         if (updateProfileInfo.status === status.success) {
           if (updateProfileInfo.data.code === status.success) {
+            let name= {firstName:firstName,lastName:lastName};
+            localStorage.setItem("userName",JSON.stringify(name));
+            this.props.setNameSettings(true);
             toastr.success(updateProfileInfo.data.message);
             this.setState({
               edit: false
@@ -517,11 +521,10 @@ class Profile extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  const { info } = state.profile;
-
+  const { info } = state.profile;  
   return { info };
 };
 
-export default connect(mapStateToProps, { setLoader, getAdminInfo,changeAdminPassApi, updateAdminInfo })(
+export default connect(mapStateToProps, { setLoader,setNameSettings, getAdminInfo,changeAdminPassApi, updateAdminInfo })(
   Profile
 );

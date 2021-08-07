@@ -171,6 +171,8 @@ class addUpdateVideoNews extends Component {
       tags,
       categoryToken,
       content, type } = this.state
+      
+
     if (
       this.validator.fieldValid("videoLink") &&
       this.validator.fieldValid("title") &&
@@ -182,9 +184,20 @@ class addUpdateVideoNews extends Component {
       this.validator.fieldValid("state") &&
       this.validator.fieldValid("publishedBy")
     ) {
+      let embedLink = '';
+      if(videoLink.includes('embed')){
+        embedLink = videoLink;
+      }
+      else{
+        let temp = videoLink.split('www.youtube.com/');
+
+        embedLink = temp[0]+'www.youtube.com/embed/'+temp[1];
+
+      }
+      
       let data = {
         videoNewsId: videoNewsId,
-        videoLink: videoLink,
+        videoLink: embedLink,
         title: title,
         newsType: newsType,
         category: category,

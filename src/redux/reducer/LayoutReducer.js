@@ -1,6 +1,6 @@
 import {
   SET_LAYOUT_SETTINGS,
-  SET_DEFAULT_LAYOUT_SETTINGS
+  SET_DEFAULT_LAYOUT_SETTINGS,SET_NAME_SETTINGS
 } from "../actions/LayoutActions";
 import { MatxLayoutSettings } from "../../app/MatxLayout/settings";
 
@@ -10,7 +10,8 @@ const initialState = {
   },
   defaultSettings: {
     ...MatxLayoutSettings
-  }
+  },
+  nameSettings : false
 };
 
 const LayoutReducer = (state = initialState, action) => {
@@ -25,6 +26,11 @@ const LayoutReducer = (state = initialState, action) => {
         ...state,
         defaultSettings: { ...action.data }
       };
+      case SET_NAME_SETTINGS:
+      return {
+        ...state,
+        nameSettings:action.data 
+            };
     default:
       return { ...state };
   }

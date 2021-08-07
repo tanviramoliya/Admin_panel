@@ -15,7 +15,7 @@ export const loginApi = (loginData) => {
         Cookies.set("GNTV-SESSIONID", res.data.data.JSESSIONID);
         localStorage.setItem("permission",JSON.stringify(res.data.data.permission));
         localStorage.setItem("roleToken",res.data.data.roleToken);
-
+        localStorage.setItem("userName",JSON.stringify(res.data.data.name));
         toastr.success("Logged in successfully");
         dispatch(setLoginFlag(true));
         history.push("/dashboard");
@@ -69,6 +69,7 @@ export const logoutApi = () => {
       Cookies.remove("GNTV-SESSIONID");
       localStorage.removeItem("permission");
       localStorage.removeItem("roleToken");
+      localStorage.removeItem("useName");
       dispatch(setLoginFlag(false));
       history.push("/login");
       toastr.success(res.data.message);

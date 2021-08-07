@@ -51,7 +51,6 @@ const routes = [
   ...settingRoutes,
   ...dashboardRoutes,
   ...newsUpdateRoutes,
-  ...subscriberRoutes,
   ...inquiryRoutes,
   ...commentsRoutes,
   ...formsRoutes,

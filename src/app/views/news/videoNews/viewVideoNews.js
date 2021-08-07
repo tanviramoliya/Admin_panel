@@ -17,7 +17,8 @@ import "@pathofdev/react-tag-input/build/index.css";
 import ReactTagInput from "@pathofdev/react-tag-input";
 import {
 
-    getSingleVideoNewsApi
+    getSingleVideoNewsApi,
+    getCommentCountApi
 } from "../../../../redux/actions/index";
 import './style.css';
 import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
@@ -44,13 +45,22 @@ class viewVideoNews extends Component {
         tags: [],
         content: "",
         type: "",
+        commentCount:0
 
         //content: `<h1>Matx | Angular material admin</h1><p><a href="http://devegret.com/" target="_blank"><strong>DevEgret</strong></a></p><p><br></p><p><strong>Lorem Ipsum</strong>&nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries</p>`,
     };
 
     componentDidMount = async () => {
        
-        await this.getVideoNewsData();
+        await this.getVideoNewsData();await this.getCommentCount();
+    }
+    getCommentCount = async () => {
+        const { videoNewsId } = this.state;
+        const commentCount = await getCommentCountApi(videoNewsId);
+        if (commentCount) {
+           this.setState({commentCount:commentCount.data});
+           console.log('commentcount---'+this.state.commentCount);
+        }
     }
     getVideoNewsData = async () => {
         this.props.setLoader(true);
@@ -103,6 +113,7 @@ class viewVideoNews extends Component {
             critical,
             tags,
             content,
+            commentCount
 
         } = this.state;
         
@@ -117,32 +128,20 @@ class viewVideoNews extends Component {
                             ]}
                         />
 
-                        <div>
-                            <Badge badgeContent={67} color="secondary">
-                                <Chip
-                                    //size="small"
-                                    icon={<Icon color="error">favorite</Icon>}
-                                    label="Likes"
-                                //clickable
-                                //color="primary"
-                                //onDelete={handleDelete}
-                                //deleteIcon={<DoneIcon />}
-                                />
-                            </Badge>
-                        </div>
-                        <div>
-                            <Badge badgeContent={67} color="secondary">
-                                <Chip
-                                    //size="small"
-                                    icon={<Icon color="primary">comments</Icon>}
-                                    label="Comments"
-                                //clickable
-                                //color="primary"
-                                //onDelete={handleDelete}
-                                //deleteIcon={<DoneIcon />}
-                                />
-                            </Badge>
-                        </div>
+<div>
+                        <Badge  badgeContent={commentCount} color="secondary">
+                            <Chip
+                                //size="small"
+                                icon={<Icon color="primary">comments</Icon>}
+                                label="Comments"
+                                onClick={ () => {this.props.history.push({ pathname: '/comments', state: { keyword: videoNewsId } })}}
+                            //clickable
+                            //color="primary"
+                            //onDelete={handleDelete}
+                            //deleteIcon={<DoneIcon />}
+                            />
+                        </Badge>
+                    </div>
                         <div>
 
                             <FormControlLabel

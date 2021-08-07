@@ -4,12 +4,14 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
-  Button,
+  Button,TextField,InputAdornment
 } from "@material-ui/core";
-import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
+import { ValidatorForm } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import { loginApi } from "../../../redux/actions/LoginActions";
 import { setLoader } from "../../../redux/actions/loaderAction/loaderAction";
+import {  Email } from '@material-ui/icons';
+import SimpleReactValidator from "simple-react-validator";
 
 const styles = (theme) => ({
   wrapper: {
@@ -26,6 +28,22 @@ const styles = (theme) => ({
 });
 
 class LogIn extends Component {
+
+  constructor(props) {
+    super(props);
+    this.validator = new SimpleReactValidator({ 
+      autoForceUpdate: this,
+      validators: {
+      regex: {  // name the rule
+        message: 'The password contains at least 1 digit,1 lowercase,1 upercase,1 special symbol',
+        rule: (val, params, validator) => {
+          return validator.helpers.testRegex(val, /^(?:(?=.*\d)(?=.*[!@#$%^&*()])(?=.*[a-z])(?=.*[A-Z]).*)$/) && params.indexOf(val) === -1
+        },
+        messageReplace: (message, params) => message.replace(':values', this.helpers.toSentence(params)),  // optional
+        required: true // optional
+      }
+    } });
+  }
   state = {
     email: "",
     password: "",
@@ -49,6 +67,10 @@ class LogIn extends Component {
   };
   handleFormSubmit = async (event) => {
     let { email, password } = this.state;
+    if (
+      this.validator.allValid()
+
+    ) {
     let  loginData = new FormData();
     loginData.append("credential", email);
     loginData.append("password", password);
@@ -59,6 +81,10 @@ class LogIn extends Component {
       localStorage.setItem('remember',JSON.stringify({ email : "", password : ""}))
     }
    await this.props.loginApi(loginData);  
+  }else{
+    this.validator.showMessages();
+
+  }
 };
   handleRemember = () => {
     const { remember, email, password } = this.state;
@@ -85,31 +111,52 @@ class LogIn extends Component {
               <Grid item lg={7} md={7} sm={7} xs={12}>
                 <div className="p-36 h-100 bg-light-gray position-relative">
                   <ValidatorForm ref="form" onSubmit={this.handleFormSubmit}>
-                    <TextValidator
-                      className="mb-24 w-100"
-                      variant="outlined"
-                      label="Email"
-                      onChange={this.handleChange}
-                      type="email"
-                      name="email"
-                      value={email}
-                      validators={["required", "isEmail"]}
-                      errorMessages={[
-                        "this field is required",
-                        "email is not valid",
-                      ]}
-                    />
-                    <TextValidator
-                      className="mb-16 w-100"
-                      label="Password"
-                      variant="outlined"
-                      onChange={this.handleChange}
-                      name="password"
-                      type="password"
-                      value={password}
-                      validators={["required"]}
-                      errorMessages={["this field is required"]}
-                    />
+                  <TextField
+                  className="mb-24 w-100"
+                  label="Email Address"
+                  onChange={this.handleChange}
+                  type="email"
+                  name="email"
+                  value={email}
+                  placeholder="Enter Email Address"
+                  variant="outlined"
+                 
+                  error={this.validator.message(
+                    "email",
+                    email,
+                    "required|email"
+                  )}
+                  helperText={this.validator.message(
+                    "email",
+                    email,
+                    "required|email"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("email")}
+                />
+                  
+                  <TextField
+                  className="mb-24 w-100"
+                  label="Password"
+                  onChange={this.handleChange}
+                  type="password"
+                  name="password"
+                  value={password}
+                  placeholder="Enter Your Password"
+                  variant="outlined"
+                 
+                  error={this.validator.message(
+                    "password",
+                    password,
+                    "required|min:8|max:15|regex"
+                  )}
+                  helperText={this.validator.message(
+                    "password",
+                    password,
+                    "required|min:8|max:15|regex"
+                  )}
+                  onBlur={() => this.validator.showMessageFor("password")}
+                />
+                   
                     <FormControlLabel
                       className="mb-8"
                       name="remember"

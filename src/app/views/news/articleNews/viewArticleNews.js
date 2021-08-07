@@ -20,7 +20,8 @@ import ReactTagInput from "@pathofdev/react-tag-input";
 import { setLoader } from "../../../../redux/actions/loaderAction/loaderAction";
 import {
 
-    getSingleArticleNewsApi
+    getSingleArticleNewsApi,
+    getCommentCountApi
 } from "../../../../redux/actions/index";
 import './style.css';
 import { connect } from "react-redux";
@@ -49,7 +50,8 @@ class viewArticleNews extends Component {
         selectedFile: "",
         fileData: "",
         fileName: "",
-        imageModel: false
+        imageModel: false,
+        commentCount:0
 
         //content: `<h1>Matx | Angular material admin</h1><p><a href="http://devegret.com/" target="_blank"><strong>DevEgret</strong></a></p><p><br></p><p><strong>Lorem Ipsum</strong>&nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries</p>`,
     };
@@ -57,6 +59,15 @@ class viewArticleNews extends Component {
     componentDidMount = async () => {
 
         await this.getArticleNewsData();
+        await this.getCommentCount();
+    }
+    getCommentCount = async () => {
+        const { articleNewsId } = this.state;
+        const commentCount = await getCommentCountApi(articleNewsId);
+        if (commentCount) {
+           this.setState({commentCount:commentCount.data});
+           console.log('commentcount---'+this.state.commentCount);
+        }
     }
     getArticleNewsData = async () => {
         this.props.setLoader(true);
@@ -114,6 +125,7 @@ class viewArticleNews extends Component {
             content,
             imageModel,
             fileData, //binary
+            commentCount
 
 
         } = this.state;
@@ -130,24 +142,12 @@ class viewArticleNews extends Component {
                     />
 
                     <div>
-                        <Badge badgeContent={67} color="secondary">
-                            <Chip
-                                //size="small"
-                                icon={<Icon color="error">favorite</Icon>}
-                                label="Likes"
-                            //clickable
-                            //color="primary"
-                            //onDelete={handleDelete}
-                            //deleteIcon={<DoneIcon />}
-                            />
-                        </Badge>
-                    </div>
-                    <div>
-                        <Badge badgeContent={67} color="secondary">
+                        <Badge  badgeContent={commentCount} color="secondary">
                             <Chip
                                 //size="small"
                                 icon={<Icon color="primary">comments</Icon>}
                                 label="Comments"
+                                onClick={ () => {this.props.history.push({ pathname: '/comments', state: { keyword: articleNewsId } })}}
                             //clickable
                             //color="primary"
                             //onDelete={handleDelete}
@@ -159,7 +159,7 @@ class viewArticleNews extends Component {
 
                         <FormControlLabel
                             control={
-                                <Switch color="secondary" name="publish" checked={publish} style={{ cursor: 'not-allowed' }} />
+                                <Switch color="primary" name="publish" checked={publish} style={{ cursor: 'not-allowed' }} />
                             }
                             label="Published"
                         />
@@ -167,7 +167,7 @@ class viewArticleNews extends Component {
                     <div>
                         <FormControlLabel
                             control={
-                                <Switch color="primary" name="critical" checked={critical} style={{ cursor: 'not-allowed' }} />
+                                <Switch  name="critical" checked={critical} style={{ cursor: 'not-allowed' }} />
                             }
                             label="Notified"
                         />

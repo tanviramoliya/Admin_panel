@@ -9,7 +9,7 @@ import {
   Avatar
 } from "@material-ui/core";
 import { connect } from "react-redux";
-import { setLayoutSettings } from "redux/actions/LayoutActions";
+import { setLayoutSettings,setNameSettings } from "redux/actions/LayoutActions";
 import { logoutApi } from "redux/actions/LoginActions";
 import { PropTypes } from "prop-types";
 import { MatxMenu } from "../../../components/matx/index";
@@ -45,17 +45,16 @@ class Layout1Topbar extends Component {
     });
   };
   componentDidMount = async () => {
-    await this.getCurrentAdmin();
+   await this.getCurrentAdmin();
   };
-
-
+ 
   getCurrentAdmin = async () => {
     
-    let res = await getCurrentAdminNameApi();
+    let res = JSON.parse(localStorage.getItem("userName"));
 
     this.setState({
-      firstName: res.data.data.firstName,
-      lastName: res.data.data.lastName,
+      firstName: res.firstName,
+      lastName: res.lastName,
       
     });
   };
@@ -158,10 +157,11 @@ const mapStateToProps = (state) => ({
   setLayoutSettings: PropTypes.func.isRequired,
   logoutUser: PropTypes.func.isRequired,
   settings: state.layout.settings,
+  nameSettings : state.layout.settings,
 });
 
 export default withStyles(styles, { withTheme: true })(
   withRouter(
-    connect(mapStateToProps, { setLayoutSettings, logoutApi })(Layout1Topbar)
+    connect(mapStateToProps, { setLayoutSettings,setNameSettings, logoutApi })(Layout1Topbar)
   )
 );

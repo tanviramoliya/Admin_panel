@@ -541,7 +541,7 @@ class Dashboard1 extends Component {
                       <div className="ml-12" style={{ flex: 2 }}>
                         <medium className="text-muted">Unsolved Inquiries</medium>
                         <h6 className="m-0 mt-4  text-error font-weight-500">
-                          UnSolved : {inquiryCardData.unreadInquery}
+                          Unsolved : {inquiryCardData.unreadInquery}
                         </h6>
                       </div>
 

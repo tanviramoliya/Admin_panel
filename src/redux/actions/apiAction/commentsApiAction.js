@@ -28,4 +28,12 @@ import {
       return changeStatus;
     }
   };
+
+  export const getCommentCountApi = async (data) => {
+    const commentCount = await api(`newsComment/getCountById?newsId=${data}`, {}, 'get');
+
+    if (commentCount) {
+      return commentCount;
+    }
+  };
   
