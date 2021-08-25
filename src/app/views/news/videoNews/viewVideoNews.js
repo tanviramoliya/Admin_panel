@@ -146,7 +146,7 @@ class viewVideoNews extends Component {
 
                             <FormControlLabel
                                 control={
-                                    <Switch color="secondary" name="publish" checked={publish} style={{cursor: 'not-allowed'}}/>
+                                    <Switch color="primary" name="publish" checked={publish} style={{cursor: 'not-allowed'}}/>
                                 }
                                 label="Published"
                             />
@@ -154,7 +154,7 @@ class viewVideoNews extends Component {
                         <div>
                             <FormControlLabel
                                 control={
-                                    <Switch color="primary" name="critical" checked={critical} style={{cursor: 'not-allowed'}} />
+                                    <Switch  name="critical" checked={critical} style={{cursor: 'not-allowed'}} />
                                 }
                                 label="Notified"
                             />

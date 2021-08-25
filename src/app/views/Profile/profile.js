@@ -7,12 +7,15 @@ import {
   InputAdornment,
   Card,
   TextField,
+  IconButton,
 } from "@material-ui/core";
 import { Breadcrumb } from "../../../components/matx/index";
 import {
   PhoneIphone,
   Email,
   Person,
+  Visibility,
+  VisibilityOff,
 } from "@material-ui/icons";
 import { setNameSettings } from "redux/actions/LayoutActions";
 
@@ -61,6 +64,7 @@ class Profile extends Component {
     oldPass: "",
     newPass: "",
     confirmPass: "",
+    showPassword:false,
     data: {}
   };
   componentDidMount = async () => {
@@ -107,6 +111,14 @@ class Profile extends Component {
   
 
   }
+
+  handleClickPassword = () =>{
+    this.setState({showPassword:!this.state.showPassword});
+  }
+  handleMousePassword = () =>{
+    this.setState({showPassword:!this.state.showPassword});
+  }
+
   handleSubmit = async () => {
     const {
       adminToken, firstName, lastName, role, email, contactNumber } = this.state;
@@ -213,6 +225,7 @@ class Profile extends Component {
       oldPass,
       newPass,
       confirmPass,
+      showPassword
     } = this.state;
     return (
       <>
@@ -433,7 +446,7 @@ class Profile extends Component {
                       className="mb-16 w-100"
                       label="Old Password"
                       onChange={this.handleChange}
-                      type="text"
+                      type="Password"
                       name="oldPass"
                       placeholder="Enter Old Password"
                       value={oldPass}
@@ -456,7 +469,7 @@ class Profile extends Component {
                       className="mb-16 w-100"
                       label="New Password"
                       onChange={this.handleChange}
-                      type="text"
+                      type={showPassword ? "text" : "password"}
                       name="newPass"
                       placeholder="Enter New Password"
                       value={newPass}
@@ -471,6 +484,14 @@ class Profile extends Component {
                         "required|min:8|max:15|regex"
                       )}
                       onBlur={() => this.validator.showMessageFor("newPass")}
+                      InputProps = {{endAdornment:(
+                        <InputAdornment position='end' >
+                          <IconButton aria-label='toggle password visibility' onClick={this.handleClickPassword} onMouseDown={this.handleMousePassword}>
+                            {showPassword?<Visibility/>:<VisibilityOff/>}
+                          </IconButton>
+                        </InputAdornment>
+                      )}}
+
                     />
                   </Grid>
                   <Grid item lg={4} md={4} sm={12} xs={12}>
@@ -478,7 +499,7 @@ class Profile extends Component {
                       className="mb-16 w-100"
                       label="Confirm Password"
                       onChange={this.handleChange}
-                      type="text"
+                      type="Password"
                       name="confirmPass"
                       placeholder="Enter Confirm Password"
                       value={confirmPass}
